@@ -1,29 +1,88 @@
 // UI logic for the Design Token Export plugin
+console.log('ui.js script starting to execute...');
 
 let exportedData = null;
+let exportBtn, downloadBtn, copyBtn, closeBtn, status, previewSection, previewContent;
 
-// DOM elements
-const exportBtn = document.getElementById('exportBtn');
-const downloadBtn = document.getElementById('downloadBtn');
-const copyBtn = document.getElementById('copyBtn');
-const closeBtn = document.getElementById('closeBtn');
-const status = document.getElementById('status');
-const previewSection = document.getElementById('previewSection');
-const previewContent = document.getElementById('previewContent');
+// Initialize immediately or wait for DOM
+console.log('Document ready state:', document.readyState);
 
-// Event listeners
-exportBtn.addEventListener('click', handleExport);
-downloadBtn.addEventListener('click', handleDownload);
-copyBtn.addEventListener('click', handleCopy);
-closeBtn.addEventListener('click', handleClose);
+if (document.readyState === 'loading') {
+  console.log('DOM still loading, waiting for DOMContentLoaded...');
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing plugin UI...');
+    initializePlugin();
+  });
+} else {
+  console.log('DOM already loaded, initializing immediately...');
+  initializePlugin();
+}
+
+// Initialize plugin after DOM is ready
+function initializePlugin() {
+  // DOM elements
+  exportBtn = document.getElementById('exportBtn');
+  downloadBtn = document.getElementById('downloadBtn');
+  copyBtn = document.getElementById('copyBtn');
+  closeBtn = document.getElementById('closeBtn');
+  status = document.getElementById('status');
+  previewSection = document.getElementById('previewSection');
+  previewContent = document.getElementById('previewContent');
+
+  // Check if elements exist
+  if (!exportBtn) {
+    console.error('Export button not found! Available elements with IDs:');
+    const elementsWithIds = document.querySelectorAll('[id]');
+    elementsWithIds.forEach(el => console.log('- Found element:', el.id, el.tagName));
+    return;
+  }
+
+  console.log('All DOM elements found, setting up event listeners...');
+  console.log('Export button:', exportBtn);
+  console.log('Export button type:', exportBtn.tagName, 'ID:', exportBtn.id);
+
+  // Event listeners
+  exportBtn.addEventListener('click', function() {
+    console.log('Export button clicked!');
+    handleExport();
+  });
+  downloadBtn.addEventListener('click', handleDownload);
+  copyBtn.addEventListener('click', handleCopy);
+  closeBtn.addEventListener('click', handleClose);
+
+  // Listen for messages from plugin code
+  window.onmessage = (event) => {
+    console.log('Received message:', event.data);
+    if (!event.data.pluginMessage) return;
+    
+    const { type, data, message } = event.data.pluginMessage;
+    
+    switch (type) {
+      case 'tokens-extracted':
+        exportBtn.disabled = false;
+        exportBtn.textContent = 'Export Design Tokens';
+        showStatus('success', `Successfully extracted ${Object.keys(data.collections).length} collection(s)!`);
+        showPreview(data);
+        break;
+        
+      case 'error':
+        exportBtn.disabled = false;
+        exportBtn.textContent = 'Export Design Tokens';
+        showStatus('error', `Error: ${message}`);
+        break;
+    }
+  };
+}
 
 // Handle export button click
 function handleExport() {
+  console.log('Starting export process...');
   showStatus('loading', 'Extracting design tokens...');
   exportBtn.disabled = true;
   exportBtn.textContent = 'Exporting...';
   
   // Send message to plugin code to start extraction
+  console.log('Sending message to plugin code...');
   parent.postMessage({ pluginMessage: { type: 'export-tokens' } }, '*');
 }
 
@@ -66,6 +125,7 @@ function handleClose() {
 
 // Show status message
 function showStatus(type, message) {
+  if (!status) return;
   status.className = `status ${type}`;
   status.textContent = message;
   status.style.display = 'block';
@@ -104,26 +164,8 @@ function showPreview(data) {
     }, {})
   };
   
-  previewContent.textContent = JSON.stringify(preview, null, 2);
-  previewSection.style.display = 'block';
-}
-
-// Listen for messages from plugin code
-window.onmessage = (event) => {
-  const { type, data, message } = event.data.pluginMessage;
-  
-  switch (type) {
-    case 'tokens-extracted':
-      exportBtn.disabled = false;
-      exportBtn.textContent = 'Export Design Tokens';
-      showStatus('success', `Successfully extracted ${Object.keys(data.collections).length} collection(s)!`);
-      showPreview(data);
-      break;
-      
-    case 'error':
-      exportBtn.disabled = false;
-      exportBtn.textContent = 'Export Design Tokens';
-      showStatus('error', `Error: ${message}`);
-      break;
+  if (previewContent) {
+    previewContent.textContent = JSON.stringify(preview, null, 2);
+    previewSection.style.display = 'block';
   }
-}; 
+} 

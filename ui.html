@@ -184,6 +184,200 @@
     </div>
   </div>
 
-  <script src="ui.js"></script>
+  <script>
+    console.log('HTML loaded, about to load embedded JavaScript');
+    
+    // Embedded JavaScript (replacing ui.js)
+    let exportedData = null;
+    let exportBtn, downloadBtn, copyBtn, closeBtn, status, previewSection, previewContent;
+
+    console.log('Starting embedded script execution...');
+    console.log('Document ready state:', document.readyState);
+
+    function initializePlugin() {
+      console.log('initializePlugin called');
+      
+      // DOM elements
+      exportBtn = document.getElementById('exportBtn');
+      downloadBtn = document.getElementById('downloadBtn');
+      copyBtn = document.getElementById('copyBtn');
+      closeBtn = document.getElementById('closeBtn');
+      status = document.getElementById('status');
+      previewSection = document.getElementById('previewSection');
+      previewContent = document.getElementById('previewContent');
+
+      console.log('Elements found:');
+      console.log('- exportBtn:', exportBtn);
+      console.log('- closeBtn:', closeBtn);
+
+      // Check if elements exist
+      if (!exportBtn) {
+        console.error('Export button not found!');
+        return;
+      }
+
+      if (!closeBtn) {
+        console.error('Close button not found!');
+        return;
+      }
+
+      console.log('All buttons found, setting up event listeners...');
+
+      // Event listeners with inline functions for testing
+      exportBtn.addEventListener('click', function() {
+        console.log('EXPORT BUTTON CLICKED!');
+        handleExport();
+      });
+
+      downloadBtn.addEventListener('click', function() {
+        console.log('DOWNLOAD BUTTON CLICKED!');
+        handleDownload();
+      });
+
+      copyBtn.addEventListener('click', function() {
+        console.log('COPY BUTTON CLICKED!');
+        handleCopy();
+      });
+
+      closeBtn.addEventListener('click', function() {
+        console.log('CLOSE BUTTON CLICKED!');
+        handleClose();
+      });
+
+      console.log('✅ All event listeners attached successfully!');
+
+      // Listen for messages from plugin code
+      window.onmessage = (event) => {
+        console.log('Received message:', event.data);
+        if (!event.data.pluginMessage) return;
+        
+        const { type, data, message } = event.data.pluginMessage;
+        
+        switch (type) {
+          case 'tokens-extracted':
+            exportBtn.disabled = false;
+            exportBtn.textContent = 'Export Design Tokens';
+            showStatus('success', `Successfully extracted ${Object.keys(data.collections).length} collection(s)!`);
+            showPreview(data);
+            break;
+            
+          case 'error':
+            exportBtn.disabled = false;
+            exportBtn.textContent = 'Export Design Tokens';
+            showStatus('error', `Error: ${message}`);
+            break;
+        }
+      };
+    }
+
+    // Handle export button click
+    function handleExport() {
+      console.log('handleExport called');
+      showStatus('loading', 'Extracting design tokens...');
+      exportBtn.disabled = true;
+      exportBtn.textContent = 'Exporting...';
+      
+      // Send message to plugin code to start extraction
+      console.log('Sending message to plugin code...');
+      parent.postMessage({ pluginMessage: { type: 'export-tokens' } }, '*');
+    }
+
+    // Handle download button click
+    function handleDownload() {
+      if (!exportedData) return;
+      
+      const jsonString = JSON.stringify(exportedData, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `design-tokens-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      URL.revokeObjectURL(url);
+      showStatus('success', 'JSON file downloaded successfully!');
+    }
+
+    // Handle copy to clipboard
+    async function handleCopy() {
+      if (!exportedData) return;
+      
+      try {
+        const jsonString = JSON.stringify(exportedData, null, 2);
+        await navigator.clipboard.writeText(jsonString);
+        showStatus('success', 'JSON copied to clipboard!');
+      } catch (err) {
+        showStatus('error', 'Failed to copy to clipboard');
+      }
+    }
+
+    // Handle close button click
+    function handleClose() {
+      console.log('Closing plugin...');
+      parent.postMessage({ pluginMessage: { type: 'close-plugin' } }, '*');
+    }
+
+    // Show status message
+    function showStatus(type, message) {
+      if (!status) return;
+      status.className = `status ${type}`;
+      status.textContent = message;
+      status.style.display = 'block';
+      
+      if (type === 'success') {
+        setTimeout(() => {
+          status.style.display = 'none';
+        }, 3000);
+      }
+    }
+
+    // Show preview of exported data
+    function showPreview(data) {
+      exportedData = data;
+      
+      // Create a preview of the data structure
+      const preview = {
+        metadata: data.metadata,
+        collections: Object.keys(data.collections).reduce((acc, collectionName) => {
+          const collection = data.collections[collectionName];
+          acc[collectionName] = {
+            name: collection.name,
+            modes: collection.modes,
+            variableCount: Object.keys(collection.variables).length,
+            variables: Object.keys(collection.variables).slice(0, 3).reduce((vars, varName) => {
+              vars[varName] = collection.variables[varName];
+              return vars;
+            }, {})
+          };
+          
+          if (Object.keys(collection.variables).length > 3) {
+            acc[collectionName].variables['...'] = `and ${Object.keys(collection.variables).length - 3} more variables`;
+          }
+          
+          return acc;
+        }, {})
+      };
+      
+      if (previewContent) {
+        previewContent.textContent = JSON.stringify(preview, null, 2);
+        previewSection.style.display = 'block';
+      }
+    }
+
+    // Initialize immediately or wait for DOM
+    if (document.readyState === 'loading') {
+      console.log('DOM still loading, waiting for DOMContentLoaded...');
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded via event, initializing plugin UI...');
+        initializePlugin();
+      });
+    } else {
+      console.log('DOM already loaded, initializing immediately...');
+      initializePlugin();
+    }
+  </script>
 </body>
 </html> 

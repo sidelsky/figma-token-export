@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Plugin Test</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    button { padding: 10px 20px; background: #18a0fb; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    #status { margin-top: 10px; padding: 10px; background: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h2>Plugin Test</h2>
+  <button id="testBtn">Test Button</button>
+  <div id="status">Status: Not started</div>
+  
+  <script>
+    console.log('Test HTML loaded');
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM ready');
+      
+      const testBtn = document.getElementById('testBtn');
+      const status = document.getElementById('status');
+      
+      if (testBtn) {
+        console.log('Test button found');
+        testBtn.addEventListener('click', function() {
+          console.log('Test button clicked!');
+          status.textContent = 'Status: Button clicked successfully!';
+          status.style.background = '#d4edda';
+          
+          // Test sending message to plugin
+          try {
+            parent.postMessage({ pluginMessage: { type: 'test-message' } }, '*');
+            console.log('Test message sent');
+          } catch (e) {
+            console.error('Error sending message:', e);
+          }
+        });
+      } else {
+        console.error('Test button not found!');
+      }
+    });
+
+    window.onmessage = (event) => {
+      console.log('Received message:', event.data);
+    };
+  </script>
+</body>
+</html> 
