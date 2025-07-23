@@ -1,8 +1,8 @@
 {
-  "name": "Design Token Export",
-  "id": "design-token-export",
+  "name": "Design Token Export (Test)",
+  "id": "design-token-export-test",
   "api": "1.0.0",
-  "main": "code.js",
+  "main": "code-simple.js",
   "ui": "ui.html",
   "capabilities": [],
   "enableProposedApi": false,
@@ -16,7 +16,7 @@
   },
   "menu": [
     {
-      "name": "Export Design Tokens",
+      "name": "Export Design Tokens (Test)",
       "command": "exportTokens"
     }
   ]

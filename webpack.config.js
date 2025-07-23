@@ -28,6 +28,9 @@ module.exports = (env, argv) => {
       resolve: {
         extensions: ['.ts', '.js'],
       },
+      externals: {
+        'figma': 'figma'
+      },
       optimization: {
         minimize: isProduction,
       },
