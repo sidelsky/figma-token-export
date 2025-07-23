@@ -162,6 +162,22 @@
         This will export all local variable collections including colors, typography, spacing, and other design tokens.
       </div>
       
+      <div class="format-options" style="margin-bottom: 16px;">
+        <div style="font-size: 12px; font-weight: 500; margin-bottom: 8px; color: #1a1a1a;">Export Format:</div>
+        <label style="display: flex; align-items: center; margin-bottom: 8px; font-size: 14px; cursor: pointer;">
+          <input type="radio" name="exportFormat" value="json" checked style="margin-right: 8px;">
+          <span>JSON (for JavaScript/build tools)</span>
+        </label>
+        <label style="display: flex; align-items: center; margin-bottom: 8px; font-size: 14px; cursor: pointer;">
+          <input type="radio" name="exportFormat" value="css" style="margin-right: 8px;">
+          <span>CSS Custom Properties</span>
+        </label>
+        <label style="display: flex; align-items: center; font-size: 14px; cursor: pointer;">
+          <input type="radio" name="exportFormat" value="both" style="margin-right: 8px;">
+          <span>Both JSON and CSS</span>
+        </label>
+      </div>
+      
       <button id="exportBtn" class="button">
         Export Design Tokens
       </button>
@@ -170,7 +186,7 @@
     </div>
     
     <div id="previewSection" class="preview-section">
-      <div class="preview-title">Export Preview</div>
+      <div id="previewTitle" class="preview-title">Export Preview</div>
       <div id="previewContent" class="preview-content"></div>
       
       <div class="actions">
@@ -187,9 +203,9 @@
   <script>
     console.log('HTML loaded, about to load embedded JavaScript');
     
-    // Embedded JavaScript (replacing ui.js)
-    let exportedData = null;
-    let exportBtn, downloadBtn, copyBtn, closeBtn, status, previewSection, previewContent;
+         // Embedded JavaScript (replacing ui.js)
+     let exportedData = null;
+     let exportBtn, downloadBtn, copyBtn, closeBtn, status, previewSection, previewContent, previewTitle;
 
     console.log('Starting embedded script execution...');
     console.log('Document ready state:', document.readyState);
@@ -197,14 +213,15 @@
     function initializePlugin() {
       console.log('initializePlugin called');
       
-      // DOM elements
-      exportBtn = document.getElementById('exportBtn');
-      downloadBtn = document.getElementById('downloadBtn');
-      copyBtn = document.getElementById('copyBtn');
-      closeBtn = document.getElementById('closeBtn');
-      status = document.getElementById('status');
-      previewSection = document.getElementById('previewSection');
-      previewContent = document.getElementById('previewContent');
+           // DOM elements
+     exportBtn = document.getElementById('exportBtn');
+     downloadBtn = document.getElementById('downloadBtn');
+     copyBtn = document.getElementById('copyBtn');
+     closeBtn = document.getElementById('closeBtn');
+     status = document.getElementById('status');
+     previewSection = document.getElementById('previewSection');
+     previewContent = document.getElementById('previewContent');
+     previewTitle = document.getElementById('previewTitle');
 
       console.log('Elements found:');
       console.log('- exportBtn:', exportBtn);
@@ -244,9 +261,20 @@
         handleClose();
       });
 
-      console.log('✅ All event listeners attached successfully!');
+             console.log('✅ All event listeners attached successfully!');
 
-      // Listen for messages from plugin code
+       // Add event listeners for format radio buttons to update preview
+       const formatRadios = document.querySelectorAll('input[name="exportFormat"]');
+       formatRadios.forEach(radio => {
+         radio.addEventListener('change', function() {
+           console.log('Export format changed to:', this.value);
+           if (exportedData) {
+             updatePreviewContent();
+           }
+         });
+       });
+
+       // Listen for messages from plugin code
       window.onmessage = (event) => {
         console.log('Received message:', event.data);
         if (!event.data.pluginMessage) return;
@@ -270,49 +298,174 @@
       };
     }
 
-    // Handle export button click
-    function handleExport() {
-      console.log('handleExport called');
-      showStatus('loading', 'Extracting design tokens...');
-      exportBtn.disabled = true;
-      exportBtn.textContent = 'Exporting...';
-      
-      // Send message to plugin code to start extraction
-      console.log('Sending message to plugin code...');
-      parent.postMessage({ pluginMessage: { type: 'export-tokens' } }, '*');
-    }
+         // Handle export button click
+     function handleExport() {
+       console.log('handleExport called');
+       showStatus('loading', 'Extracting design tokens...');
+       exportBtn.disabled = true;
+       exportBtn.textContent = 'Exporting...';
+       
+       // Send message to plugin code to start extraction
+       console.log('Sending message to plugin code...');
+       parent.postMessage({ pluginMessage: { type: 'export-tokens' } }, '*');
+     }
 
-    // Handle download button click
-    function handleDownload() {
-      if (!exportedData) return;
-      
-      const jsonString = JSON.stringify(exportedData, null, 2);
-      const blob = new Blob([jsonString], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `design-tokens-${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      URL.revokeObjectURL(url);
-      showStatus('success', 'JSON file downloaded successfully!');
-    }
+     // Get selected export format
+     function getSelectedFormat() {
+       const formatRadios = document.querySelectorAll('input[name="exportFormat"]');
+       for (const radio of formatRadios) {
+         if (radio.checked) {
+           return radio.value;
+         }
+       }
+       return 'json'; // default
+     }
 
-    // Handle copy to clipboard
-    async function handleCopy() {
-      if (!exportedData) return;
-      
-      try {
-        const jsonString = JSON.stringify(exportedData, null, 2);
-        await navigator.clipboard.writeText(jsonString);
-        showStatus('success', 'JSON copied to clipboard!');
-      } catch (err) {
-        showStatus('error', 'Failed to copy to clipboard');
-      }
-    }
+     // Convert JSON data to CSS custom properties
+     function convertToCSS(data) {
+       let css = '/* Design Tokens exported from Figma */\n';
+       css += `/* Exported at: ${data.metadata.exportedAt} */\n\n`;
+
+       // Group variables by mode
+       const modeGroups = {};
+       
+       Object.keys(data.collections).forEach(collectionName => {
+         const collection = data.collections[collectionName];
+         
+         Object.keys(collection.variables).forEach(varName => {
+           const variable = collection.variables[varName];
+           
+           // Process each mode
+           Object.keys(variable.values).forEach(modeName => {
+             if (!modeGroups[modeName]) {
+               modeGroups[modeName] = [];
+             }
+             
+             const cssVarName = `--${collectionName.toLowerCase()}-${varName.toLowerCase()}`.replace(/[^a-z0-9-]/g, '-');
+             const value = formatValueForCSS(variable.values[modeName], variable.type);
+             const comment = variable.description ? ` /* ${variable.description} */` : '';
+             
+             modeGroups[modeName].push(`  ${cssVarName}: ${value};${comment}`);
+           });
+           
+           // Handle aliases
+           Object.keys(variable.aliases).forEach(modeName => {
+             if (!modeGroups[modeName]) {
+               modeGroups[modeName] = [];
+             }
+             
+             const cssVarName = `--${collectionName.toLowerCase()}-${varName.toLowerCase()}`.replace(/[^a-z0-9-]/g, '-');
+             const aliasName = variable.aliases[modeName].name.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+             const comment = ` /* alias to ${variable.aliases[modeName].name} */`;
+             
+             modeGroups[modeName].push(`  ${cssVarName}: var(--${aliasName});${comment}`);
+           });
+         });
+       });
+
+       // Generate CSS for each mode
+       Object.keys(modeGroups).forEach(modeName => {
+         if (modeName.toLowerCase() === 'default' || modeName.toLowerCase() === 'light' || Object.keys(modeGroups).length === 1) {
+           css += ':root {\n';
+         } else {
+           css += `[data-theme="${modeName.toLowerCase()}"] {\n`;
+         }
+         
+         css += modeGroups[modeName].join('\n') + '\n';
+         css += '}\n\n';
+       });
+
+       return css;
+     }
+
+     // Format value for CSS
+     function formatValueForCSS(value, type) {
+       switch (type) {
+         case 'COLOR':
+           return value; // Already formatted as hex or rgba
+         case 'FLOAT':
+           // Add px unit for likely spacing/sizing values
+           if (value > 0 && value < 1000 && Number.isInteger(value)) {
+             return `${value}px`;
+           }
+           return `${value}`;
+         case 'STRING':
+           return `"${value}"`;
+         case 'BOOLEAN':
+           return value ? '1' : '0';
+         default:
+           return value;
+       }
+     }
+
+         // Handle download button click
+     function handleDownload() {
+       if (!exportedData) return;
+       
+       const format = getSelectedFormat();
+       const dateStr = new Date().toISOString().split('T')[0];
+       
+       if (format === 'json') {
+         downloadFile(JSON.stringify(exportedData, null, 2), 'application/json', `design-tokens-${dateStr}.json`);
+         showStatus('success', 'JSON file downloaded successfully!');
+       } else if (format === 'css') {
+         const cssContent = convertToCSS(exportedData);
+         downloadFile(cssContent, 'text/css', `design-tokens-${dateStr}.css`);
+         showStatus('success', 'CSS file downloaded successfully!');
+       } else if (format === 'both') {
+         // Download JSON
+         downloadFile(JSON.stringify(exportedData, null, 2), 'application/json', `design-tokens-${dateStr}.json`);
+         // Download CSS
+         setTimeout(() => {
+           const cssContent = convertToCSS(exportedData);
+           downloadFile(cssContent, 'text/css', `design-tokens-${dateStr}.css`);
+         }, 100);
+         showStatus('success', 'Both JSON and CSS files downloaded successfully!');
+       }
+     }
+
+     // Helper function to download files
+     function downloadFile(content, mimeType, filename) {
+       const blob = new Blob([content], { type: mimeType });
+       const url = URL.createObjectURL(blob);
+       
+       const link = document.createElement('a');
+       link.href = url;
+       link.download = filename;
+       document.body.appendChild(link);
+       link.click();
+       document.body.removeChild(link);
+       
+       URL.revokeObjectURL(url);
+     }
+
+         // Handle copy to clipboard
+     async function handleCopy() {
+       if (!exportedData) return;
+       
+       try {
+         const format = getSelectedFormat();
+         let content, message;
+         
+         if (format === 'json') {
+           content = JSON.stringify(exportedData, null, 2);
+           message = 'JSON copied to clipboard!';
+         } else if (format === 'css') {
+           content = convertToCSS(exportedData);
+           message = 'CSS copied to clipboard!';
+         } else if (format === 'both') {
+           const jsonContent = JSON.stringify(exportedData, null, 2);
+           const cssContent = convertToCSS(exportedData);
+           content = `/* JSON FORMAT */\n${jsonContent}\n\n/* CSS FORMAT */\n${cssContent}`;
+           message = 'Both JSON and CSS copied to clipboard!';
+         }
+         
+         await navigator.clipboard.writeText(content);
+         showStatus('success', message);
+       } catch (err) {
+         showStatus('error', 'Failed to copy to clipboard');
+       }
+     }
 
     // Handle close button click
     function handleClose() {
@@ -334,38 +487,64 @@
       }
     }
 
-    // Show preview of exported data
-    function showPreview(data) {
-      exportedData = data;
-      
-      // Create a preview of the data structure
-      const preview = {
-        metadata: data.metadata,
-        collections: Object.keys(data.collections).reduce((acc, collectionName) => {
-          const collection = data.collections[collectionName];
-          acc[collectionName] = {
-            name: collection.name,
-            modes: collection.modes,
-            variableCount: Object.keys(collection.variables).length,
-            variables: Object.keys(collection.variables).slice(0, 3).reduce((vars, varName) => {
-              vars[varName] = collection.variables[varName];
-              return vars;
-            }, {})
-          };
-          
-          if (Object.keys(collection.variables).length > 3) {
-            acc[collectionName].variables['...'] = `and ${Object.keys(collection.variables).length - 3} more variables`;
-          }
-          
-          return acc;
-        }, {})
-      };
-      
-      if (previewContent) {
-        previewContent.textContent = JSON.stringify(preview, null, 2);
-        previewSection.style.display = 'block';
-      }
-    }
+         // Show preview of exported data
+     function showPreview(data) {
+       exportedData = data;
+       updatePreviewContent();
+       
+       if (previewContent) {
+         previewSection.style.display = 'block';
+       }
+     }
+
+     // Update preview content based on selected format
+     function updatePreviewContent() {
+       if (!exportedData || !previewContent) return;
+       
+       const format = getSelectedFormat();
+       
+       if (format === 'css') {
+         const cssContent = convertToCSS(exportedData);
+         previewContent.textContent = cssContent;
+         if (previewTitle) previewTitle.textContent = 'CSS Preview';
+       } else if (format === 'both') {
+         const jsonPreview = createJSONPreview(exportedData);
+         const cssContent = convertToCSS(exportedData);
+         const truncatedCSS = cssContent.split('\n').slice(0, 20).join('\n') + (cssContent.split('\n').length > 20 ? '\n\n/* ... and more CSS rules */' : '');
+         previewContent.textContent = `JSON Preview:\n${JSON.stringify(jsonPreview, null, 2)}\n\nCSS Preview:\n${truncatedCSS}`;
+         if (previewTitle) previewTitle.textContent = 'JSON + CSS Preview';
+       } else {
+         // JSON format
+         const preview = createJSONPreview(exportedData);
+         previewContent.textContent = JSON.stringify(preview, null, 2);
+         if (previewTitle) previewTitle.textContent = 'JSON Preview';
+       }
+     }
+
+     // Create a condensed JSON preview
+     function createJSONPreview(data) {
+       return {
+         metadata: data.metadata,
+         collections: Object.keys(data.collections).reduce((acc, collectionName) => {
+           const collection = data.collections[collectionName];
+           acc[collectionName] = {
+             name: collection.name,
+             modes: collection.modes,
+             variableCount: Object.keys(collection.variables).length,
+             variables: Object.keys(collection.variables).slice(0, 3).reduce((vars, varName) => {
+               vars[varName] = collection.variables[varName];
+               return vars;
+             }, {})
+           };
+           
+           if (Object.keys(collection.variables).length > 3) {
+             acc[collectionName].variables['...'] = `and ${Object.keys(collection.variables).length - 3} more variables`;
+           }
+           
+           return acc;
+         }, {})
+       };
+     }
 
     // Initialize immediately or wait for DOM
     if (document.readyState === 'loading') {
