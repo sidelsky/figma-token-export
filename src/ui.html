@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Design Token Export</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #ffffff;
+      color: #333;
+      line-height: 1.5;
+    }
+    
+    .container {
+      max-width: 100%;
+    }
+    
+    h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+      color: #1a1a1a;
+    }
+    
+    .description {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+    
+    .export-section {
+      border: 1px solid #e1e5e9;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .export-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #1a1a1a;
+    }
+    
+    .export-info {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+    
+    .button {
+      background: #18a0fb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.2s ease;
+    }
+    
+    .button:hover {
+      background: #1592e6;
+    }
+    
+    .button:disabled {
+      background: #b3d9ff;
+      cursor: not-allowed;
+    }
+    
+    .button.secondary {
+      background: #ffffff;
+      color: #666;
+      border: 1px solid #e1e5e9;
+    }
+    
+    .button.secondary:hover {
+      background: #f8f9fa;
+    }
+    
+    .status {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      display: none;
+    }
+    
+    .status.success {
+      background: #e8f5e8;
+      color: #2d6a2d;
+      border: 1px solid #c3e6c3;
+    }
+    
+    .status.error {
+      background: #ffeaea;
+      color: #c53030;
+      border: 1px solid #feb2b2;
+    }
+    
+    .status.loading {
+      background: #e6f3ff;
+      color: #1a73e8;
+      border: 1px solid #b3d9ff;
+    }
+    
+    .preview-section {
+      margin-top: 16px;
+      display: none;
+    }
+    
+    .preview-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #1a1a1a;
+    }
+    
+    .preview-content {
+      background: #f8f9fa;
+      border: 1px solid #e1e5e9;
+      border-radius: 6px;
+      padding: 12px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 11px;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    
+    .actions .button {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Design Token Export</h1>
+    <p class="description">
+      Export your Figma variables and design tokens into a JSON format that developers can easily use in their projects.
+    </p>
+    
+    <div class="export-section">
+      <div class="export-title">Export Options</div>
+      <div class="export-info">
+        This will export all local variable collections including colors, typography, spacing, and other design tokens.
+      </div>
+      
+      <div class="format-options" style="margin-bottom: 16px;">
+        <div style="font-size: 12px; font-weight: 500; margin-bottom: 8px; color: #1a1a1a;">Export Format:</div>
+        <label style="display: flex; align-items: center; margin-bottom: 8px; font-size: 14px; cursor: pointer;">
+          <input type="radio" name="exportFormat" value="json" checked style="margin-right: 8px;">
+          <span>JSON (for JavaScript/build tools)</span>
+        </label>
+        <label style="display: flex; align-items: center; font-size: 14px; cursor: pointer;">
+          <input type="radio" name="exportFormat" value="css" style="margin-right: 8px;">
+          <span>CSS Custom Properties</span>
+        </label>
+      </div>
+      
+      <button id="exportBtn" class="button">
+        Export Design Tokens
+      </button>
+      
+      <div id="status" class="status"></div>
+    </div>
+    
+    <div id="previewSection" class="preview-section">
+      <div id="previewTitle" class="preview-title">Export Preview</div>
+      <div id="previewContent" class="preview-content"></div>
+      
+      <div class="actions">
+        <button id="downloadBtn" class="button">Download</button>
+        <button id="copyBtn" class="button secondary">Copy to Clipboard</button>
+      </div>
+    </div>
+    
+    <div class="actions">
+      <button id="closeBtn" class="button secondary">Close</button>
+    </div>
+  </div>
+</body>
+</html> 

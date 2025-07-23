@@ -168,13 +168,9 @@
           <input type="radio" name="exportFormat" value="json" checked style="margin-right: 8px;">
           <span>JSON (for JavaScript/build tools)</span>
         </label>
-        <label style="display: flex; align-items: center; margin-bottom: 8px; font-size: 14px; cursor: pointer;">
+        <label style="display: flex; align-items: center; font-size: 14px; cursor: pointer;">
           <input type="radio" name="exportFormat" value="css" style="margin-right: 8px;">
           <span>CSS Custom Properties</span>
-        </label>
-        <label style="display: flex; align-items: center; font-size: 14px; cursor: pointer;">
-          <input type="radio" name="exportFormat" value="both" style="margin-right: 8px;">
-          <span>Both JSON and CSS</span>
         </label>
       </div>
       
@@ -189,10 +185,10 @@
       <div id="previewTitle" class="preview-title">Export Preview</div>
       <div id="previewContent" class="preview-content"></div>
       
-      <div class="actions">
-        <button id="downloadBtn" class="button">Download JSON</button>
-        <button id="copyBtn" class="button secondary">Copy to Clipboard</button>
-      </div>
+             <div class="actions">
+         <button id="downloadBtn" class="button">Download</button>
+         <button id="copyBtn" class="button secondary">Copy to Clipboard</button>
+       </div>
     </div>
     
     <div class="actions">
@@ -263,11 +259,15 @@
 
              console.log('✅ All event listeners attached successfully!');
 
+       // Set initial download button text
+       updateDownloadButtonText();
+
        // Add event listeners for format radio buttons to update preview
        const formatRadios = document.querySelectorAll('input[name="exportFormat"]');
        formatRadios.forEach(radio => {
          radio.addEventListener('change', function() {
            console.log('Export format changed to:', this.value);
+           updateDownloadButtonText();
            if (exportedData) {
              updatePreviewContent();
            }
@@ -282,12 +282,13 @@
         const { type, data, message } = event.data.pluginMessage;
         
         switch (type) {
-          case 'tokens-extracted':
-            exportBtn.disabled = false;
-            exportBtn.textContent = 'Export Design Tokens';
-            showStatus('success', `Successfully extracted ${Object.keys(data.collections).length} collection(s)!`);
-            showPreview(data);
-            break;
+                     case 'tokens-extracted':
+             exportBtn.disabled = false;
+             exportBtn.textContent = 'Export Design Tokens';
+             updateDownloadButtonText();
+             showStatus('success', `Successfully extracted ${Object.keys(data.collections).length} collection(s)!`);
+             showPreview(data);
+             break;
             
           case 'error':
             exportBtn.disabled = false;
@@ -324,7 +325,26 @@
      // Convert JSON data to CSS custom properties
      function convertToCSS(data) {
        let css = '/* Design Tokens exported from Figma */\n';
-       css += `/* Exported at: ${data.metadata.exportedAt} */\n\n`;
+       css += `/* Exported at: ${data.metadata.exportedAt} */\n`;
+       css += `/* File: ${data.metadata.figmaFileKey} */\n`;
+       css += `/* Collections: ${Object.keys(data.collections).join(', ')} */\n\n`;
+       
+       // Add usage examples with exact mode names
+       const modeNames = [...new Set(Object.keys(data.collections).flatMap(collectionName => 
+         Object.keys(data.collections[collectionName].variables).flatMap(varName =>
+           Object.keys(data.collections[collectionName].variables[varName].values)
+         )
+       ))];
+       
+       css += '/* Usage Examples:\n';
+       css += ' * .button { background: var(--colors-primary); }\n';
+       css += ' * .text { font-size: var(--typography-body-size); }\n';
+       if (modeNames.length > 1) {
+         const darkMode = modeNames.find(mode => mode !== 'Default' && mode !== 'Light') || modeNames[1];
+         css += ` * Toggle themes: document.body.setAttribute("data-theme", "${darkMode}"); */\n\n`;
+       } else {
+         css += ' */\n\n';
+       }
 
        // Group variables by mode
        const modeGroups = {};
@@ -363,17 +383,19 @@
          });
        });
 
-       // Generate CSS for each mode
-       Object.keys(modeGroups).forEach(modeName => {
-         if (modeName.toLowerCase() === 'default' || modeName.toLowerCase() === 'light' || Object.keys(modeGroups).length === 1) {
-           css += ':root {\n';
-         } else {
-           css += `[data-theme="${modeName.toLowerCase()}"] {\n`;
-         }
-         
-         css += modeGroups[modeName].join('\n') + '\n';
-         css += '}\n\n';
-       });
+               // Generate CSS for each mode (using exact mode names from Figma)
+        Object.keys(modeGroups).forEach(modeName => {
+          if (modeName === 'Default' || modeName === 'Light' || Object.keys(modeGroups).length === 1) {
+            css += ':root {\n';
+            css += `  /* Mode: ${modeName} */\n`;
+          } else {
+            css += `[data-theme="${modeName}"] {\n`;
+            css += `  /* Mode: ${modeName} */\n`;
+          }
+          
+          css += modeGroups[modeName].join('\n') + '\n';
+          css += '}\n\n';
+        });
 
        return css;
      }
@@ -412,15 +434,6 @@
          const cssContent = convertToCSS(exportedData);
          downloadFile(cssContent, 'text/css', `design-tokens-${dateStr}.css`);
          showStatus('success', 'CSS file downloaded successfully!');
-       } else if (format === 'both') {
-         // Download JSON
-         downloadFile(JSON.stringify(exportedData, null, 2), 'application/json', `design-tokens-${dateStr}.json`);
-         // Download CSS
-         setTimeout(() => {
-           const cssContent = convertToCSS(exportedData);
-           downloadFile(cssContent, 'text/css', `design-tokens-${dateStr}.css`);
-         }, 100);
-         showStatus('success', 'Both JSON and CSS files downloaded successfully!');
        }
      }
 
@@ -436,10 +449,31 @@
        link.click();
        document.body.removeChild(link);
        
-       URL.revokeObjectURL(url);
+              URL.revokeObjectURL(url);
      }
 
-         // Handle copy to clipboard
+     // Update download button text based on selected format
+     function updateDownloadButtonText() {
+       if (!downloadBtn || !copyBtn) return;
+       
+       const format = getSelectedFormat();
+       
+       switch (format) {
+         case 'json':
+           downloadBtn.textContent = 'Download JSON';
+           copyBtn.textContent = 'Copy JSON';
+           break;
+         case 'css':
+           downloadBtn.textContent = 'Download CSS';
+           copyBtn.textContent = 'Copy CSS';
+           break;
+         default:
+           downloadBtn.textContent = 'Download';
+           copyBtn.textContent = 'Copy to Clipboard';
+       }
+     }
+
+     // Handle copy to clipboard
      async function handleCopy() {
        if (!exportedData) return;
        
@@ -453,11 +487,6 @@
          } else if (format === 'css') {
            content = convertToCSS(exportedData);
            message = 'CSS copied to clipboard!';
-         } else if (format === 'both') {
-           const jsonContent = JSON.stringify(exportedData, null, 2);
-           const cssContent = convertToCSS(exportedData);
-           content = `/* JSON FORMAT */\n${jsonContent}\n\n/* CSS FORMAT */\n${cssContent}`;
-           message = 'Both JSON and CSS copied to clipboard!';
          }
          
          await navigator.clipboard.writeText(content);
@@ -507,12 +536,6 @@
          const cssContent = convertToCSS(exportedData);
          previewContent.textContent = cssContent;
          if (previewTitle) previewTitle.textContent = 'CSS Preview';
-       } else if (format === 'both') {
-         const jsonPreview = createJSONPreview(exportedData);
-         const cssContent = convertToCSS(exportedData);
-         const truncatedCSS = cssContent.split('\n').slice(0, 20).join('\n') + (cssContent.split('\n').length > 20 ? '\n\n/* ... and more CSS rules */' : '');
-         previewContent.textContent = `JSON Preview:\n${JSON.stringify(jsonPreview, null, 2)}\n\nCSS Preview:\n${truncatedCSS}`;
-         if (previewTitle) previewTitle.textContent = 'JSON + CSS Preview';
        } else {
          // JSON format
          const preview = createJSONPreview(exportedData);
