@@ -1,0 +1,35 @@
+{
+  "name": "figma-design-token-export",
+  "version": "1.0.0",
+  "description": "A Figma plugin that exports design variables and tokens into a developer-friendly JSON format",
+  "main": "code.js",
+  "scripts": {
+    "build": "echo 'No build step required for this plugin'",
+    "dev": "echo 'Open this plugin in Figma to test'"
+  },
+  "keywords": [
+    "figma",
+    "plugin",
+    "design-tokens",
+    "variables",
+    "export",
+    "design-system"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/figma-token-export"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/figma-token-export/issues"
+  },
+  "homepage": "https://github.com/yourusername/figma-token-export#readme",
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.75.0"
+  },
+  "figma": {
+    "id": "design-token-export",
+    "name": "Design Token Export"
+  }
+} 
