@@ -15,6 +15,12 @@ module.exports = (env, argv) => {
         path: path.resolve(__dirname, 'dist'),
         filename: 'code.js',
         clean: false, // Don't clean between builds since we have multiple entries
+        library: {
+          type: 'var',
+          name: 'FigmaPlugin'
+        },
+        globalObject: 'this',
+        iife: false
       },
       module: {
         rules: [
@@ -32,8 +38,9 @@ module.exports = (env, argv) => {
         'figma': 'figma'
       },
       optimization: {
-        minimize: isProduction,
+        minimize: false, // Disable minification for plugin code to avoid issues
       },
+
       devtool: isProduction ? false : 'source-map',
     },
     

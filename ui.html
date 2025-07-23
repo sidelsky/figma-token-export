@@ -185,10 +185,9 @@
       <div id="previewTitle" class="preview-title">Export Preview</div>
       <div id="previewContent" class="preview-content"></div>
       
-             <div class="actions">
-         <button id="downloadBtn" class="button">Download</button>
-         <button id="copyBtn" class="button secondary">Copy to Clipboard</button>
-       </div>
+      <div class="actions">
+        <button id="downloadBtn" class="button">Download</button>
+      </div>
     </div>
     
     <div class="actions">
@@ -197,304 +196,156 @@
   </div>
 
   <script>
-    console.log('HTML loaded, about to load embedded JavaScript');
+    console.log('UI script starting to execute...');
     
-         // Embedded JavaScript (replacing ui.js)
-     let exportedData = null;
-     let exportBtn, downloadBtn, copyBtn, closeBtn, status, previewSection, previewContent, previewTitle;
+    // Global state
+    let exportedData = null;
+    
+         // DOM elements
+     let exportBtn, downloadBtn, closeBtn, status, previewSection, previewContent, previewTitle;
 
-    console.log('Starting embedded script execution...');
-    console.log('Document ready state:', document.readyState);
-
+    // Initialize plugin after DOM is ready
     function initializePlugin() {
       console.log('initializePlugin called');
       
-           // DOM elements
-     exportBtn = document.getElementById('exportBtn');
-     downloadBtn = document.getElementById('downloadBtn');
-     copyBtn = document.getElementById('copyBtn');
-     closeBtn = document.getElementById('closeBtn');
-     status = document.getElementById('status');
-     previewSection = document.getElementById('previewSection');
-     previewContent = document.getElementById('previewContent');
-     previewTitle = document.getElementById('previewTitle');
+             // DOM elements
+       exportBtn = document.getElementById('exportBtn');
+       downloadBtn = document.getElementById('downloadBtn');
+       closeBtn = document.getElementById('closeBtn');
+       status = document.getElementById('status');
+       previewSection = document.getElementById('previewSection');
+       previewContent = document.getElementById('previewContent');
+       previewTitle = document.getElementById('previewTitle');
 
-      console.log('Elements found:');
-      console.log('- exportBtn:', exportBtn);
-      console.log('- closeBtn:', closeBtn);
+      console.log('All DOM elements found, setting up event listeners...');
 
-      // Check if elements exist
-      if (!exportBtn) {
-        console.error('Export button not found!');
-        return;
+             // Event listeners
+       exportBtn.addEventListener('click', handleExport);
+       downloadBtn.addEventListener('click', handleDownload);
+       closeBtn.addEventListener('click', handleClose);
+
+      // Set initial button text
+      updateDownloadButtonText();
+
+      // Add event listeners for format radio buttons
+      const formatRadios = document.querySelectorAll('input[name="exportFormat"]');
+      for (let i = 0; i < formatRadios.length; i++) {
+        const radio = formatRadios[i];
+        radio.addEventListener('change', function() {
+          console.log('Export format changed to:', radio.value);
+          updateDownloadButtonText();
+          if (exportedData) {
+            updatePreviewContent();
+          }
+        });
       }
 
-      if (!closeBtn) {
-        console.error('Close button not found!');
-        return;
-      }
-
-      console.log('All buttons found, setting up event listeners...');
-
-      // Event listeners with inline functions for testing
-      exportBtn.addEventListener('click', function() {
-        console.log('EXPORT BUTTON CLICKED!');
-        handleExport();
-      });
-
-      downloadBtn.addEventListener('click', function() {
-        console.log('DOWNLOAD BUTTON CLICKED!');
-        handleDownload();
-      });
-
-      copyBtn.addEventListener('click', function() {
-        console.log('COPY BUTTON CLICKED!');
-        handleCopy();
-      });
-
-      closeBtn.addEventListener('click', function() {
-        console.log('CLOSE BUTTON CLICKED!');
-        handleClose();
-      });
-
-             console.log('✅ All event listeners attached successfully!');
-
-       // Set initial download button text
-       updateDownloadButtonText();
-
-       // Add event listeners for format radio buttons to update preview
-       const formatRadios = document.querySelectorAll('input[name="exportFormat"]');
-       formatRadios.forEach(radio => {
-         radio.addEventListener('change', function() {
-           console.log('Export format changed to:', this.value);
-           updateDownloadButtonText();
-           if (exportedData) {
-             updatePreviewContent();
-           }
-         });
-       });
-
-       // Listen for messages from plugin code
-      window.onmessage = (event) => {
+      // Listen for messages from plugin code
+      window.onmessage = function(event) {
         console.log('Received message:', event.data);
         if (!event.data.pluginMessage) return;
         
-        const { type, data, message } = event.data.pluginMessage;
+        const pluginMessage = event.data.pluginMessage;
+        const type = pluginMessage.type;
+        const data = pluginMessage.data;
+        const message = pluginMessage.message;
         
-        switch (type) {
-                     case 'tokens-extracted':
-             exportBtn.disabled = false;
-             exportBtn.textContent = 'Export Design Tokens';
-             updateDownloadButtonText();
-             showStatus('success', `Successfully extracted ${Object.keys(data.collections).length} collection(s)!`);
-             showPreview(data);
-             break;
-            
-          case 'error':
-            exportBtn.disabled = false;
-            exportBtn.textContent = 'Export Design Tokens';
-            showStatus('error', `Error: ${message}`);
-            break;
+        if (type === 'tokens-extracted') {
+          exportBtn.disabled = false;
+          exportBtn.textContent = 'Export Design Tokens';
+          updateDownloadButtonText();
+          showStatus('success', 'Successfully extracted ' + Object.keys(data.collections).length + ' collection(s)!');
+          showPreview(data);
+        } else if (type === 'error') {
+          exportBtn.disabled = false;
+          exportBtn.textContent = 'Export Design Tokens';
+          showStatus('error', 'Error: ' + message);
         }
       };
+
+      console.log('✅ Plugin UI initialized successfully!');
     }
 
-         // Handle export button click
-     function handleExport() {
-       console.log('handleExport called');
-       showStatus('loading', 'Extracting design tokens...');
-       exportBtn.disabled = true;
-       exportBtn.textContent = 'Exporting...';
-       
-       // Send message to plugin code to start extraction
-       console.log('Sending message to plugin code...');
-       parent.postMessage({ pluginMessage: { type: 'export-tokens' } }, '*');
-     }
+    // Handle export button click
+    function handleExport() {
+      console.log('Starting export process...');
+      showStatus('loading', 'Extracting design tokens...');
+      exportBtn.disabled = true;
+      exportBtn.textContent = 'Exporting...';
+      
+      // Send message to plugin code to start extraction
+      console.log('Sending message to plugin code...');
+      parent.postMessage({ pluginMessage: { type: 'export-tokens' } }, '*');
+    }
 
-     // Get selected export format
-     function getSelectedFormat() {
-       const formatRadios = document.querySelectorAll('input[name="exportFormat"]');
-       for (const radio of formatRadios) {
-         if (radio.checked) {
-           return radio.value;
-         }
-       }
-       return 'json'; // default
-     }
+    // Get the currently selected export format
+    function getSelectedFormat() {
+      const formatRadios = document.querySelectorAll('input[name="exportFormat"]');
+      
+      for (let i = 0; i < formatRadios.length; i++) {
+        const radio = formatRadios[i];
+        if (radio.checked) {
+          return radio.value;
+        }
+      }
+      
+      return 'json'; // default fallback
+    }
 
-     // Convert JSON data to CSS custom properties
-     function convertToCSS(data) {
-       let css = '/* Design Tokens exported from Figma */\n';
-       css += `/* Exported at: ${data.metadata.exportedAt} */\n`;
-       css += `/* File: ${data.metadata.figmaFileKey} */\n`;
-       css += `/* Collections: ${Object.keys(data.collections).join(', ')} */\n\n`;
-       
-       // Add usage examples with exact mode names
-       const modeNames = [...new Set(Object.keys(data.collections).flatMap(collectionName => 
-         Object.keys(data.collections[collectionName].variables).flatMap(varName =>
-           Object.keys(data.collections[collectionName].variables[varName].values)
-         )
-       ))];
-       
-       css += '/* Usage Examples:\n';
-       css += ' * .button { background: var(--colors-primary); }\n';
-       css += ' * .text { font-size: var(--typography-body-size); }\n';
-       if (modeNames.length > 1) {
-         const darkMode = modeNames.find(mode => mode !== 'Default' && mode !== 'Light') || modeNames[1];
-         css += ` * Toggle themes: document.body.setAttribute("data-theme", "${darkMode}"); */\n\n`;
-       } else {
-         css += ' */\n\n';
-       }
+    // Handle download button click
+    function handleDownload() {
+      if (!exportedData) return;
+      
+      const format = getSelectedFormat();
+      const dateStr = new Date().toISOString().split('T')[0];
+      
+      try {
+        if (format === 'json') {
+          const content = JSON.stringify(exportedData, null, 2);
+          downloadFile(content, 'application/json', 'design-tokens-' + dateStr + '.json');
+          showStatus('success', 'JSON file downloaded successfully!');
+        } else if (format === 'css') {
+          const content = convertToCSS(exportedData);
+          downloadFile(content, 'text/css', 'design-tokens-' + dateStr + '.css');
+          showStatus('success', 'CSS file downloaded successfully!');
+        }
+      } catch (error) {
+        console.error('Download error:', error);
+        showStatus('error', 'Failed to download file');
+      }
+    }
 
-       // Group variables by mode
-       const modeGroups = {};
-       
-       Object.keys(data.collections).forEach(collectionName => {
-         const collection = data.collections[collectionName];
-         
-         Object.keys(collection.variables).forEach(varName => {
-           const variable = collection.variables[varName];
-           
-           // Process each mode
-           Object.keys(variable.values).forEach(modeName => {
-             if (!modeGroups[modeName]) {
-               modeGroups[modeName] = [];
-             }
-             
-             const cssVarName = `--${collectionName.toLowerCase()}-${varName.toLowerCase()}`.replace(/[^a-z0-9-]/g, '-');
-             const value = formatValueForCSS(variable.values[modeName], variable.type);
-             const comment = variable.description ? ` /* ${variable.description} */` : '';
-             
-             modeGroups[modeName].push(`  ${cssVarName}: ${value};${comment}`);
-           });
-           
-           // Handle aliases
-           Object.keys(variable.aliases).forEach(modeName => {
-             if (!modeGroups[modeName]) {
-               modeGroups[modeName] = [];
-             }
-             
-             const cssVarName = `--${collectionName.toLowerCase()}-${varName.toLowerCase()}`.replace(/[^a-z0-9-]/g, '-');
-             const aliasName = variable.aliases[modeName].name.toLowerCase().replace(/[^a-z0-9-]/g, '-');
-             const comment = ` /* alias to ${variable.aliases[modeName].name} */`;
-             
-             modeGroups[modeName].push(`  ${cssVarName}: var(--${aliasName});${comment}`);
-           });
-         });
-       });
+    // Download file helper
+    function downloadFile(content, mimeType, filename) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      URL.revokeObjectURL(url);
+    }
 
-               // Generate CSS for each mode (using exact mode names from Figma)
-        Object.keys(modeGroups).forEach(modeName => {
-          if (modeName === 'Default' || modeName === 'Light' || Object.keys(modeGroups).length === 1) {
-            css += ':root {\n';
-            css += `  /* Mode: ${modeName} */\n`;
-          } else {
-            css += `[data-theme="${modeName}"] {\n`;
-            css += `  /* Mode: ${modeName} */\n`;
-          }
-          
-          css += modeGroups[modeName].join('\n') + '\n';
-          css += '}\n\n';
-        });
-
-       return css;
-     }
-
-     // Format value for CSS
-     function formatValueForCSS(value, type) {
-       switch (type) {
-         case 'COLOR':
-           return value; // Already formatted as hex or rgba
-         case 'FLOAT':
-           // Add px unit for likely spacing/sizing values
-           if (value > 0 && value < 1000 && Number.isInteger(value)) {
-             return `${value}px`;
-           }
-           return `${value}`;
-         case 'STRING':
-           return `"${value}"`;
-         case 'BOOLEAN':
-           return value ? '1' : '0';
-         default:
-           return value;
-       }
-     }
-
-         // Handle download button click
-     function handleDownload() {
-       if (!exportedData) return;
+         // Update download button text based on selected format
+     function updateDownloadButtonText() {
+       if (!downloadBtn) return;
        
        const format = getSelectedFormat();
-       const dateStr = new Date().toISOString().split('T')[0];
        
        if (format === 'json') {
-         downloadFile(JSON.stringify(exportedData, null, 2), 'application/json', `design-tokens-${dateStr}.json`);
-         showStatus('success', 'JSON file downloaded successfully!');
+         downloadBtn.textContent = 'Download JSON';
        } else if (format === 'css') {
-         const cssContent = convertToCSS(exportedData);
-         downloadFile(cssContent, 'text/css', `design-tokens-${dateStr}.css`);
-         showStatus('success', 'CSS file downloaded successfully!');
+         downloadBtn.textContent = 'Download CSS';
+       } else {
+         downloadBtn.textContent = 'Download';
        }
      }
 
-     // Helper function to download files
-     function downloadFile(content, mimeType, filename) {
-       const blob = new Blob([content], { type: mimeType });
-       const url = URL.createObjectURL(blob);
-       
-       const link = document.createElement('a');
-       link.href = url;
-       link.download = filename;
-       document.body.appendChild(link);
-       link.click();
-       document.body.removeChild(link);
-       
-              URL.revokeObjectURL(url);
-     }
-
-     // Update download button text based on selected format
-     function updateDownloadButtonText() {
-       if (!downloadBtn || !copyBtn) return;
-       
-       const format = getSelectedFormat();
-       
-       switch (format) {
-         case 'json':
-           downloadBtn.textContent = 'Download JSON';
-           copyBtn.textContent = 'Copy JSON';
-           break;
-         case 'css':
-           downloadBtn.textContent = 'Download CSS';
-           copyBtn.textContent = 'Copy CSS';
-           break;
-         default:
-           downloadBtn.textContent = 'Download';
-           copyBtn.textContent = 'Copy to Clipboard';
-       }
-     }
-
-     // Handle copy to clipboard
-     async function handleCopy() {
-       if (!exportedData) return;
-       
-       try {
-         const format = getSelectedFormat();
-         let content, message;
-         
-         if (format === 'json') {
-           content = JSON.stringify(exportedData, null, 2);
-           message = 'JSON copied to clipboard!';
-         } else if (format === 'css') {
-           content = convertToCSS(exportedData);
-           message = 'CSS copied to clipboard!';
-         }
-         
-         await navigator.clipboard.writeText(content);
-         showStatus('success', message);
-       } catch (err) {
-         showStatus('error', 'Failed to copy to clipboard');
-       }
-     }
+    
 
     // Handle close button click
     function handleClose() {
@@ -505,79 +356,120 @@
     // Show status message
     function showStatus(type, message) {
       if (!status) return;
-      status.className = `status ${type}`;
+      
+      status.className = 'status ' + type;
       status.textContent = message;
       status.style.display = 'block';
       
       if (type === 'success') {
-        setTimeout(() => {
+        setTimeout(function() {
           status.style.display = 'none';
         }, 3000);
       }
     }
 
-         // Show preview of exported data
-     function showPreview(data) {
-       exportedData = data;
-       updatePreviewContent();
-       
-       if (previewContent) {
-         previewSection.style.display = 'block';
-       }
-     }
+    // Show preview of exported data
+    function showPreview(data) {
+      exportedData = data;
+      updatePreviewContent();
+      
+      if (previewSection) {
+        previewSection.style.display = 'block';
+      }
+    }
 
-     // Update preview content based on selected format
-     function updatePreviewContent() {
-       if (!exportedData || !previewContent) return;
-       
-       const format = getSelectedFormat();
-       
-       if (format === 'css') {
-         const cssContent = convertToCSS(exportedData);
-         previewContent.textContent = cssContent;
-         if (previewTitle) previewTitle.textContent = 'CSS Preview';
-       } else {
-         // JSON format
-         const preview = createJSONPreview(exportedData);
-         previewContent.textContent = JSON.stringify(preview, null, 2);
-         if (previewTitle) previewTitle.textContent = 'JSON Preview';
-       }
-     }
+    // Update preview content based on selected format
+    function updatePreviewContent() {
+      if (!exportedData || !previewContent) return;
+      
+      const format = getSelectedFormat();
+      
+      if (format === 'css') {
+        const cssContent = convertToCSS(exportedData);
+        previewContent.textContent = cssContent;
+        if (previewTitle) previewTitle.textContent = 'CSS Preview';
+      } else {
+        const preview = createJSONPreview(exportedData);
+        previewContent.textContent = JSON.stringify(preview, null, 2);
+        if (previewTitle) previewTitle.textContent = 'JSON Preview';
+      }
+    }
 
-     // Create a condensed JSON preview
-     function createJSONPreview(data) {
-       return {
-         metadata: data.metadata,
-         collections: Object.keys(data.collections).reduce((acc, collectionName) => {
-           const collection = data.collections[collectionName];
-           acc[collectionName] = {
-             name: collection.name,
-             modes: collection.modes,
-             variableCount: Object.keys(collection.variables).length,
-             variables: Object.keys(collection.variables).slice(0, 3).reduce((vars, varName) => {
-               vars[varName] = collection.variables[varName];
-               return vars;
-             }, {})
-           };
-           
-           if (Object.keys(collection.variables).length > 3) {
-             acc[collectionName].variables['...'] = `and ${Object.keys(collection.variables).length - 3} more variables`;
-           }
-           
-           return acc;
-         }, {})
-       };
-     }
+    // Create a condensed JSON preview
+    function createJSONPreview(data) {
+      const preview = {
+        metadata: data.metadata,
+        collections: {}
+      };
+      
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        const variableNames = Object.keys(collection.variables);
+        const previewVariables = {};
+        
+        // Show first 3 variables
+        for (let i = 0; i < Math.min(3, variableNames.length); i++) {
+          const varName = variableNames[i];
+          previewVariables[varName] = collection.variables[varName];
+        }
+        
+        if (variableNames.length > 3) {
+          previewVariables['...'] = 'and ' + (variableNames.length - 3) + ' more variables';
+        }
+        
+        preview.collections[collectionName] = {
+          name: collection.name,
+          modes: collection.modes,
+          variableCount: variableNames.length,
+          variables: previewVariables
+        };
+      }
+      
+      return preview;
+    }
 
-    // Initialize immediately or wait for DOM
+    // Convert JSON data to CSS custom properties
+    function convertToCSS(data) {
+      let css = '/* Design Tokens exported from Figma */\n';
+      css += '/* Exported at: ' + data.metadata.exportedAt + ' */\n';
+      css += '/* File: ' + (data.metadata.figmaFileKey || 'Unknown') + ' */\n';
+      css += '/* Collections: ' + Object.keys(data.collections).join(', ') + ' */\n\n';
+      
+      css += '/* Usage Examples:\n';
+      css += ' * .button { background: var(--colors-primary); }\n';
+      css += ' * .text { font-size: var(--typography-body-size); }\n';
+      css += ' */\n\n';
+      
+      css += ':root {\n';
+      
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        
+        for (const varName in collection.variables) {
+          const variable = collection.variables[varName];
+          
+          // Use first available value
+          for (const modeName in variable.values) {
+            const value = variable.values[modeName];
+            const cssVarName = '--' + collectionName.toLowerCase() + '-' + varName.toLowerCase();
+            const cleanName = cssVarName.replace(/[^a-z0-9-]/g, '-');
+            const comment = variable.description ? ' /* ' + variable.description + ' */' : '';
+            
+            css += '  ' + cleanName + ': ' + value + ';' + comment + '\n';
+            break; // Use first mode only for simplicity
+          }
+        }
+      }
+      
+      css += '}\n';
+      
+      return css;
+    }
+
+    // Initialize when DOM is ready
     if (document.readyState === 'loading') {
-      console.log('DOM still loading, waiting for DOMContentLoaded...');
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM loaded via event, initializing plugin UI...');
-        initializePlugin();
-      });
+      document.addEventListener('DOMContentLoaded', initializePlugin);
     } else {
-      console.log('DOM already loaded, initializing immediately...');
       initializePlugin();
     }
   </script>
