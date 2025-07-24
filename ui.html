@@ -4,290 +4,653 @@
   <meta charset="utf-8">
   <title>Design Token Export</title>
   <style>
+    /* Shadcn-inspired Design System */
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 222.2 84% 4.9%;
+      --card: 0 0% 100%;
+      --card-foreground: 222.2 84% 4.9%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 222.2 84% 4.9%;
+      --primary: 221.2 83.2% 53.3%;
+      --primary-foreground: 210 40% 98%;
+      --secondary: 210 40% 96%;
+      --secondary-foreground: 222.2 84% 4.9%;
+      --muted: 210 40% 96%;
+      --muted-foreground: 215.4 16.3% 46.9%;
+      --accent: 210 40% 96%;
+      --accent-foreground: 222.2 84% 4.9%;
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 210 40% 98%;
+      --border: 214.3 31.8% 91.4%;
+      --input: 214.3 31.8% 91.4%;
+      --ring: 221.2 83.2% 53.3%;
+      --radius: 0.5rem;
+    }
+
     * {
       box-sizing: border-box;
     }
-    
+
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       margin: 0;
-      padding: 16px 20px;
-      background: #ffffff;
-      color: #333;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       line-height: 1.5;
-      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
     }
-    
+
+    /* Layout */
     .container {
-      max-width: 100%;
+      max-width: 768px;
       min-width: 440px;
+      margin: 0 auto;
+      padding: 20px;
     }
-    
-    h1 {
-      font-size: 18px;
+
+    /* Typography */
+    .text-2xl {
+      font-size: 1.5rem;
+      line-height: 2rem;
+    }
+
+    .text-lg {
+      font-size: 1.125rem;
+      line-height: 1.75rem;
+    }
+
+    .text-sm {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+
+    .text-xs {
+      font-size: 0.75rem;
+      line-height: 1rem;
+    }
+
+    .font-semibold {
       font-weight: 600;
-      margin: 0 0 16px 0;
-      color: #1a1a1a;
     }
-    
-    .description {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 24px;
-      line-height: 1.4;
+
+    .font-medium {
+      font-weight: 500;
+    }
+
+    .font-bold {
+      font-weight: 700;
+    }
+
+    .font-mono {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    }
+
+    .tracking-tight {
+      letter-spacing: -0.025em;
+    }
+
+    .leading-relaxed {
+      line-height: 1.625;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    /* Colors */
+    .text-foreground {
+      color: hsl(var(--foreground));
+    }
+
+    .text-muted-foreground {
+      color: hsl(var(--muted-foreground));
+    }
+
+    .text-primary {
+      color: hsl(var(--primary));
+    }
+
+    .text-primary-foreground {
+      color: hsl(var(--primary-foreground));
+    }
+
+    .text-card-foreground {
+      color: hsl(var(--card-foreground));
+    }
+
+    .bg-background {
+      background-color: hsl(var(--background));
+    }
+
+    .bg-card {
+      background-color: hsl(var(--card));
+    }
+
+    .bg-muted {
+      background-color: hsl(var(--muted));
+    }
+
+    .bg-primary {
+      background-color: hsl(var(--primary));
+    }
+
+    .bg-primary-foreground {
+      background-color: hsl(var(--primary-foreground));
+    }
+
+    .bg-input {
+      background-color: hsl(var(--input));
+    }
+
+    /* Spacing */
+    .mb-2 { margin-bottom: 0.5rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .mb-6 { margin-bottom: 1.5rem; }
+    .mt-1 { margin-top: 0.25rem; }
+    .mt-4 { margin-top: 1rem; }
+    .mt-6 { margin-top: 1.5rem; }
+    .mr-2 { margin-right: 0.5rem; }
+    .mr-3 { margin-right: 0.75rem; }
+    .ml-2 { margin-left: 0.5rem; }
+
+    .p-3 { padding: 0.75rem; }
+    .p-4 { padding: 1rem; }
+    .p-5 { padding: 1.25rem; }
+    .p-6 { padding: 1.5rem; }
+    .p-8 { padding: 2rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+
+    /* Borders */
+    .border {
+      border: 1px solid hsl(var(--border));
+    }
+
+    .border-b {
+      border-bottom: 1px solid hsl(var(--border));
+    }
+
+    .border-input {
+      border: 1px solid hsl(var(--input));
+    }
+
+    .border-border {
+      border: 1px solid hsl(var(--border));
+    }
+
+    .rounded-md {
+      border-radius: calc(var(--radius) - 2px);
+    }
+
+    .rounded-lg {
+      border-radius: var(--radius);
+    }
+
+    .rounded {
+      border-radius: 0.25rem;
+    }
+
+    .rounded-full {
+      border-radius: 9999px;
+    }
+
+    /* Shadows */
+    .shadow-sm {
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+
+    /* Layout */
+    .flex {
+      display: flex;
+    }
+
+    .grid {
+      display: grid;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .inline-flex {
+      display: inline-flex;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .justify-center {
+      justify-content: center;
+    }
+
+    .justify-between {
+      justify-content: space-between;
+    }
+
+    .flex-1 {
+      flex: 1 1 0%;
+    }
+
+    .space-x-2 > * + * {
+      margin-left: 0.5rem;
+    }
+
+    .space-x-3 > * + * {
+      margin-left: 0.75rem;
+    }
+
+    .space-x-8 > * + * {
+      margin-left: 2rem;
+    }
+
+    .space-y-2 > * + * {
+      margin-top: 0.5rem;
+    }
+
+    .space-y-3 > * + * {
+      margin-top: 0.75rem;
+    }
+
+    .grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .gap-3 {
+      gap: 0.75rem;
+    }
+
+    .gap-4 {
+      gap: 1rem;
+    }
+
+    /* Sizing */
+    .w-4 {
+      width: 1rem;
+    }
+
+    .h-4 {
+      height: 1rem;
+    }
+
+    .w-12 {
+      width: 3rem;
+    }
+
+    .h-12 {
+      height: 3rem;
+    }
+
+    .h-10 {
+      height: 2.5rem;
+    }
+
+    .max-h-48 {
+      max-height: 12rem;
+    }
+
+    .mx-auto {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Positioning */
+    .relative {
+      position: relative;
+    }
+
+    /* Overflow */
+    .overflow-auto {
+      overflow: auto;
+    }
+
+    .overflow-hidden {
+      overflow: hidden;
+    }
+
+    /* Transitions */
+    .transition-colors {
+      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
+
+    .transition-all {
+      transition-property: all;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
+
+    .transition-transform {
+      transition-property: transform;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
+
+    .duration-200 {
+      transition-duration: 200ms;
+    }
+
+    /* Opacity */
+    .opacity-50 {
+      opacity: 0.5;
+    }
+
+    /* Cursor */
+    .cursor-pointer {
+      cursor: pointer;
+    }
+
+    /* Text wrapping */
+    .whitespace-pre-wrap {
+      white-space: pre-wrap;
+    }
+
+    .break-words {
+      word-wrap: break-word;
+    }
+
+    /* Button Component */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: calc(var(--radius) - 2px);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      border: none;
+      outline: none;
+      height: 2.5rem;
+      padding: 0 1rem;
+      width: 100%;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+
+    .btn:disabled {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .btn-primary {
+      background-color: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+    }
+
+    .btn-primary:hover {
+      background-color: hsl(var(--primary) / 0.9);
+    }
+
+    .btn-secondary {
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
+      border: 1px solid hsl(var(--input));
+    }
+
+    .btn-secondary:hover {
+      background-color: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+    }
+
+    .btn-sm {
+      height: auto;
+      padding: 0.5rem 1.5rem;
+      width: auto;
+    }
+
+    /* Card Component */
+    .card {
+      border-radius: var(--radius);
+      border: 1px solid hsl(var(--border));
+      background-color: hsl(var(--card));
+      color: hsl(var(--card-foreground));
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06);
     }
 
     /* Tab Navigation */
     .tab-nav {
-      display: flex;
-      border-bottom: 1px solid #e1e5e9;
-      margin-bottom: 20px;
-      gap: 0;
-    }
-    
-    .tab-button {
-      background: none;
-      border: none;
-      padding: 12px 20px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #666;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s ease;
-      flex: 1;
-      text-align: center;
-    }
-    
-    .tab-button:hover {
-      color: #18a0fb;
-      background: #f8f9fa;
-    }
-    
-    .tab-button.active {
-      color: #18a0fb;
-      border-bottom-color: #18a0fb;
-      background: #f8f9fa;
-    }
-    
-    /* Tab Content */
-    .tab-content {
-      display: none;
-    }
-    
-    .tab-content.active {
-      display: block;
-    }
-    
-    .export-section {
-      border: 1px solid #e1e5e9;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-    
-    .export-title {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: #1a1a1a;
-    }
-    
-    .export-info {
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 16px;
-    }
-    
-    .button {
-      background: #18a0fb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      width: 100%;
-      transition: background-color 0.2s ease;
-    }
-    
-    .button:hover {
-      background: #1592e6;
-    }
-    
-    .button:disabled {
-      background: #b3d9ff;
-      cursor: not-allowed;
-    }
-    
-    .button.secondary {
-      background: #ffffff;
-      color: #666;
-      border: 1px solid #e1e5e9;
-    }
-    
-    .button.secondary:hover {
-      background: #f8f9fa;
-    }
-    
-    .status {
-      margin-top: 16px;
-      padding: 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      display: none;
-    }
-    
-    .status.success {
-      background: #e8f5e8;
-      color: #2d6a2d;
-      border: 1px solid #c3e6c3;
-    }
-    
-    .status.error {
-      background: #ffeaea;
-      color: #c53030;
-      border: 1px solid #feb2b2;
-    }
-    
-    .status.loading {
-      background: #e6f3ff;
-      color: #1a73e8;
-      border: 1px solid #b3d9ff;
-    }
-    
-    .preview-section {
-      margin-top: 16px;
-      display: none;
-    }
-    
-    .preview-title {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: #1a1a1a;
-    }
-    
-    .preview-content {
-      background: #f8f9fa;
-      border: 1px solid #e1e5e9;
-      border-radius: 6px;
-      padding: 12px;
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-      font-size: 11px;
-      max-height: 200px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    
-    .actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 16px;
-    }
-    
-    .actions .button {
-      flex: 1;
+      border-bottom: 1px solid hsl(var(--border));
+      margin-bottom: 1.5rem;
     }
 
-    /* Analytics Styles */
-    .analytics-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-    
-    .stat-card {
-      background: #f8f9fa;
-      border: 1px solid #e1e5e9;
-      border-radius: 8px;
-      padding: 16px;
-      text-align: center;
-    }
-    
-    .stat-value {
-      font-size: 24px;
-      font-weight: 600;
-      color: #18a0fb;
-      display: block;
-    }
-    
-    .stat-label {
-      font-size: 12px;
-      color: #666;
-      margin-top: 4px;
-    }
-    
-    .chart-section {
-      border: 1px solid #e1e5e9;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 12px;
-      transition: all 0.2s ease;
-    }
-    
-    .chart-section.collapsed {
-      padding-bottom: 8px;
-      margin-bottom: 8px;
-    }
-    
-    .chart-header {
+    .tab-nav nav {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      margin-bottom: 12px;
+      gap: 2rem;
     }
-    
-    .chart-header.collapsed {
-      margin-bottom: 8px;
-    }
-    
-    .chart-title {
-      font-size: 14px;
+
+    .tab-button {
+      border-bottom: 2px solid transparent;
+      padding: 0.5rem 0.25rem;
+      font-size: 0.875rem;
       font-weight: 500;
-      color: #1a1a1a;
-      margin: 0;
-    }
-    
-    .toggle-button {
+      color: hsl(var(--muted-foreground));
       background: none;
-      border: none;
-      font-size: 16px;
-      color: #666;
+      border-left: none;
+      border-right: none;
+      border-top: none;
       cursor: pointer;
-      padding: 4px;
-      border-radius: 4px;
-      transition: all 0.2s ease;
-      width: 24px;
-      height: 24px;
+      transition: all 200ms;
+    }
+
+    .tab-button:hover {
+      color: hsl(var(--foreground));
+      border-bottom-color: hsl(var(--border));
+    }
+
+    .tab-button[data-state="active"] {
+      color: hsl(var(--foreground));
+      border-bottom-color: hsl(var(--primary));
+    }
+
+    /* Form Elements */
+    .form-input {
+      width: 1rem;
+      height: 1rem;
+      color: hsl(var(--primary));
+      border: 1px solid hsl(var(--input));
+      border-radius: 0.25rem;
+    }
+
+    .form-input:focus {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+
+    .form-label {
       display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    /* STANDARDIZED TOGGLE COMPONENTS */
+    
+    /* Toggle Switch - for on/off states like "Select All" */
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background-color: hsl(var(--input));
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      border: 2px solid transparent;
+    }
+
+    .toggle-switch:focus-within {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+
+    .toggle-switch.active {
+      background-color: hsl(var(--primary));
+    }
+
+    .toggle-slider {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .toggle-switch.active .toggle-slider {
+      transform: translateX(20px);
+    }
+
+    /* Toggle Button - for expand/collapse functionality */
+    .toggle-btn {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border: none;
+      background: none;
+      border-radius: calc(var(--radius) - 2px);
+      color: hsl(var(--muted-foreground));
+      cursor: pointer;
+      transition: all 150ms ease;
     }
-    
-    .toggle-button:hover {
-      background: #f0f0f0;
-      color: #18a0fb;
+
+    .toggle-btn:hover {
+      background-color: hsl(var(--muted));
+      color: hsl(var(--foreground));
     }
-    
-    .chart-content {
-      overflow: hidden;
-      transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-      /* max-height: 1000px; */
-      opacity: 1;
+
+    .toggle-btn:focus-visible {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
     }
-    
-    .chart-content.collapsed {
-      max-height: 0;
-      opacity: 0;
+
+    .toggle-btn .icon {
+      transition: transform 150ms ease;
+    }
+
+    .toggle-btn.expanded .icon {
+      transform: rotate(90deg);
+    }
+
+    /* Collapsible Section Headers */
+    .collapsible-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      border-bottom: 1px solid hsl(var(--border));
+      cursor: pointer;
+      transition: background-color 150ms ease;
+    }
+
+    .collapsible-header:hover {
+      background-color: hsl(var(--muted) / 0.5);
+    }
+
+    .collapsible-header h3 {
       margin: 0;
-      padding: 0;
+      font-size: 1.125rem;
+      font-weight: 600;
     }
-    
+
+    /* Collection Item Headers */
+    .collection-header {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem;
+      background-color: hsl(var(--muted) / 0.3);
+      border-bottom: 1px solid hsl(var(--border));
+      cursor: pointer;
+      transition: background-color 150ms ease;
+    }
+
+    .collection-header:hover {
+      background-color: hsl(var(--muted) / 0.5);
+    }
+
+    .collection-header .toggle-btn {
+      margin-left: auto;
+    }
+
+    /* Stat Cards */
+    .stat-card {
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: hsl(var(--primary));
+      line-height: 2rem;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: hsl(var(--muted-foreground));
+    }
+
+    /* Token Badge */
+    .token-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      background-color: hsl(var(--primary) / 0.1);
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: hsl(var(--primary));
+    }
+
+    /* Code Block */
+    .code-block {
+      background-color: hsl(var(--muted));
+      padding: 1rem;
+      border-radius: calc(var(--radius) - 2px);
+      margin-bottom: 1rem;
+    }
+
+    .code-preview {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
+      font-size: 0.75rem;
+      overflow: auto;
+      max-height: 12rem;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    /* Status Messages */
+    .status-success {
+      background-color: rgb(240 253 244);
+      color: rgb(22 101 52);
+      border: 1px solid rgb(187 247 208);
+    }
+
+    .status-error {
+      background-color: rgb(254 242 242);
+      color: rgb(153 27 27);
+      border: 1px solid rgb(252 165 165);
+    }
+
+    .status-loading {
+      background-color: rgb(239 246 255);
+      color: rgb(29 78 216);
+      border: 1px solid rgb(147 197 253);
+    }
+
+    /* Charts */
     .chart-container {
       height: 150px;
       position: relative;
@@ -295,7 +658,7 @@
       padding: 0;
       overflow-x: visible;
     }
-    
+
     .bar-chart {
       display: flex;
       align-items: end;
@@ -305,372 +668,213 @@
       overflow-x: visible;
       justify-content: flex-start;
     }
-    
+
     .bar {
-      background: #18a0fb;
+      background: hsl(var(--primary));
       border-radius: 3px 3px 0 0;
       min-width: 24px;
       flex: 1;
       position: relative;
-      transition: background-color 0.2s ease;
+      transition: opacity 0.2s ease;
     }
-    
+
     .bar:hover {
-      background: #1592e6;
+      opacity: 0.8;
     }
-    
+
     .bar-label {
       position: absolute;
       bottom: -25px;
       left: 50%;
       transform: translateX(-50%);
       font-size: 10px;
-      color: #666;
+      color: hsl(var(--muted-foreground));
       white-space: nowrap;
       max-width: 80px;
       text-align: center;
       line-height: 1.2;
     }
-    
+
     .bar-value {
       position: absolute;
       top: -18px;
       left: 50%;
       transform: translateX(-50%);
       font-size: 10px;
-      color: #333;
+      color: hsl(var(--foreground));
       font-weight: 500;
-      background: rgba(255, 255, 255, 0.9);
+      background: hsl(var(--background) / 0.9);
       padding: 1px 3px;
       border-radius: 2px;
     }
-    
-    .collection-list {
-      /* max-height: 150px;
-      overflow-y: auto; */
-    }
-    
-    .collection-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 12px;
-      border: 1px solid #e1e5e9;
-      border-radius: 6px;
-      margin-bottom: 8px;
-      background: #ffffff;
-    }
-    
-    .collection-name {
-      font-size: 12px;
-      font-weight: 500;
-      color: #1a1a1a;
-    }
-    
-    .collection-count {
-      font-size: 12px;
-      color: #666;
-      background: #f0f0f0;
-      padding: 2px 6px;
-      border-radius: 3px;
-    }
-    
-    .no-data {
-      text-align: center;
-      color: #666;
-      font-size: 14px;
-      padding: 40px 20px;
-      border: 1px solid #e1e5e9;
-      border-radius: 8px;
-      background: #f8f9fa;
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.2s ease-in;
     }
 
-    .value-distribution {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 8px;
-      margin-top: 12px;
-    }
-    
-    .value-item {
-      background: #ffffff;
-      border: 1px solid #e1e5e9;
-      border-radius: 4px;
-      padding: 8px;
-      font-size: 11px;
-    }
-    
-    .value-label {
-      font-weight: 500;
-      color: #1a1a1a;
-      margin-bottom: 4px;
-    }
-    
-    .value-sample {
-      color: #666;
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    @keyframes fadeIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(-4px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
     }
 
-    .color-preview {
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      border: 1px solid #e1e5e9;
-      display: inline-block;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-  
-    .analytics-export {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid #e1e5e9;
-      text-align: center;
-    }
-    
-    .analytics-export .button {
-      width: auto;
-      min-width: 100%;
-      padding: 10px 20px;
+    /* SVG Icons */
+    .icon {
+      width: 1rem;
+      height: 1rem;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
-    /* Token Selection Styles */
-    .token-selection {
-      border: 1px solid #e1e5e9;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 16px;
-      display: none;
-    }
-    
-    .selection-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-    
-    .selection-title {
-      font-size: 14px;
-      font-weight: 500;
-      color: #1a1a1a;
-    }
-    
-    .selection-controls {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .toggle-container {
-      display: flex;
-      align-items: center;
-    }
-    
-    .toggle-switch {
-      position: relative;
-      width: 44px;
-      height: 24px;
-      background: #e1e5e9;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-    
-    .toggle-switch.active {
-      background: #18a0fb;
-    }
-    
-    .toggle-slider {
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 20px;
-      height: 20px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.2s ease;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    
-    .toggle-switch.active .toggle-slider {
-      transform: translateX(20px);
-    }
-    
-    .collection-group {
-      margin-bottom: 16px;
-      border: 1px solid #f0f0f0;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    
-    .collection-header {
-      background: #f8f9fa;
-      padding: 12px 16px;
-      border-bottom: 1px solid #e1e5e9;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-    }
-    
-    .collection-checkbox {
-      margin-right: 12px;
-    }
-    
-    .collection-name {
-      font-size: 14px;
-      font-weight: 500;
-      color: #1a1a1a;
-      flex: 1;
-    }
-    
-    .collection-count {
-      font-size: 12px;
-      color: #666;
-      background: #ffffff;
-      padding: 2px 6px;
-      border-radius: 3px;
-      margin-right: 8px;
-    }
-    
-    .toggle-icon {
-      font-size: 12px;
-      color: #666;
-      transition: transform 0.2s ease;
-    }
-    
-    .toggle-icon.expanded {
-      transform: rotate(90deg);
-    }
-    
-    .tokens-list {
-      display: none;
-      padding: 12px 16px;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    
-    .tokens-list.expanded {
-      display: block;
-    }
-    
-    .token-item {
-      display: flex;
-      align-items: center;
-      padding: 6px 0;
-      font-size: 13px;
-    }
-    
-    .token-checkbox {
-      margin-right: 12px;
-    }
-    
-    .token-name {
-      color: #333;
-      flex: 1;
-    }
-    
-    .token-value {
-      color: #666;
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-      font-size: 11px;
-      margin-left: 8px;
-    }
-    
-    .color-preview {
-      width: 16px;
-      height: 16px;
-      border-radius: 3px;
-      border: 1px solid #e1e5e9;
-      margin-left: 8px;
+    /* Responsive */
+    @media (max-width: 640px) {
+      .container {
+        padding: 16px;
+      }
+      
+      .grid-cols-2 {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Design Token Export</h1>
-    <p class="description">
-      Export your Figma variables and design tokens into a JSON format that developers can easily use in their projects.
-    </p>
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-2xl font-semibold tracking-tight mb-2 text-foreground">Design Token Export</h1>
+      <p class="text-sm text-muted-foreground leading-relaxed">
+        Export your Figma variables and design tokens into a JSON format that developers can easily use in their projects.
+      </p>
+    </div>
     
     <!-- Tab Navigation -->
     <div class="tab-nav">
-      <button class="tab-button active" data-tab="export">Export</button>
-      <button class="tab-button" data-tab="analytics">Analytics</button>
+      <nav>
+        <button 
+          class="tab-button" 
+          data-tab="export" 
+          data-state="active"
+          role="tab"
+          aria-selected="true"
+        >
+          Export
+        </button>
+        <button 
+          class="tab-button" 
+          data-tab="analytics"
+          data-state="inactive"
+          role="tab"
+          aria-selected="false"
+        >
+          Analytics
+        </button>
+      </nav>
     </div>
     
     <!-- Export Tab Content -->
-    <div id="exportTab" class="tab-content active">
-      <div class="export-section">
-        <div class="export-title">Export Options</div>
-        <div class="export-info">
-          Generate your design tokens from Figma, then select which ones to export.
+    <div id="exportTab" class="tab-content" role="tabpanel">
+      <!-- Export Options Card -->
+      <div class="card p-6 mb-4">
+        <div class="mb-4">
+          <h3 class="text-lg font-semibold">Export Options</h3>
+          <p class="text-sm text-muted-foreground mt-1">
+            Generate your design tokens from Figma, then select which ones to export.
+          </p>
         </div>
         
         <!-- Token Selection Section -->
-        <div id="tokenSelection" class="token-selection">
-          <div class="selection-header">
-            <div class="selection-title">Select Tokens to Export</div>
-            <div class="selection-controls">
-              <div class="toggle-container">
-                <div class="toggle-switch active" id="selectAllToggle">
-                  <div class="toggle-slider"></div>
-                </div>
+        <div id="tokenSelection" class="card p-4 mb-6 hidden" style="background-color: hsl(var(--muted) / 0.5);">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="text-sm font-medium">Select Tokens to Export</h4>
+            <div class="flex items-center space-x-2">
+              <label class="text-xs text-muted-foreground">Select All</label>
+              <div class="toggle-switch active" id="selectAllToggle" role="switch" aria-checked="true">
+                <div class="toggle-slider"></div>
               </div>
             </div>
           </div>
-          <div id="tokenCollections"></div>
+          <div id="tokenCollections" class="space-y-3"></div>
         </div>
         
-        <div class="format-options" style="margin-bottom: 16px;">
-          <div style="font-size: 12px; font-weight: 500; margin-bottom: 8px; color: #1a1a1a;">Export Format:</div>
-          <label style="display: flex; align-items: center; margin-bottom: 8px; font-size: 14px; cursor: pointer;">
-            <input type="radio" name="exportFormat" value="json" checked style="margin-right: 8px;">
-            <span>JSON (for JavaScript/build tools)</span>
-          </label>
-          <label style="display: flex; align-items: center; font-size: 14px; cursor: pointer;">
-            <input type="radio" name="exportFormat" value="css" style="margin-right: 8px;">
-            <span>CSS Custom Properties</span>
-          </label>
+        <!-- Format Options -->
+        <div class="mb-6">
+          <label class="text-sm font-medium mb-3" style="display: block;">Export Format</label>
+          <div class="space-y-3">
+            <label class="form-label">
+              <input type="radio" name="exportFormat" value="json" checked class="form-input">
+              <span class="text-sm">JSON (for JavaScript/build tools)</span>
+            </label>
+            <label class="form-label">
+              <input type="radio" name="exportFormat" value="css" class="form-input">
+              <span class="text-sm">CSS Custom Properties</span>
+            </label>
+          </div>
         </div>
         
-        <button id="exportBtn" class="button">
+        <!-- Export Button -->
+        <button id="exportBtn" class="btn btn-primary">
           Generate Design Tokens
         </button>
         
-        <div id="status" class="status"></div>
+        <!-- Status Message -->
+        <div id="status" class="mt-4 hidden p-3 rounded-md text-sm border"></div>
       </div>
       
-      <div id="previewSection" class="preview-section">
-        <div id="previewTitle" class="preview-title">Export Preview</div>
-        <div id="previewContent" class="preview-content"></div>
-        
-        <div class="actions">
-          <button id="downloadBtn" class="button">Download</button>
+      <!-- Preview Section -->
+      <div id="previewSection" class="card p-6 mb-4 hidden">
+        <h3 id="previewTitle" class="text-lg font-semibold mb-4">Export Preview</h3>
+        <div class="code-block">
+          <pre id="previewContent" class="code-preview"></pre>
         </div>
+        
+        <button id="downloadBtn" class="btn btn-primary">
+          Download
+        </button>
       </div>
       
-      <div class="actions">
-        <button id="closeBtn" class="button secondary">Close</button>
+      <!-- Close Button -->
+      <div class="text-center">
+        <button id="closeBtn" class="btn btn-secondary btn-sm">
+          Close
+        </button>
       </div>
     </div>
     
     <!-- Analytics Tab Content -->
-    <div id="analyticsTab" class="tab-content">
+    <div id="analyticsTab" class="tab-content hidden" role="tabpanel">
       <div id="analyticsContent">
-        <div class="no-data">
-          <strong>No Data Available</strong><br>
-          Export your design tokens first to see analytics and statistics.
+        <div class="card p-8 text-center">
+          <div class="text-muted-foreground">
+            <svg class="icon mx-auto w-12 h-12 mb-4" viewBox="0 0 24 24">
+              <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            <h3 class="text-lg font-semibold text-foreground mb-2">No Data Available</h3>
+            <p class="text-sm">Generate your design tokens first to see analytics and statistics.</p>
+          </div>
         </div>
       </div>
       
       <!-- Analytics Export Button -->
-      <div id="analyticsExport" class="analytics-export" style="display: none;">
-        <button id="exportAnalyticsBtn" class="button">Export Analytics to CSV</button>
+      <div id="analyticsExport" class="mt-6 text-center hidden">
+        <button id="exportAnalyticsBtn" class="btn btn-primary btn-sm">
+          <svg class="icon mr-2" viewBox="0 0 24 24">
+            <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+          </svg>
+          Export Analytics to CSV
+        </button>
       </div>
     </div>
   </div>
-
 
   <script>
     console.log('UI script starting to execute...');
@@ -781,7 +985,7 @@
       console.log('✅ Plugin UI initialized successfully!');
     }
 
-    // Tab switching
+    // Tab switching with improved styling
     function switchTab(tabName) {
       console.log('Switching to tab:', tabName);
       currentTab = tabName;
@@ -791,26 +995,53 @@
       for (let i = 0; i < tabButtons.length; i++) {
         const button = tabButtons[i];
         if (button.getAttribute('data-tab') === tabName) {
-          button.classList.add('active');
+          button.setAttribute('data-state', 'active');
+          button.setAttribute('aria-selected', 'true');
         } else {
-          button.classList.remove('active');
+          button.setAttribute('data-state', 'inactive');
+          button.setAttribute('aria-selected', 'false');
         }
       }
       
       // Update tab content
-      const tabContents = document.querySelectorAll('.tab-content');
-      for (let i = 0; i < tabContents.length; i++) {
-        const content = tabContents[i];
-        content.classList.remove('active');
-      }
+      const exportTab = document.getElementById('exportTab');
+      const analyticsTab = document.getElementById('analyticsTab');
       
-      const activeTab = document.getElementById(tabName + 'Tab');
-      if (activeTab) {
-        activeTab.classList.add('active');
+      if (tabName === 'export') {
+        exportTab.classList.remove('hidden');
+        analyticsTab.classList.add('hidden');
+      } else {
+        exportTab.classList.add('hidden');
+        analyticsTab.classList.remove('hidden');
       }
     }
 
-    // Toggle section visibility
+    // Show status message with improved styling
+    function showStatus(type, message) {
+      if (!status) return;
+      
+      status.className = 'mt-4 p-3 rounded-md text-sm border';
+      
+      if (type === 'success') {
+        status.className += ' status-success';
+      } else if (type === 'error') {
+        status.className += ' status-error';
+      } else if (type === 'loading') {
+        status.className += ' status-loading';
+      }
+      
+      status.textContent = message;
+      status.classList.remove('hidden');
+      status.classList.add('fade-in');
+      
+      if (type === 'success') {
+        setTimeout(function() {
+          status.classList.add('hidden');
+        }, 3000);
+      }
+    }
+
+    // Toggle section visibility with standardized toggle button
     function toggleSection(sectionId) {
       console.log('Toggling section:', sectionId);
       
@@ -819,24 +1050,19 @@
       
       const content = document.getElementById(sectionId + 'Content');
       const toggleBtn = document.getElementById(sectionId + 'Toggle');
-      const section = document.querySelector('.chart-section.' + sectionId);
-      const header = document.querySelector('.chart-header.' + sectionId);
       
       if (content && toggleBtn) {
         if (isExpanded) {
-          content.classList.remove('collapsed');
-          toggleBtn.textContent = '−';
-          if (section) section.classList.remove('collapsed');
-          if (header) header.classList.remove('collapsed');
+          content.classList.remove('hidden');
+          content.classList.add('fade-in');
+          toggleBtn.classList.add('expanded');
         } else {
-          content.classList.add('collapsed');
-          toggleBtn.textContent = '+';
-          if (section) section.classList.add('collapsed');
-          if (header) header.classList.add('collapsed');
+          content.classList.add('hidden');
+          content.classList.remove('fade-in');
+          toggleBtn.classList.remove('expanded');
         }
       }
     }
-
 
     // Handle token selection functions
     function populateTokenSelection(data) {
@@ -859,16 +1085,18 @@
           tokens: {}
         };
         
-        html += '<div class="collection-group">';
+        html += '<div class="card overflow-hidden">';
         html += '<div class="collection-header" onclick="toggleCollection(\''+collectionName+'\');">';
-        html += '<input type="checkbox" class="collection-checkbox" id="col-'+collectionName+'" ';
+        html += '<input type="checkbox" class="form-input mr-3" id="col-'+collectionName+'" ';
         html += 'checked onchange="toggleCollectionSelection(\''+collectionName+'\');">';
-        html += '<span class="collection-name">'+escapeHtml(collection.name)+'</span>';
-        html += '<span class="collection-count">'+variableCount+' tokens</span>';
-        html += '<span class="toggle-icon">▶</span>';
+        html += '<span class="font-medium text-sm flex-1">'+escapeHtml(collection.name)+'</span>';
+        html += '<span class="token-badge mr-2">'+variableCount+' tokens</span>';
+        html += '<button class="toggle-btn" id="toggle-'+collectionName+'">';
+        html += '<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>';
+        html += '</button>';
         html += '</div>';
         
-        html += '<div class="tokens-list" id="tokens-'+collectionName+'">';
+        html += '<div class="hidden p-3 space-y-2 max-h-48 overflow-auto" id="tokens-'+collectionName+'" style="border-top: 1px solid hsl(var(--border));">';
         
         for (const varName in collection.variables) {
           const variable = collection.variables[varName];
@@ -876,20 +1104,20 @@
           // Initialize token as selected
           selectedTokens[collectionName].tokens[varName] = true;
           
-          html += '<div class="token-item">';
-          html += '<input type="checkbox" class="token-checkbox" ';
+          html += '<div class="flex items-center space-x-3 py-1">';
+          html += '<input type="checkbox" class="form-input" ';
           html += 'id="token-'+collectionName+'-'+varName+'" checked ';
           html += 'onchange="toggleTokenSelection(\''+collectionName+'\', \''+varName+'\');">';
-          html += '<span class="token-name">'+escapeHtml(varName)+'</span>';
+          html += '<span class="text-sm flex-1">'+escapeHtml(varName)+'</span>';
           
           // Show value preview
           for (const modeName in variable.values) {
             const value = variable.values[modeName];
-            html += '<span class="token-value">'+escapeHtml(value)+'</span>';
+            html += '<code class="text-xs bg-muted px-2 py-1 rounded font-mono">'+escapeHtml(value)+'</code>';
             
             // Add color preview for color tokens
             if (variable.type === 'COLOR' && (value.startsWith('#') || value.startsWith('rgb'))) {
-              html += '<span class="color-preview" style="background-color: '+value+';"></span>';
+              html += '<div class="w-4 h-4 rounded border-border ml-2" style="background-color: '+value+'; border: 1px solid hsl(var(--border));"></div>';
             }
             break; // Show first mode only
           }
@@ -902,7 +1130,8 @@
       }
       
       tokenCollections.innerHTML = html;
-      tokenSelection.style.display = 'block';
+      tokenSelection.classList.remove('hidden');
+      tokenSelection.classList.add('fade-in');
       
       // Update export button
       exportBtn.textContent = 'Export Selected Tokens';
@@ -914,14 +1143,16 @@
     
     function toggleCollection(collectionName) {
       const tokensList = document.getElementById('tokens-'+collectionName);
-      const icon = tokensList.parentElement.querySelector('.toggle-icon');
+      const toggleBtn = document.getElementById('toggle-'+collectionName);
       
-      if (tokensList.classList.contains('expanded')) {
-        tokensList.classList.remove('expanded');
-        icon.classList.remove('expanded');
+      if (tokensList.classList.contains('hidden')) {
+        tokensList.classList.remove('hidden');
+        tokensList.classList.add('fade-in');
+        toggleBtn.classList.add('expanded');
       } else {
-        tokensList.classList.add('expanded');
-        icon.classList.add('expanded');
+        tokensList.classList.add('hidden');
+        tokensList.classList.remove('fade-in');
+        toggleBtn.classList.remove('expanded');
       }
     }
     
@@ -1008,7 +1239,6 @@
       }
       
       updateToggleState();
-      updateToggleState();
       updateExportButton();
     }
     
@@ -1029,10 +1259,13 @@
       
       if (selectedCount === 0) {
         selectAllToggle.classList.remove('active');
+        selectAllToggle.setAttribute('aria-checked', 'false');
       } else if (selectedCount === totalTokens) {
         selectAllToggle.classList.add('active');
+        selectAllToggle.setAttribute('aria-checked', 'true');
       } else {
         selectAllToggle.classList.add('active');
+        selectAllToggle.setAttribute('aria-checked', 'mixed');
       }
     }
     
@@ -1195,28 +1428,14 @@
       parent.postMessage({ pluginMessage: { type: 'close-plugin' } }, '*');
     }
 
-    // Show status message
-    function showStatus(type, message) {
-      if (!status) return;
-      
-      status.className = 'status ' + type;
-      status.textContent = message;
-      status.style.display = 'block';
-      
-      if (type === 'success') {
-        setTimeout(function() {
-          status.style.display = 'none';
-        }, 3000);
-      }
-    }
-
     // Show preview of exported data
     function showPreview(data) {
       exportedData = data;
       updatePreviewContent();
       
       if (previewSection) {
-        previewSection.style.display = 'block';
+        previewSection.classList.remove('hidden');
+        previewSection.classList.add('fade-in');
       }
     }
 
@@ -1340,14 +1559,15 @@
       // Show export button
       const analyticsExport = document.getElementById('analyticsExport');
       if (analyticsExport) {
-        analyticsExport.style.display = 'block';
+        analyticsExport.classList.remove('hidden');
+        analyticsExport.classList.add('fade-in');
       }
       
       analyticsContent.innerHTML = analyticsHTML;
       
-      // Add event listeners for toggle buttons
+      // Add event listeners for toggle buttons after content is inserted
       setTimeout(function() {
-        const toggleButtons = document.querySelectorAll('.toggle-button');
+        const toggleButtons = document.querySelectorAll('.toggle-btn[data-section]');
         for (let i = 0; i < toggleButtons.length; i++) {
           const button = toggleButtons[i];
           button.addEventListener('click', function() {
@@ -1425,30 +1645,32 @@
       };
     }
 
-    // Create analytics HTML with toggleable sections (start collapsed)
+    // Create analytics HTML with standardized toggle buttons
     function createAnalyticsHTML(stats) {
       let html = '';
       
       // Overview stats
-      html += '<div class="analytics-grid">';
-      html += '<div class="stat-card">';
-      html += '<span class="stat-value">' + stats.totalTokens + '</span>';
+      html += '<div class="grid grid-cols-2 gap-4 mb-6">';
+      html += '<div class="card stat-card">';
+      html += '<div class="stat-value">' + stats.totalTokens + '</div>';
       html += '<div class="stat-label">Total Tokens</div>';
       html += '</div>';
-      html += '<div class="stat-card">';
-      html += '<span class="stat-value">' + stats.totalCollections + '</span>';
+      html += '<div class="card stat-card">';
+      html += '<div class="stat-value">' + stats.totalCollections + '</div>';
       html += '<div class="stat-label">Collections</div>';
       html += '</div>';
       html += '</div>';
       
       // Token types chart - start collapsed
       if (Object.keys(stats.typeBreakdown).length > 0) {
-        html += '<div class="chart-section types collapsed">';
-        html += '<div class="chart-header types collapsed" onclick="toggleSection(\'types\')">';
-        html += '<div class="chart-title">Token Types Distribution</div>';
-        html += '<button class="toggle-button" id="typesToggle" data-section="types">+</button>';
+        html += '<div class="card mb-4">';
+        html += '<div class="collapsible-header" onclick="toggleSection(\'types\')">';
+        html += '<h3>Token Types Distribution</h3>';
+        html += '<button class="toggle-btn" id="typesToggle" data-section="types">';
+        html += '<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>';
+        html += '</button>';
         html += '</div>';
-        html += '<div id="typesContent" class="chart-content collapsed">';
+        html += '<div id="typesContent" class="hidden p-4">';
         html += '<div class="chart-container">';
         html += createBarChart(stats.typeBreakdown);
         html += '</div>';
@@ -1458,21 +1680,23 @@
       
       // Color samples - start collapsed
       if (stats.colorSamples.length > 0) {
-        html += '<div class="chart-section colors collapsed">';
-        html += '<div class="chart-header colors collapsed" onclick="toggleSection(\'colors\')">';
-        html += '<div class="chart-title">Color Samples</div>';
-        html += '<button class="toggle-button" id="colorsToggle" data-section="colors">+</button>';
+        html += '<div class="card mb-4">';
+        html += '<div class="collapsible-header" onclick="toggleSection(\'colors\')">';
+        html += '<h3>Color Samples</h3>';
+        html += '<button class="toggle-btn" id="colorsToggle" data-section="colors">';
+        html += '<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>';
+        html += '</button>';
         html += '</div>';
-        html += '<div id="colorsContent" class="chart-content collapsed">';
-        html += '<div class="value-distribution">';
+        html += '<div id="colorsContent" class="hidden p-4">';
+        html += '<div class="grid grid-cols-2 gap-3">';
         for (let i = 0; i < stats.colorSamples.length; i++) {
           const sample = stats.colorSamples[i];
-          html += '<div class="value-item">';
-          html += '<div class="value-label">';
-          html += '<span class="color-preview" style="background-color: ' + sample.value + ';"></span>';
-          html += sample.name;
+          html += '<div class="card p-3">';
+          html += '<div class="flex items-center space-x-2 mb-2">';
+          html += '<div class="w-4 h-4 rounded border-border" style="background-color: ' + sample.value + '; border: 1px solid hsl(var(--border));"></div>';
+          html += '<span class="text-sm font-medium">' + sample.name + '</span>';
           html += '</div>';
-          html += '<div class="value-sample">' + sample.value + '</div>';
+          html += '<code class="text-xs text-muted-foreground font-mono">' + sample.value + '</code>';
           html += '</div>';
         }
         html += '</div>';
@@ -1482,18 +1706,20 @@
       
       // Number samples - start collapsed
       if (stats.numberSamples.length > 0) {
-        html += '<div class="chart-section numbers collapsed">';
-        html += '<div class="chart-header numbers collapsed" onclick="toggleSection(\'numbers\')">';
-        html += '<div class="chart-title">Number/Spacing Samples</div>';
-        html += '<button class="toggle-button" id="numbersToggle" data-section="numbers">+</button>';
+        html += '<div class="card mb-4">';
+        html += '<div class="collapsible-header" onclick="toggleSection(\'numbers\')">';
+        html += '<h3>Number/Spacing Samples</h3>';
+        html += '<button class="toggle-btn" id="numbersToggle" data-section="numbers">';
+        html += '<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>';
+        html += '</button>';
         html += '</div>';
-        html += '<div id="numbersContent" class="chart-content collapsed">';
-        html += '<div class="value-distribution">';
+        html += '<div id="numbersContent" class="hidden p-4">';
+        html += '<div class="grid grid-cols-2 gap-3">';
         for (let i = 0; i < stats.numberSamples.length; i++) {
           const sample = stats.numberSamples[i];
-          html += '<div class="value-item">';
-          html += '<div class="value-label">' + sample.name + '</div>';
-          html += '<div class="value-sample">' + sample.value + 'px</div>';
+          html += '<div class="card p-3">';
+          html += '<div class="text-sm font-medium mb-1">' + sample.name + '</div>';
+          html += '<code class="text-xs text-muted-foreground font-mono">' + sample.value + 'px</code>';
           html += '</div>';
         }
         html += '</div>';
@@ -1503,26 +1729,26 @@
       
       // Collections breakdown - start collapsed
       if (Object.keys(stats.collectionBreakdown).length > 0) {
-        html += '<div class="chart-section collections collapsed">';
-        html += '<div class="chart-header collections collapsed" onclick="toggleSection(\'collections\')">';
-        html += '<div class="chart-title">Collections Breakdown</div>';
-        html += '<button class="toggle-button" id="collectionsToggle" data-section="collections">+</button>';
+        html += '<div class="card mb-4">';
+        html += '<div class="collapsible-header" onclick="toggleSection(\'collections\')">';
+        html += '<h3>Collections Breakdown</h3>';
+        html += '<button class="toggle-btn" id="collectionsToggle" data-section="collections">';
+        html += '<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>';
+        html += '</button>';
         html += '</div>';
-        html += '<div id="collectionsContent" class="chart-content collapsed">';
-        html += '<div class="collection-list">';
+        html += '<div id="collectionsContent" class="hidden p-4 space-y-3">';
         
         for (const collectionName in stats.collectionBreakdown) {
           const collection = stats.collectionBreakdown[collectionName];
           // Skip empty collections in the breakdown
           if (collection.count === 0) continue;
           
-          html += '<div class="collection-item">';
-          html += '<span class="collection-name">' + collection.name + '</span>';
-          html += '<span class="collection-count">' + collection.count + ' tokens</span>';
+          html += '<div class="flex items-center justify-between p-3 card">';
+          html += '<span class="font-medium">' + collection.name + '</span>';
+          html += '<span class="token-badge">' + collection.count + ' tokens</span>';
           html += '</div>';
         }
         
-        html += '</div>';
         html += '</div>';
         html += '</div>';
       }
@@ -1549,7 +1775,6 @@
       html += '</div>';
       return html;
     }
-
 
     // Handle analytics export to Excel (CSV format)
     function handleAnalyticsExport() {
