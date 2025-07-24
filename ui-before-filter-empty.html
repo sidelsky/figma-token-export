@@ -241,7 +241,7 @@
     }
     
     .chart-header.collapsed {
-      margin-bottom: 7px;
+      margin-bottom: 8px;
     }
     
     .chart-title {
@@ -859,14 +859,10 @@
       let numberSamples = [];
       
       for (const collectionName in data.collections) {
+        totalCollections++;
         const collection = data.collections[collectionName];
         const variableCount = Object.keys(collection.variables).length;
         totalTokens += variableCount;
-        
-        // Only count collections that have variables
-        if (variableCount > 0) {
-          totalCollections++;
-        }
         
         collectionBreakdown[collectionName] = {
           name: collection.name,
@@ -1004,9 +1000,6 @@
         
         for (const collectionName in stats.collectionBreakdown) {
           const collection = stats.collectionBreakdown[collectionName];
-          // Skip empty collections in the breakdown
-          if (collection.count === 0) continue;
-          
           html += '<div class="collection-item">';
           html += '<span class="collection-name">' + collection.name + '</span>';
           html += '<span class="collection-count">' + collection.count + ' tokens</span>';
