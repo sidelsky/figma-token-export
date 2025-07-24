@@ -881,6 +881,9 @@
       
       // Update export button
       exportBtn.textContent = 'Export Selected Tokens';
+      
+      // Update button state since all tokens are selected by default
+      updateExportButton();
     }
     
     function toggleCollection(collectionName) {

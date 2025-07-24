@@ -11,14 +11,16 @@
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 16px 20px;
       background: #ffffff;
       color: #333;
       line-height: 1.5;
+      overflow-x: hidden;
     }
     
     .container {
       max-width: 100%;
+      min-width: 440px;
     }
     
     h1 {
@@ -291,14 +293,17 @@
       position: relative;
       margin-bottom: 30px;
       padding: 0;
+      overflow-x: visible;
     }
     
     .bar-chart {
       display: flex;
       align-items: end;
       height: calc(100% - 40px);
-      gap: 8px;
+      gap: 12px;
       margin: 20px 0;
+      overflow-x: visible;
+      justify-content: flex-start;
     }
     
     .bar {
@@ -322,7 +327,7 @@
       font-size: 10px;
       color: #666;
       white-space: nowrap;
-      max-width: 60px;
+      max-width: 80px;
       text-align: center;
       line-height: 1.2;
     }
@@ -428,6 +433,157 @@
       min-width: 160px;
       padding: 10px 20px;
     }
+
+    /* Token Selection Styles */
+    .token-selection {
+      border: 1px solid #e1e5e9;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    
+    .selection-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .selection-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+    
+    .selection-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .toggle-container {
+      display: flex;
+      align-items: center;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: #e1e5e9;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    
+    .toggle-switch.active {
+      background: #18a0fb;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .toggle-switch.active .toggle-slider {
+      transform: translateX(20px);
+    }
+    
+    .collection-group {
+      margin-bottom: 16px;
+      border: 1px solid #f0f0f0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    
+    .collection-header {
+      background: #f8f9fa;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e1e5e9;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    .collection-checkbox {
+      margin-right: 12px;
+    }
+    
+    .collection-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a1a;
+      flex: 1;
+    }
+    
+    .collection-count {
+      font-size: 12px;
+      color: #666;
+      background: #ffffff;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-right: 8px;
+    }
+    
+    .toggle-icon {
+      font-size: 12px;
+      color: #666;
+      transition: transform 0.2s ease;
+    }
+    
+    .toggle-icon.expanded {
+      transform: rotate(90deg);
+    }
+    
+    .tokens-list {
+      display: none;
+      padding: 12px 16px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .tokens-list.expanded {
+      display: block;
+    }
+    
+    .token-item {
+      display: flex;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+    
+    .token-checkbox {
+      margin-right: 12px;
+    }
+    
+    .token-name {
+      color: #333;
+      flex: 1;
+    }
+    
+    .token-value {
+      color: #666;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 11px;
+      margin-left: 8px;
+    }
+    
+    .color-preview {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      border: 1px solid #e1e5e9;
+      margin-left: 8px;
+    }
   </style>
 </head>
 <body>
@@ -448,7 +604,22 @@
       <div class="export-section">
         <div class="export-title">Export Options</div>
         <div class="export-info">
-          This will export all local variable collections including colors, typography, spacing, and other design tokens.
+          Generate your design tokens from Figma, then select which ones to export.
+        </div>
+        
+        <!-- Token Selection Section -->
+        <div id="tokenSelection" class="token-selection">
+          <div class="selection-header">
+            <div class="selection-title">Select Tokens to Export</div>
+            <div class="selection-controls">
+              <div class="toggle-container">
+                <div class="toggle-switch active" id="selectAllToggle">
+                  <div class="toggle-slider"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="tokenCollections"></div>
         </div>
         
         <div class="format-options" style="margin-bottom: 16px;">
@@ -464,7 +635,7 @@
         </div>
         
         <button id="exportBtn" class="button">
-          Export Design Tokens
+          Generate Design Tokens
         </button>
         
         <div id="status" class="status"></div>
@@ -506,6 +677,8 @@
     
     // Global state - Start with all sections closed
     let exportedData = null;
+    let rawTokenData = null;
+    let selectedTokens = {};
     let currentTab = 'export';
     let sectionStates = {
       'types': false,
@@ -517,6 +690,7 @@
     let analyticsStats = null;
     // DOM elements
     let exportBtn, downloadBtn, closeBtn, status, previewSection, previewContent, previewTitle;
+    let tokenSelection, tokenCollections, selectAllToggle;
 
     // Initialize plugin after DOM is ready
     function initializePlugin() {
@@ -530,6 +704,9 @@
       previewSection = document.getElementById('previewSection');
       previewContent = document.getElementById('previewContent');
       previewTitle = document.getElementById('previewTitle');
+      tokenSelection = document.getElementById('tokenSelection');
+      tokenCollections = document.getElementById('tokenCollections');
+      selectAllToggle = document.getElementById('selectAllToggle');
 
       console.log('All DOM elements found, setting up event listeners...');
 
@@ -537,6 +714,11 @@
       exportBtn.addEventListener('click', handleExport);
       downloadBtn.addEventListener('click', handleDownload);
       closeBtn.addEventListener('click', handleClose);
+      
+      // Token selection event listeners
+      if (selectAllToggle) {
+        selectAllToggle.addEventListener('click', toggleAllTokens);
+      }
 
       // Tab navigation
       const tabButtons = document.querySelectorAll('.tab-button');
@@ -574,15 +756,17 @@
         const message = pluginMessage.message;
         
         if (type === 'tokens-extracted') {
-          exportBtn.disabled = false;
-          exportBtn.textContent = 'Export Design Tokens';
+          // Populate token selection interface
+          populateTokenSelection(data);
+          
+          // Only enable final export after selection is made
+          exportedData = null; // Clear until user makes selection
           updateDownloadButtonText();
-          showStatus('success', 'Successfully extracted ' + Object.keys(data.collections).length + ' collection(s)!');
-          showPreview(data);
+          showStatus('success', 'Successfully extracted ' + Object.keys(data.collections).length + ' collection(s)! Select tokens to export.');
           updateAnalytics(data);
         } else if (type === 'error') {
           exportBtn.disabled = false;
-          exportBtn.textContent = 'Export Design Tokens';
+          exportBtn.textContent = 'Generate Design Tokens';
           showStatus('error', 'Error: ' + message);
         }
       };
@@ -653,16 +837,289 @@
       }
     }
 
+
+    // Handle token selection functions
+    function populateTokenSelection(data) {
+      if (!tokenCollections) return;
+      
+      rawTokenData = data;
+      selectedTokens = {};
+      
+      let html = '';
+      
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        const variableCount = Object.keys(collection.variables).length;
+        
+        if (variableCount === 0) continue; // Skip empty collections
+        
+        // Initialize collection as selected
+        selectedTokens[collectionName] = {
+          selected: true,
+          tokens: {}
+        };
+        
+        html += '<div class="collection-group">';
+        html += '<div class="collection-header" onclick="toggleCollection(\''+collectionName+'\');">';
+        html += '<input type="checkbox" class="collection-checkbox" id="col-'+collectionName+'" ';
+        html += 'checked onchange="toggleCollectionSelection(\''+collectionName+'\');">';
+        html += '<span class="collection-name">'+escapeHtml(collection.name)+'</span>';
+        html += '<span class="collection-count">'+variableCount+' tokens</span>';
+        html += '<span class="toggle-icon">▶</span>';
+        html += '</div>';
+        
+        html += '<div class="tokens-list" id="tokens-'+collectionName+'">';
+        
+        for (const varName in collection.variables) {
+          const variable = collection.variables[varName];
+          
+          // Initialize token as selected
+          selectedTokens[collectionName].tokens[varName] = true;
+          
+          html += '<div class="token-item">';
+          html += '<input type="checkbox" class="token-checkbox" ';
+          html += 'id="token-'+collectionName+'-'+varName+'" checked ';
+          html += 'onchange="toggleTokenSelection(\''+collectionName+'\', \''+varName+'\');">';
+          html += '<span class="token-name">'+escapeHtml(varName)+'</span>';
+          
+          // Show value preview
+          for (const modeName in variable.values) {
+            const value = variable.values[modeName];
+            html += '<span class="token-value">'+escapeHtml(value)+'</span>';
+            
+            // Add color preview for color tokens
+            if (variable.type === 'COLOR' && (value.startsWith('#') || value.startsWith('rgb'))) {
+              html += '<span class="color-preview" style="background-color: '+value+';"></span>';
+            }
+            break; // Show first mode only
+          }
+          
+          html += '</div>';
+        }
+        
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      tokenCollections.innerHTML = html;
+      tokenSelection.style.display = 'block';
+      
+      // Update export button
+      exportBtn.textContent = 'Export Selected Tokens';
+      
+      // Update button state since all tokens are selected by default
+      updateToggleState();
+      updateExportButton();
+    }
+    
+    function toggleCollection(collectionName) {
+      const tokensList = document.getElementById('tokens-'+collectionName);
+      const icon = tokensList.parentElement.querySelector('.toggle-icon');
+      
+      if (tokensList.classList.contains('expanded')) {
+        tokensList.classList.remove('expanded');
+        icon.classList.remove('expanded');
+      } else {
+        tokensList.classList.add('expanded');
+        icon.classList.add('expanded');
+      }
+    }
+    
+    function toggleCollectionSelection(collectionName) {
+      const collectionCheckbox = document.getElementById('col-'+collectionName);
+      const isSelected = collectionCheckbox.checked;
+      
+      selectedTokens[collectionName].selected = isSelected;
+      
+      // Update all token checkboxes in this collection
+      for (const varName in selectedTokens[collectionName].tokens) {
+        const tokenCheckbox = document.getElementById('token-'+collectionName+'-'+varName);
+        if (tokenCheckbox) {
+          tokenCheckbox.checked = isSelected;
+          selectedTokens[collectionName].tokens[varName] = isSelected;
+        }
+      }
+      
+      updateToggleState();
+      updateExportButton();
+    }
+    
+    function toggleTokenSelection(collectionName, varName) {
+      const tokenCheckbox = document.getElementById('token-'+collectionName+'-'+varName);
+      selectedTokens[collectionName].tokens[varName] = tokenCheckbox.checked;
+      
+      // Update collection checkbox based on token selections
+      const tokenCheckboxes = Object.keys(selectedTokens[collectionName].tokens);
+      const selectedCount = tokenCheckboxes.filter(name => 
+        selectedTokens[collectionName].tokens[name]
+      ).length;
+      
+      const collectionCheckbox = document.getElementById('col-'+collectionName);
+      if (selectedCount === 0) {
+        collectionCheckbox.checked = false;
+        collectionCheckbox.indeterminate = false;
+        selectedTokens[collectionName].selected = false;
+      } else if (selectedCount === tokenCheckboxes.length) {
+        collectionCheckbox.checked = true;
+        collectionCheckbox.indeterminate = false;
+        selectedTokens[collectionName].selected = true;
+      } else {
+        collectionCheckbox.checked = false;
+        collectionCheckbox.indeterminate = true;
+        selectedTokens[collectionName].selected = true;
+      }
+      
+      updateToggleState();
+      updateExportButton();
+    }
+    
+    function toggleAllTokens() {
+      // Determine if we should select all or deselect all based on current state
+      let totalTokens = 0;
+      let selectedCount = 0;
+      
+      for (const collectionName in selectedTokens) {
+        for (const varName in selectedTokens[collectionName].tokens) {
+          totalTokens++;
+          if (selectedTokens[collectionName].tokens[varName]) {
+            selectedCount++;
+          }
+        }
+      }
+      
+      // If more than half are selected, deselect all. Otherwise, select all.
+      const shouldSelectAll = selectedCount < (totalTokens / 2);
+      
+      for (const collectionName in selectedTokens) {
+        selectedTokens[collectionName].selected = shouldSelectAll;
+        const collectionCheckbox = document.getElementById('col-'+collectionName);
+        if (collectionCheckbox) {
+          collectionCheckbox.checked = shouldSelectAll;
+          collectionCheckbox.indeterminate = false;
+        }
+        
+        for (const varName in selectedTokens[collectionName].tokens) {
+          selectedTokens[collectionName].tokens[varName] = shouldSelectAll;
+          const tokenCheckbox = document.getElementById('token-'+collectionName+'-'+varName);
+          if (tokenCheckbox) {
+            tokenCheckbox.checked = shouldSelectAll;
+          }
+        }
+      }
+      
+      updateToggleState();
+      updateToggleState();
+      updateExportButton();
+    }
+    
+    function updateToggleState() {
+      if (!selectAllToggle) return;
+      
+      let totalTokens = 0;
+      let selectedCount = 0;
+      
+      for (const collectionName in selectedTokens) {
+        for (const varName in selectedTokens[collectionName].tokens) {
+          totalTokens++;
+          if (selectedTokens[collectionName].tokens[varName]) {
+            selectedCount++;
+          }
+        }
+      }
+      
+      if (selectedCount === 0) {
+        selectAllToggle.classList.remove('active');
+      } else if (selectedCount === totalTokens) {
+        selectAllToggle.classList.add('active');
+      } else {
+        selectAllToggle.classList.add('active');
+      }
+    }
+    
+    function updateExportButton() {
+      let totalSelected = 0;
+      for (const collectionName in selectedTokens) {
+        if (selectedTokens[collectionName].selected) {
+          for (const varName in selectedTokens[collectionName].tokens) {
+            if (selectedTokens[collectionName].tokens[varName]) {
+              totalSelected++;
+            }
+          }
+        }
+      }
+      
+      if (totalSelected === 0) {
+        exportBtn.textContent = 'Select Tokens to Export';
+        exportBtn.disabled = true;
+      } else {
+        exportBtn.textContent = 'Export Selected Tokens (' + totalSelected + ')';
+        exportBtn.disabled = false;
+      }
+    }
+    
+    function getSelectedTokenData() {
+      if (!rawTokenData) return null;
+      
+      const filteredData = {
+        metadata: rawTokenData.metadata,
+        collections: {}
+      };
+      
+      for (const collectionName in selectedTokens) {
+        if (!selectedTokens[collectionName].selected) continue;
+        
+        const originalCollection = rawTokenData.collections[collectionName];
+        const filteredCollection = {
+          ...originalCollection,
+          variables: {}
+        };
+        
+        for (const varName in selectedTokens[collectionName].tokens) {
+          if (selectedTokens[collectionName].tokens[varName]) {
+            filteredCollection.variables[varName] = originalCollection.variables[varName];
+          }
+        }
+        
+        // Only include collections that have selected tokens
+        if (Object.keys(filteredCollection.variables).length > 0) {
+          filteredData.collections[collectionName] = filteredCollection;
+        }
+      }
+      
+      return filteredData;
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     // Handle export button click
     function handleExport() {
       console.log('Starting export process...');
-      showStatus('loading', 'Extracting design tokens...');
-      exportBtn.disabled = true;
-      exportBtn.textContent = 'Exporting...';
       
-      // Send message to plugin code to start extraction
-      console.log('Sending message to plugin code...');
-      parent.postMessage({ pluginMessage: { type: 'export-tokens' } }, '*');
+      if (!rawTokenData) {
+        // First time - extract all tokens
+        showStatus('loading', 'Extracting design tokens...');
+        exportBtn.disabled = true;
+        exportBtn.textContent = 'Extracting...';
+        
+        // Send message to plugin code to start extraction
+        console.log('Sending message to plugin code...');
+        parent.postMessage({ pluginMessage: { type: 'export-tokens' } }, '*');
+      } else {
+        // Generate export from selected tokens
+        const selectedData = getSelectedTokenData();
+        if (!selectedData || Object.keys(selectedData.collections).length === 0) {
+          showStatus('error', 'No tokens selected for export');
+          return;
+        }
+        
+        exportedData = selectedData;
+        showPreview(selectedData);
+        showStatus('success', 'Selected tokens ready for export!');
+      }
     }
 
     // Get the currently selected export format

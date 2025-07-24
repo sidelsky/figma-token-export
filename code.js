@@ -2,7 +2,7 @@
 console.log('Design Token Export plugin loaded');
 
 // Show UI when plugin is launched
-figma.showUI(__html__, { width: 400, height: 600 });
+figma.showUI(__html__, { width: 480, height: 600 });
 
 // Handle messages from the UI
 figma.ui.onmessage = async (msg) => {

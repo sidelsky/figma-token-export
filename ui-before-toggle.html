@@ -578,7 +578,7 @@
       <div class="export-section">
         <div class="export-title">Export Options</div>
         <div class="export-info">
-          First extract your tokens, then select which ones to export.
+          Generate your design tokens from Figma, then select which ones to export.
         </div>
         
         <!-- Token Selection Section -->
@@ -606,7 +606,7 @@
         </div>
         
         <button id="exportBtn" class="button">
-          Export Design Tokens
+          Generate Design Tokens
         </button>
         
         <div id="status" class="status"></div>
@@ -741,7 +741,7 @@
           updateAnalytics(data);
         } else if (type === 'error') {
           exportBtn.disabled = false;
-          exportBtn.textContent = 'Export Design Tokens';
+          exportBtn.textContent = 'Generate Design Tokens';
           showStatus('error', 'Error: ' + message);
         }
       };
@@ -881,6 +881,9 @@
       
       // Update export button
       exportBtn.textContent = 'Export Selected Tokens';
+      
+      // Update button state since all tokens are selected by default
+      updateExportButton();
     }
     
     function toggleCollection(collectionName) {
