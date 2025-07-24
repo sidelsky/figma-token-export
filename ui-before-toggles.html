@@ -223,67 +223,14 @@
       border: 1px solid #e1e5e9;
       border-radius: 8px;
       padding: 16px;
-      margin-bottom: 12px;
-      transition: all 0.2s ease;
-    }
-    
-    .chart-section.collapsed {
-      padding-bottom: 8px;
-      margin-bottom: 8px;
-    }
-    
-    .chart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      margin-bottom: 12px;
-    }
-    
-    .chart-header.collapsed {
-      margin-bottom: 0;
+      margin-bottom: 16px;
     }
     
     .chart-title {
       font-size: 14px;
       font-weight: 500;
+      margin-bottom: 12px;
       color: #1a1a1a;
-      margin: 0;
-    }
-    
-    .toggle-button {
-      background: none;
-      border: none;
-      font-size: 16px;
-      color: #666;
-      cursor: pointer;
-      padding: 4px;
-      border-radius: 4px;
-      transition: all 0.2s ease;
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .toggle-button:hover {
-      background: #f0f0f0;
-      color: #18a0fb;
-    }
-    
-    .chart-content {
-      overflow: hidden;
-      transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-      max-height: 1000px;
-      opacity: 1;
-    }
-    
-    .chart-content.collapsed {
-      max-height: 0;
-      opacity: 0;
-      margin: 0;
-      padding: 0;
     }
     
     .chart-container {
@@ -477,15 +424,9 @@
   <script>
     console.log('UI script starting to execute...');
     
-    // Global state - Start with all sections closed
+    // Global state
     let exportedData = null;
     let currentTab = 'export';
-    let sectionStates = {
-      'types': false,
-      'colors': false,
-      'numbers': false,
-      'collections': false
-    };
     
     // DOM elements
     let exportBtn, downloadBtn, closeBtn, status, previewSection, previewContent, previewTitle;
@@ -588,33 +529,6 @@
       const activeTab = document.getElementById(tabName + 'Tab');
       if (activeTab) {
         activeTab.classList.add('active');
-      }
-    }
-
-    // Toggle section visibility
-    function toggleSection(sectionId) {
-      console.log('Toggling section:', sectionId);
-      
-      sectionStates[sectionId] = !sectionStates[sectionId];
-      const isExpanded = sectionStates[sectionId];
-      
-      const content = document.getElementById(sectionId + 'Content');
-      const toggleBtn = document.getElementById(sectionId + 'Toggle');
-      const section = document.querySelector('.chart-section.' + sectionId);
-      const header = document.querySelector('.chart-header.' + sectionId);
-      
-      if (content && toggleBtn) {
-        if (isExpanded) {
-          content.classList.remove('collapsed');
-          toggleBtn.textContent = '−';
-          if (section) section.classList.remove('collapsed');
-          if (header) header.classList.remove('collapsed');
-        } else {
-          content.classList.add('collapsed');
-          toggleBtn.textContent = '+';
-          if (section) section.classList.add('collapsed');
-          if (header) header.classList.add('collapsed');
-        }
       }
     }
 
@@ -827,18 +741,6 @@
       const analyticsHTML = createAnalyticsHTML(stats);
       
       analyticsContent.innerHTML = analyticsHTML;
-      
-      // Add event listeners for toggle buttons
-      setTimeout(function() {
-        const toggleButtons = document.querySelectorAll('.toggle-button');
-        for (let i = 0; i < toggleButtons.length; i++) {
-          const button = toggleButtons[i];
-          button.addEventListener('click', function() {
-            const sectionId = button.getAttribute('data-section');
-            toggleSection(sectionId);
-          });
-        }
-      }, 100);
     }
 
     // Generate statistics from exported data
@@ -904,7 +806,7 @@
       };
     }
 
-    // Create analytics HTML with toggleable sections (start collapsed)
+    // Create analytics HTML
     function createAnalyticsHTML(stats) {
       let html = '';
       
@@ -920,29 +822,20 @@
       html += '</div>';
       html += '</div>';
       
-      // Token types chart - start collapsed
+      // Token types chart
       if (Object.keys(stats.typeBreakdown).length > 0) {
-        html += '<div class="chart-section types collapsed">';
-        html += '<div class="chart-header types collapsed" onclick="toggleSection(\'types\')">';
+        html += '<div class="chart-section">';
         html += '<div class="chart-title">Token Types Distribution</div>';
-        html += '<button class="toggle-button" id="typesToggle" data-section="types">+</button>';
-        html += '</div>';
-        html += '<div id="typesContent" class="chart-content collapsed">';
         html += '<div class="chart-container">';
         html += createBarChart(stats.typeBreakdown);
         html += '</div>';
         html += '</div>';
-        html += '</div>';
       }
       
-      // Color samples - start collapsed
+      // Color samples
       if (stats.colorSamples.length > 0) {
-        html += '<div class="chart-section colors collapsed">';
-        html += '<div class="chart-header colors collapsed" onclick="toggleSection(\'colors\')">';
+        html += '<div class="chart-section">';
         html += '<div class="chart-title">Color Samples</div>';
-        html += '<button class="toggle-button" id="colorsToggle" data-section="colors">+</button>';
-        html += '</div>';
-        html += '<div id="colorsContent" class="chart-content collapsed">';
         html += '<div class="value-distribution">';
         for (let i = 0; i < stats.colorSamples.length; i++) {
           const sample = stats.colorSamples[i];
@@ -956,17 +849,12 @@
         }
         html += '</div>';
         html += '</div>';
-        html += '</div>';
       }
       
-      // Number samples - start collapsed
+      // Number samples
       if (stats.numberSamples.length > 0) {
-        html += '<div class="chart-section numbers collapsed">';
-        html += '<div class="chart-header numbers collapsed" onclick="toggleSection(\'numbers\')">';
+        html += '<div class="chart-section">';
         html += '<div class="chart-title">Number/Spacing Samples</div>';
-        html += '<button class="toggle-button" id="numbersToggle" data-section="numbers">+</button>';
-        html += '</div>';
-        html += '<div id="numbersContent" class="chart-content collapsed">';
         html += '<div class="value-distribution">';
         for (let i = 0; i < stats.numberSamples.length; i++) {
           const sample = stats.numberSamples[i];
@@ -977,17 +865,12 @@
         }
         html += '</div>';
         html += '</div>';
-        html += '</div>';
       }
       
-      // Collections breakdown - start collapsed
+      // Collections breakdown
       if (Object.keys(stats.collectionBreakdown).length > 0) {
-        html += '<div class="chart-section collections collapsed">';
-        html += '<div class="chart-header collections collapsed" onclick="toggleSection(\'collections\')">';
+        html += '<div class="chart-section">';
         html += '<div class="chart-title">Collections Breakdown</div>';
-        html += '<button class="toggle-button" id="collectionsToggle" data-section="collections">+</button>';
-        html += '</div>';
-        html += '<div id="collectionsContent" class="chart-content collapsed">';
         html += '<div class="collection-list">';
         
         for (const collectionName in stats.collectionBreakdown) {
@@ -998,7 +881,6 @@
           html += '</div>';
         }
         
-        html += '</div>';
         html += '</div>';
         html += '</div>';
       }
