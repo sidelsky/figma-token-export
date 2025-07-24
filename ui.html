@@ -960,6 +960,22 @@
               <span class="text-sm">CSS Custom Properties</span>
             </label>
             <label class="form-label">
+              <input type="radio" name="exportFormat" value="scss" class="form-input">
+              <span class="text-sm">SCSS/Sass (variables & mixins)</span>
+            </label>
+            <label class="form-label">
+              <input type="radio" name="exportFormat" value="tailwind" class="form-input">
+              <span class="text-sm">Tailwind CSS (config.js)</span>
+            </label>
+            <label class="form-label">
+              <input type="radio" name="exportFormat" value="react-native" class="form-input">
+              <span class="text-sm">React Native (StyleSheet)</span>
+            </label>
+            <label class="form-label">
+              <input type="radio" name="exportFormat" value="flutter" class="form-input">
+              <span class="text-sm">Flutter/Dart (Color classes)</span>
+            </label>
+            <label class="form-label">
               <input type="radio" name="exportFormat" value="ios" class="form-input">
               <span class="text-sm">iOS Swift (UIColor extensions)</span>
             </label>
@@ -1626,6 +1642,22 @@
           const content = convertToCSS(exportedData);
           downloadFile(content, 'text/css', 'design-tokens-' + dateStr + '.css');
           showStatus('success', 'CSS file downloaded successfully!');
+        } else if (format === 'scss') {
+          const content = convertToSCSS(exportedData);
+          downloadFile(content, 'text/css', 'design-tokens-' + dateStr + '.scss');
+          showStatus('success', 'SCSS file downloaded successfully!');
+        } else if (format === 'tailwind') {
+          const content = convertToTailwind(exportedData);
+          downloadFile(content, 'application/javascript', 'tailwind.config-' + dateStr + '.js');
+          showStatus('success', 'Tailwind config downloaded successfully!');
+        } else if (format === 'react-native') {
+          const content = convertToReactNative(exportedData);
+          downloadFile(content, 'text/javascript', 'tokens-' + dateStr + '.js');
+          showStatus('success', 'React Native StyleSheet downloaded successfully!');
+        } else if (format === 'flutter') {
+          const content = convertToFlutter(exportedData);
+          downloadFile(content, 'text/plain', 'design_tokens-' + dateStr + '.dart');
+          showStatus('success', 'Flutter/Dart file downloaded successfully!');
         } else if (format === 'ios') {
           const content = convertToiOS(exportedData);
           downloadFile(content, 'text/plain', 'DesignTokens+UIColor-' + dateStr + '.swift');
@@ -1666,6 +1698,14 @@
         downloadBtn.textContent = 'Download JSON';
       } else if (format === 'css') {
         downloadBtn.textContent = 'Download CSS';
+      } else if (format === 'scss') {
+        downloadBtn.textContent = 'Download SCSS';
+      } else if (format === 'tailwind') {
+        downloadBtn.textContent = 'Download Tailwind';
+      } else if (format === 'react-native') {
+        downloadBtn.textContent = 'Download React Native';
+      } else if (format === 'flutter') {
+        downloadBtn.textContent = 'Download Flutter';
       } else if (format === 'ios') {
         downloadBtn.textContent = 'Download Swift';
       } else if (format === 'android') {
@@ -1702,6 +1742,22 @@
         const cssContent = convertToCSS(exportedData);
         previewContent.textContent = cssContent;
         if (previewTitle) previewTitle.textContent = 'CSS Preview';
+      } else if (format === 'scss') {
+        const scssContent = convertToSCSS(exportedData);
+        previewContent.textContent = scssContent;
+        if (previewTitle) previewTitle.textContent = 'SCSS Preview';
+      } else if (format === 'tailwind') {
+        const tailwindContent = convertToTailwind(exportedData);
+        previewContent.textContent = tailwindContent;
+        if (previewTitle) previewTitle.textContent = 'Tailwind Config Preview';
+      } else if (format === 'react-native') {
+        const reactNativeContent = convertToReactNative(exportedData);
+        previewContent.textContent = reactNativeContent;
+        if (previewTitle) previewTitle.textContent = 'React Native Preview';
+      } else if (format === 'flutter') {
+        const flutterContent = convertToFlutter(exportedData);
+        previewContent.textContent = flutterContent;
+        if (previewTitle) previewTitle.textContent = 'Flutter Preview';
       } else if (format === 'ios') {
         const iosContent = convertToiOS(exportedData);
         previewContent.textContent = iosContent;
@@ -1939,6 +1995,367 @@
     // Helper function to convert to snake_case
     function toSnakeCase(str) {
       return str.replace(/[-\s]+/g, '_').replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+    }
+
+    // Convert JSON data to SCSS/Sass variables and mixins
+    function convertToSCSS(data) {
+      let scss = '// Design Tokens exported from Figma\n';
+      scss += '// Exported at: ' + data.metadata.exportedAt + '\n';
+      scss += '// File: ' + (data.metadata.figmaFileKey || 'Unknown') + '\n';
+      scss += '// Collections: ' + Object.keys(data.collections).join(', ') + '\n\n';
+      
+      scss += '// ============================================\n';
+      scss += '// DESIGN TOKENS - SCSS Variables & Mixins\n';
+      scss += '// ============================================\n\n';
+      
+      // Define variables
+      scss += '// Variables\n';
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        
+        scss += '// ' + collection.name + '\n';
+        
+        for (const varName in collection.variables) {
+          const variable = collection.variables[varName];
+          
+          for (const modeName in variable.values) {
+            const value = variable.values[modeName];
+            const scssVarName = '$' + collectionName.toLowerCase() + '-' + varName.toLowerCase();
+            const cleanName = scssVarName.replace(/[^a-z0-9-$]/g, '-');
+            const comment = variable.description ? ' // ' + variable.description : '';
+            
+            scss += cleanName + ': ' + value + ';' + comment + '\n';
+            break; // Use first mode only
+          }
+        }
+        scss += '\n';
+      }
+      
+      // Add helpful mixins
+      scss += '// ============================================\n';
+      scss += '// UTILITY MIXINS\n';
+      scss += '// ============================================\n\n';
+      
+      // Color mixins
+      scss += '// Color Utility Mixins\n';
+      scss += '@mixin text-color($color) {\n';
+      scss += '  color: $color;\n';
+      scss += '}\n\n';
+      
+      scss += '@mixin background-color($color) {\n';
+      scss += '  background-color: $color;\n';
+      scss += '}\n\n';
+      
+      // Spacing mixins
+      scss += '// Spacing Utility Mixins\n';
+      scss += '@mixin margin($value) {\n';
+      scss += '  margin: $value;\n';
+      scss += '}\n\n';
+      
+      scss += '@mixin padding($value) {\n';
+      scss += '  padding: $value;\n';
+      scss += '}\n\n';
+      
+      // Usage examples
+      scss += '// ============================================\n';
+      scss += '// USAGE EXAMPLES\n';
+      scss += '// ============================================\n\n';
+      scss += '// .button-primary {\n';
+      scss += '//   @include background-color($colors-primary);\n';
+      scss += '//   @include text-color($colors-white);\n';
+      scss += '//   @include padding($spacing-medium);\n';
+      scss += '// }\n\n';
+      scss += '// .card {\n';
+      scss += '//   @include background-color($colors-surface);\n';
+      scss += '//   @include margin($spacing-large);\n';
+      scss += '// }\n';
+      
+      return scss;
+    }
+
+    // Convert JSON data to Tailwind CSS config
+    function convertToTailwind(data) {
+      let config = '// Design Tokens exported from Figma\n';
+      config += '// Exported at: ' + data.metadata.exportedAt + '\n';
+      config += '// File: ' + (data.metadata.figmaFileKey || 'Unknown') + '\n';
+      config += '// Collections: ' + Object.keys(data.collections).join(', ') + '\n\n';
+      
+      config += 'module.exports = {\n';
+      config += '  theme: {\n';
+      config += '    extend: {\n';
+      
+      // Organize tokens by type
+      const colorTokens = {};
+      const spacingTokens = {};
+      const fontSizeTokens = {};
+      const otherTokens = {};
+      
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        
+        for (const varName in collection.variables) {
+          const variable = collection.variables[varName];
+          
+          for (const modeName in variable.values) {
+            const value = variable.values[modeName];
+            const tokenName = collectionName.toLowerCase() + '-' + varName.toLowerCase();
+            const cleanName = tokenName.replace(/[^a-z0-9-]/g, '-');
+            
+            if (variable.type === 'COLOR') {
+              colorTokens[cleanName] = value;
+            } else if (variable.type === 'FLOAT') {
+              if (varName.toLowerCase().includes('spacing') || varName.toLowerCase().includes('gap') || varName.toLowerCase().includes('margin') || varName.toLowerCase().includes('padding')) {
+                spacingTokens[cleanName] = value + 'px';
+              } else if (varName.toLowerCase().includes('font') || varName.toLowerCase().includes('text') || varName.toLowerCase().includes('size')) {
+                fontSizeTokens[cleanName] = value + 'px';
+              } else {
+                spacingTokens[cleanName] = value + 'px'; // Default to spacing
+              }
+            } else {
+              otherTokens[cleanName] = value;
+            }
+            break; // Use first mode only
+          }
+        }
+      }
+      
+      // Add colors
+      if (Object.keys(colorTokens).length > 0) {
+        config += '      colors: {\n';
+        for (const name in colorTokens) {
+          config += '        \'' + name + '\': \'' + colorTokens[name] + '\',\n';
+        }
+        config += '      },\n';
+      }
+      
+      // Add spacing
+      if (Object.keys(spacingTokens).length > 0) {
+        config += '      spacing: {\n';
+        for (const name in spacingTokens) {
+          config += '        \'' + name + '\': \'' + spacingTokens[name] + '\',\n';
+        }
+        config += '      },\n';
+      }
+      
+      // Add font sizes
+      if (Object.keys(fontSizeTokens).length > 0) {
+        config += '      fontSize: {\n';
+        for (const name in fontSizeTokens) {
+          config += '        \'' + name + '\': \'' + fontSizeTokens[name] + '\',\n';
+        }
+        config += '      },\n';
+      }
+      
+      config += '    },\n';
+      config += '  },\n';
+      config += '  plugins: [],\n';
+      config += '}\n\n';
+      
+      // Add usage examples
+      config += '// Usage Examples:\n';
+      config += '// <div className="bg-colors-primary text-colors-white p-spacing-medium">\n';
+      config += '//   <h1 className="text-typography-heading-large">Hello World</h1>\n';
+      config += '// </div>\n';
+      
+      return config;
+    }
+
+    // Convert JSON data to React Native StyleSheet
+    function convertToReactNative(data) {
+      let rn = '// Design Tokens exported from Figma\n';
+      rn += '// Exported at: ' + data.metadata.exportedAt + '\n';
+      rn += '// File: ' + (data.metadata.figmaFileKey || 'Unknown') + '\n';
+      rn += '// Collections: ' + Object.keys(data.collections).join(', ') + '\n\n';
+      
+      rn += 'import { StyleSheet } from \'react-native\';\n\n';
+      
+      rn += '// Design Tokens\n';
+      rn += 'export const tokens = {\n';
+      
+      // Organize by collection
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        
+        rn += '  // ' + collection.name + '\n';
+        rn += '  ' + toCamelCase(collectionName) + ': {\n';
+        
+        for (const varName in collection.variables) {
+          const variable = collection.variables[varName];
+          
+          for (const modeName in variable.values) {
+            const value = variable.values[modeName];
+            const tokenName = toCamelCase(varName);
+            const comment = variable.description ? ' // ' + variable.description : '';
+            
+            // Format value for React Native
+            let rnValue = value;
+            if (variable.type === 'FLOAT') {
+              rnValue = parseFloat(value);
+            } else if (typeof value === 'string') {
+              rnValue = '\'' + value + '\'';
+            }
+            
+            rn += '    ' + tokenName + ': ' + rnValue + ',' + comment + '\n';
+            break; // Use first mode only
+          }
+        }
+        
+        rn += '  },\n\n';
+      }
+      
+      rn += '};\n\n';
+      
+      // Create StyleSheet styles
+      rn += '// Utility Styles\n';
+      rn += 'export const styles = StyleSheet.create({\n';
+      
+      // Add some common utility styles
+      rn += '  // Typography Styles\n';
+      rn += '  text: {\n';
+      rn += '    fontFamily: \'System\',\n';
+      rn += '  },\n\n';
+      
+      rn += '  // Layout Styles\n';
+      rn += '  container: {\n';
+      rn += '    flex: 1,\n';
+      rn += '  },\n\n';
+      
+      rn += '  // Add your custom styles here using tokens\n';
+      rn += '  // Example:\n';
+      rn += '  // primaryButton: {\n';
+      rn += '  //   backgroundColor: tokens.colors.primary,\n';
+      rn += '  //   paddingHorizontal: tokens.spacing.medium,\n';
+      rn += '  //   paddingVertical: tokens.spacing.small,\n';
+      rn += '  // },\n';
+      
+      rn += '});\n\n';
+      
+      // Usage examples
+      rn += '// Usage Examples:\n';
+      rn += '// import { tokens, styles } from \'./tokens\';\n\n';
+      rn += '// <View style={[styles.container, { backgroundColor: tokens.colors.background }]}>\n';
+      rn += '//   <Text style={[styles.text, { color: tokens.colors.primary }]}>Hello World</Text>\n';
+      rn += '// </View>\n';
+      
+      return rn;
+    }
+
+    // Convert JSON data to Flutter/Dart Color classes
+    function convertToFlutter(data) {
+      let dart = '// Design Tokens exported from Figma\n';
+      dart += '// Exported at: ' + data.metadata.exportedAt + '\n';
+      dart += '// File: ' + (data.metadata.figmaFileKey || 'Unknown') + '\n';
+      dart += '// Collections: ' + Object.keys(data.collections).join(', ') + '\n\n';
+      
+      dart += 'import \'package:flutter/material.dart\';\n\n';
+      
+      dart += '/// Design Tokens generated from Figma\n';
+      dart += 'class DesignTokens {\n';
+      
+      // Generate color constants
+      dart += '  // Colors\n';
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        
+        for (const varName in collection.variables) {
+          const variable = collection.variables[varName];
+          
+          if (variable.type === 'COLOR') {
+            for (const modeName in variable.values) {
+              const value = variable.values[modeName];
+              const dartVarName = toCamelCase(collectionName + '-' + varName);
+              const comment = variable.description ? ' // ' + variable.description : '';
+              
+              // Convert to Flutter Color
+              let flutterColor = 'Color(0xFF000000)'; // Default black
+              if (value.startsWith('#')) {
+                const hex = value.replace('#', '');
+                if (hex.length === 6) {
+                  flutterColor = 'Color(0xFF' + hex.toUpperCase() + ')';
+                } else if (hex.length === 8) {
+                  flutterColor = 'Color(0x' + hex.toUpperCase() + ')';
+                }
+              } else if (value.startsWith('rgb')) {
+                const rgbMatch = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                if (rgbMatch) {
+                  const r = parseInt(rgbMatch[1]).toString(16).padStart(2, '0');
+                  const g = parseInt(rgbMatch[2]).toString(16).padStart(2, '0');
+                  const b = parseInt(rgbMatch[3]).toString(16).padStart(2, '0');
+                  flutterColor = 'Color(0xFF' + r.toUpperCase() + g.toUpperCase() + b.toUpperCase() + ')';
+                }
+              }
+              
+              dart += '  static const Color ' + dartVarName + ' = ' + flutterColor + ';' + comment + '\n';
+              break; // Use first mode only
+            }
+          }
+        }
+      }
+      
+      dart += '\n';
+      
+      // Generate spacing constants
+      dart += '  // Spacing\n';
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        
+        for (const varName in collection.variables) {
+          const variable = collection.variables[varName];
+          
+          if (variable.type === 'FLOAT') {
+            for (const modeName in variable.values) {
+              const value = variable.values[modeName];
+              const dartVarName = toCamelCase(collectionName + '-' + varName);
+              const comment = variable.description ? ' // ' + variable.description : '';
+              
+              dart += '  static const double ' + dartVarName + ' = ' + value + ';' + comment + '\n';
+              break; // Use first mode only
+            }
+          }
+        }
+      }
+      
+      dart += '\n';
+      
+      // Add utility methods
+      dart += '  // Utility Methods\n';
+      dart += '  static TextStyle textStyle({\n';
+      dart += '    Color? color,\n';
+      dart += '    double? fontSize,\n';
+      dart += '    FontWeight? fontWeight,\n';
+      dart += '  }) {\n';
+      dart += '    return TextStyle(\n';
+      dart += '      color: color,\n';
+      dart += '      fontSize: fontSize,\n';
+      dart += '      fontWeight: fontWeight,\n';
+      dart += '    );\n';
+      dart += '  }\n\n';
+      
+      dart += '  static EdgeInsets padding(double value) {\n';
+      dart += '    return EdgeInsets.all(value);\n';
+      dart += '  }\n\n';
+      
+      dart += '  static EdgeInsets margin(double value) {\n';
+      dart += '    return EdgeInsets.all(value);\n';
+      dart += '  }\n';
+      
+      dart += '}\n\n';
+      
+      // Usage examples
+      dart += '// Usage Examples:\n';
+      dart += '// Container(\n';
+      dart += '//   color: DesignTokens.primaryColor,\n';
+      dart += '//   padding: DesignTokens.padding(DesignTokens.spacingMedium),\n';
+      dart += '//   child: Text(\n';
+      dart += '//     "Hello World",\n';
+      dart += '//     style: DesignTokens.textStyle(\n';
+      dart += '//       color: DesignTokens.textPrimary,\n';
+      dart += '//       fontSize: DesignTokens.fontSizeLarge,\n';
+      dart += '//     ),\n';
+      dart += '//   ),\n';
+      dart += '// )\n';
+      
+      return dart;
     }
 
     // Update analytics with exported data
