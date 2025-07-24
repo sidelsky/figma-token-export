@@ -615,7 +615,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem;
+      padding: .75rem;
       border-bottom: 1px solid hsl(var(--border));
       cursor: pointer;
       transition: background-color 150ms ease;
@@ -627,7 +627,7 @@
 
     .collapsible-header h3 {
       margin: 0;
-      font-size: 1.125rem;
+      font-size: 1rem;
       font-weight: 600;
     }
 
@@ -748,6 +748,127 @@
     .copy-tooltip.show {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    /* Accessibility Analysis Styles */
+    .accessibility-score {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      border-radius: calc(var(--radius) - 2px);
+      margin-bottom: 1rem;
+    }
+
+    .accessibility-score-large {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .accessibility-excellent {
+      background-color: rgb(240 253 244);
+      color: rgb(22 101 52);
+      border: 1px solid rgb(187 247 208);
+    }
+
+    .accessibility-good {
+      background-color: rgb(254 249 195);
+      color: rgb(133 77 14);
+      border: 1px solid rgb(251 191 36);
+    }
+
+    .accessibility-warning {
+      background-color: rgb(255 247 237);
+      color: rgb(154 52 18);
+      border: 1px solid rgb(251 146 60);
+    }
+
+    .accessibility-poor {
+      background-color: rgb(254 242 242);
+      color: rgb(153 27 27);
+      border: 1px solid rgb(252 165 165);
+    }
+
+    .accessibility-progress-bar {
+      width: 100%;
+      height: 8px;
+      background-color: hsl(var(--muted));
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .accessibility-progress-fill {
+      height: 100%;
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+
+    .accessibility-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .accessibility-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-radius: calc(var(--radius) - 2px);
+      border: 1px solid hsl(var(--border));
+    }
+
+    .accessibility-token {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
+      font-size: 0.75rem;
+      background-color: hsl(var(--muted));
+      padding: 0.25rem 0.5rem;
+      border-radius: calc(var(--radius) - 4px);
+    }
+
+    .accessibility-message {
+      font-size: 0.875rem;
+      flex: 1;
+      margin-right: 1rem;
+    }
+
+    .accessibility-suggestion {
+      font-size: 0.75rem;
+      color: hsl(var(--muted-foreground));
+      margin-top: 0.25rem;
+    }
+
+    .contrast-demo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      border-radius: calc(var(--radius) - 2px);
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    .contrast-ratio {
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+
+    .wcag-badge {
+      padding: 0.125rem 0.375rem;
+      border-radius: calc(var(--radius) - 4px);
+      font-size: 0.625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .wcag-pass {
+      background-color: rgb(240 253 244);
+      color: rgb(22 101 52);
+    }
+
+    .wcag-fail {
+      background-color: rgb(254 242 242);
+      color: rgb(153 27 27);
     }
 
     /* Code Block */
@@ -919,6 +1040,15 @@
         >
           Analytics
         </button>
+        <button 
+          class="tab-button" 
+          data-tab="accessibility"
+          data-state="inactive"
+          role="tab"
+          aria-selected="false"
+        >
+          Accessibility
+        </button>
       </nav>
     </div>
     
@@ -1024,11 +1154,38 @@
       
       <!-- Analytics Export Button -->
       <div id="analyticsExport" class="mt-4 text-center hidden">
-        <button id="exportAnalyticsBtn" class="btn btn-primary  ">
+        <button id="exportAnalyticsBtn" class="btn btn-primary">
           <svg class="icon mr-2" viewBox="0 0 24 24">
             <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
           </svg>
           Export Analytics to CSV
+        </button>
+      </div>
+    </div>
+    
+    <!-- Accessibility Tab Content -->
+    <div id="accessibilityTab" class="tab-content hidden" role="tabpanel">
+      <div id="accessibilityContent">
+        <div class="card p-8 text-center">
+          <div class="text-muted-foreground">
+            <svg class="icon mx-auto w-12 h-12 mb-4" viewBox="0 0 24 24">
+              <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
+              <path d="M12 6a2 2 0 1 1-2 2 2 2 0 0 1 2-2zm-2 7h4v5h-4z"></path>
+            </svg>
+            <h3 class="text-lg font-semibold text-foreground mb-2">No Accessibility Data Available</h3>
+            <p class="text-sm">Generate your design tokens first to see WCAG compliance analysis.</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Accessibility Export Button -->
+      <div id="accessibilityExport" class="mt-4 text-center hidden">
+        <button id="exportAccessibilityReportBtn" class="btn btn-primary">
+          <svg class="icon mr-2" viewBox="0 0 24 24">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
+            <path d="M12 6a2 2 0 1 1-2 2 2 2 0 0 1 2-2zm-2 7h4v5h-4z"></path>
+          </svg>
+          Export WCAG Compliance Report
         </button>
       </div>
     </div>
@@ -1050,6 +1207,7 @@
     };
     
     let analyticsStats = null;
+    let accessibilityAnalysis = null;
     // DOM elements
     let exportBtn, downloadBtn, status, previewSection, previewContent, previewTitle;
     let tokenSelection, tokenCollections, selectAllToggle;
@@ -1124,6 +1282,7 @@
           updateDownloadButtonText();
           showStatus('success', 'Successfully extracted ' + Object.keys(data.collections).length + ' collection(s)! Select tokens to export.');
           updateAnalytics(data);
+          updateAccessibility(data);
         } else if (type === 'error') {
           exportBtn.disabled = false;
           exportBtn.textContent = 'Generate Design Tokens';
@@ -1136,6 +1295,12 @@
       const exportAnalyticsBtn = document.getElementById('exportAnalyticsBtn');
       if (exportAnalyticsBtn) {
         exportAnalyticsBtn.addEventListener('click', handleAnalyticsExport);
+      }
+      
+      // Accessibility export button (in accessibility tab)
+      const exportAccessibilityReportBtn = document.getElementById('exportAccessibilityReportBtn');
+      if (exportAccessibilityReportBtn) {
+        exportAccessibilityReportBtn.addEventListener('click', handleAccessibilityExport);
       }
 
       console.log('✅ Plugin UI initialized successfully!');
@@ -1162,13 +1327,20 @@
       // Update tab content
       const exportTab = document.getElementById('exportTab');
       const analyticsTab = document.getElementById('analyticsTab');
+      const accessibilityTab = document.getElementById('accessibilityTab');
       
       if (tabName === 'export') {
         exportTab.classList.remove('hidden');
         analyticsTab.classList.add('hidden');
-      } else {
+        accessibilityTab.classList.add('hidden');
+      } else if (tabName === 'analytics') {
         exportTab.classList.add('hidden');
         analyticsTab.classList.remove('hidden');
+        accessibilityTab.classList.add('hidden');
+      } else if (tabName === 'accessibility') {
+        exportTab.classList.add('hidden');
+        analyticsTab.classList.add('hidden');
+        accessibilityTab.classList.remove('hidden');
       }
     }
 
@@ -2355,10 +2527,479 @@
       dart += '//   ),\n';
       dart += '// )\n';
       
-      return dart;
+             return dart;
+     }
+
+    // ============================================
+    // ACCESSIBILITY ANALYSIS FUNCTIONS
+    // ============================================
+
+    // Main accessibility analysis function
+    function analyzeAccessibility(data) {
+      const analysis = {
+        overallScore: 0,
+        colorContrast: [],
+        typography: [],
+        spacing: [],
+        summary: {
+          totalIssues: 0,
+          criticalIssues: 0,
+          warnings: 0,
+          recommendations: []
+        }
+      };
+
+      // Analyze color accessibility
+      const colorAnalysis = analyzeColorContrast(data);
+      analysis.colorContrast = colorAnalysis.issues;
+      analysis.summary.totalIssues += colorAnalysis.issueCount;
+      analysis.summary.criticalIssues += colorAnalysis.criticalCount;
+
+      // Analyze typography accessibility
+      const typographyAnalysis = analyzeTypographyAccessibility(data);
+      analysis.typography = typographyAnalysis.issues;
+      analysis.summary.totalIssues += typographyAnalysis.issueCount;
+      analysis.summary.warnings += typographyAnalysis.warningCount;
+
+      // Analyze spacing accessibility
+      const spacingAnalysis = analyzeSpacingAccessibility(data);
+      analysis.spacing = spacingAnalysis.issues;
+      analysis.summary.totalIssues += spacingAnalysis.issueCount;
+      analysis.summary.warnings += spacingAnalysis.warningCount;
+
+      // Calculate overall accessibility score (0-100)
+      const totalTokens = getTotalTokenCount(data);
+      const maxPossibleIssues = totalTokens * 2; // Rough estimate
+      const scoreReduction = Math.min(analysis.summary.totalIssues * 10, 80);
+      analysis.overallScore = Math.max(100 - scoreReduction, 0);
+
+      // Generate recommendations
+      analysis.summary.recommendations = generateAccessibilityRecommendations(analysis);
+
+      return analysis;
     }
 
-    // Update analytics with exported data
+    // Analyze color contrast accessibility
+    function analyzeColorContrast(data) {
+      const issues = [];
+      let issueCount = 0;
+      let criticalCount = 0;
+      const colorTokens = [];
+
+      // Collect all color tokens
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        for (const varName in collection.variables) {
+          const variable = collection.variables[varName];
+          if (variable.type === 'COLOR') {
+            for (const modeName in variable.values) {
+              colorTokens.push({
+                name: varName,
+                collection: collectionName,
+                value: variable.values[modeName],
+                description: variable.description || ''
+              });
+              break; // Use first mode only
+            }
+          }
+        }
+      }
+
+      // Analyze contrast between common color pairs
+      for (let i = 0; i < colorTokens.length; i++) {
+        for (let j = i + 1; j < colorTokens.length; j++) {
+          const color1 = colorTokens[i];
+          const color2 = colorTokens[j];
+          
+          // Skip if same color
+          if (color1.value === color2.value) continue;
+
+          // Calculate contrast ratio
+          const contrastRatio = calculateContrastRatio(color1.value, color2.value);
+          
+          // Check if this looks like a text/background combination
+          if (isLikelyTextBackgroundPair(color1.name, color2.name) || 
+              isLikelyTextBackgroundPair(color2.name, color1.name)) {
+            
+            const wcagAA = contrastRatio >= 4.5;
+            const wcagAAA = contrastRatio >= 7.0;
+            const wcagAALarge = contrastRatio >= 3.0;
+
+            if (!wcagAA) {
+              const severity = contrastRatio < 3.0 ? 'critical' : 'warning';
+              issues.push({
+                type: 'contrast',
+                severity: severity,
+                message: `Low contrast between ${color1.name} and ${color2.name}`,
+                details: `Contrast ratio: ${contrastRatio.toFixed(2)}:1`,
+                colors: [color1, color2],
+                contrastRatio: contrastRatio,
+                wcagAA: wcagAA,
+                wcagAAA: wcagAAA,
+                wcagAALarge: wcagAALarge,
+                suggestion: contrastRatio < 3.0 ? 
+                  'Critical: This combination fails all WCAG standards. Consider using high contrast alternatives.' :
+                  'Warning: This combination fails WCAG AA. Consider adjusting colors for better accessibility.'
+              });
+              
+              issueCount++;
+              if (severity === 'critical') criticalCount++;
+            }
+          }
+        }
+      }
+
+      return { issues, issueCount, criticalCount };
+    }
+
+    // Analyze typography accessibility
+    function analyzeTypographyAccessibility(data) {
+      const issues = [];
+      let issueCount = 0;
+      let warningCount = 0;
+
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        for (const varName in collection.variables) {
+          const variable = collection.variables[varName];
+          
+          if (variable.type === 'FLOAT' && isTypographyToken(varName)) {
+            for (const modeName in variable.values) {
+              const value = parseFloat(variable.values[modeName]);
+              
+              // Check minimum font sizes
+              if (varName.toLowerCase().includes('font') || varName.toLowerCase().includes('text')) {
+                if (value < 12) {
+                  issues.push({
+                    type: 'typography',
+                    severity: 'warning',
+                    message: `Font size "${varName}" may be too small`,
+                    details: `${value}px is below the recommended minimum of 12px`,
+                    token: varName,
+                    value: value,
+                    suggestion: 'Consider increasing font size to at least 12px for better readability.'
+                  });
+                  issueCount++;
+                  warningCount++;
+                } else if (value < 16 && (varName.toLowerCase().includes('body') || varName.toLowerCase().includes('paragraph'))) {
+                  issues.push({
+                    type: 'typography',
+                    severity: 'info',
+                    message: `Body text "${varName}" could be larger`,
+                    details: `${value}px is below the recommended 16px for body text`,
+                    token: varName,
+                    value: value,
+                    suggestion: 'Consider using 16px or larger for body text to improve readability.'
+                  });
+                  issueCount++;
+                }
+              }
+              break; // Use first mode only
+            }
+          }
+        }
+      }
+
+      return { issues, issueCount, warningCount };
+    }
+
+    // Analyze spacing accessibility
+    function analyzeSpacingAccessibility(data) {
+      const issues = [];
+      let issueCount = 0;
+      let warningCount = 0;
+
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        for (const varName in collection.variables) {
+          const variable = collection.variables[varName];
+          
+          if (variable.type === 'FLOAT' && isSpacingToken(varName)) {
+            for (const modeName in variable.values) {
+              const value = parseFloat(variable.values[modeName]);
+              
+              // Check touch target sizes
+              if (varName.toLowerCase().includes('button') || 
+                  varName.toLowerCase().includes('touch') || 
+                  varName.toLowerCase().includes('tap')) {
+                if (value < 44) {
+                  issues.push({
+                    type: 'spacing',
+                    severity: 'warning',
+                    message: `Touch target "${varName}" may be too small`,
+                    details: `${value}px is below the recommended minimum of 44px`,
+                    token: varName,
+                    value: value,
+                    suggestion: 'Touch targets should be at least 44x44px for accessibility (iOS) or 48x48px (Material Design).'
+                  });
+                  issueCount++;
+                  warningCount++;
+                }
+              }
+              
+              // Check minimum spacing for readability
+              if (varName.toLowerCase().includes('line') && varName.toLowerCase().includes('height')) {
+                if (value < 1.2) {
+                  issues.push({
+                    type: 'spacing',
+                    severity: 'info',
+                    message: `Line height "${varName}" may be too tight`,
+                    details: `${value} is below the recommended minimum of 1.2`,
+                    token: varName,
+                    value: value,
+                    suggestion: 'Line height should be at least 1.2 times the font size for good readability.'
+                  });
+                  issueCount++;
+                }
+              }
+              break; // Use first mode only
+            }
+          }
+        }
+      }
+
+      return { issues, issueCount, warningCount };
+    }
+
+    // Helper function to calculate contrast ratio between two colors
+    function calculateContrastRatio(color1, color2) {
+      const lum1 = getRelativeLuminance(color1);
+      const lum2 = getRelativeLuminance(color2);
+      
+      const brightest = Math.max(lum1, lum2);
+      const darkest = Math.min(lum1, lum2);
+      
+      return (brightest + 0.05) / (darkest + 0.05);
+    }
+
+    // Get relative luminance of a color (for contrast calculation)
+    function getRelativeLuminance(color) {
+      const rgb = hexToRgb(color);
+      if (!rgb) return 0;
+      
+      const sRGB = [rgb.r, rgb.g, rgb.b].map(c => {
+        c = c / 255;
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+      });
+      
+      return 0.2126 * sRGB[0] + 0.7152 * sRGB[1] + 0.0722 * sRGB[2];
+    }
+
+    // Convert hex color to RGB
+    function hexToRgb(color) {
+      if (color.startsWith('rgb')) {
+        const match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+        if (match) {
+          return {
+            r: parseInt(match[1]),
+            g: parseInt(match[2]),
+            b: parseInt(match[3])
+          };
+        }
+      }
+      
+      if (color.startsWith('#')) {
+        const hex = color.replace('#', '');
+        if (hex.length === 6) {
+          return {
+            r: parseInt(hex.substr(0, 2), 16),
+            g: parseInt(hex.substr(2, 2), 16),
+            b: parseInt(hex.substr(4, 2), 16)
+          };
+        }
+      }
+      
+      return null;
+    }
+
+    // Check if token names suggest a text/background relationship
+    function isLikelyTextBackgroundPair(name1, name2) {
+      const textKeywords = ['text', 'font', 'foreground', 'content'];
+      const backgroundKeywords = ['background', 'bg', 'surface', 'base'];
+      
+      const name1Lower = name1.toLowerCase();
+      const name2Lower = name2.toLowerCase();
+      
+      const isText1 = textKeywords.some(keyword => name1Lower.includes(keyword));
+      const isBg2 = backgroundKeywords.some(keyword => name2Lower.includes(keyword));
+      
+      return isText1 && isBg2;
+    }
+
+    // Check if a token is related to typography
+    function isTypographyToken(name) {
+      const keywords = ['font', 'text', 'heading', 'title', 'body', 'caption', 'size'];
+      return keywords.some(keyword => name.toLowerCase().includes(keyword));
+    }
+
+    // Check if a token is related to spacing
+    function isSpacingToken(name) {
+      const keywords = ['spacing', 'margin', 'padding', 'gap', 'height', 'width', 'button', 'touch'];
+      return keywords.some(keyword => name.toLowerCase().includes(keyword));
+    }
+
+    // Get total token count
+    function getTotalTokenCount(data) {
+      let total = 0;
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        total += Object.keys(collection.variables).length;
+      }
+      return total;
+    }
+
+    // Generate accessibility recommendations
+    function generateAccessibilityRecommendations(analysis) {
+      const recommendations = [];
+      
+      if (analysis.summary.criticalIssues > 0) {
+        recommendations.push('🚨 Critical: Fix color contrast issues that fail WCAG standards');
+      }
+      
+      if (analysis.colorContrast.length > 0) {
+        recommendations.push('🎨 Review color combinations for better contrast ratios');
+      }
+      
+      if (analysis.typography.length > 0) {
+        recommendations.push('📝 Consider larger font sizes for improved readability');
+      }
+      
+      if (analysis.spacing.length > 0) {
+        recommendations.push('📏 Ensure touch targets meet minimum size requirements');
+      }
+      
+      if (analysis.summary.totalIssues === 0) {
+        recommendations.push('✅ Great! No accessibility issues detected');
+      }
+      
+      return recommendations;
+    }
+
+    // Create accessibility analysis HTML
+    function createAccessibilityAnalysisHTML(analysis) {
+      let html = '';
+      
+      // Overall score
+      const scoreClass = getAccessibilityScoreClass(analysis.overallScore);
+      html += '<div class="accessibility-score ' + scoreClass + '">';
+      html += '<div>';
+      html += '<div class="accessibility-score-large">' + Math.round(analysis.overallScore) + '%</div>';
+      html += '<div class="text-sm font-medium">Accessibility Score</div>';
+      html += '</div>';
+      html += '<div class="flex-1">';
+      html += '<div class="accessibility-progress-bar">';
+      html += '<div class="accessibility-progress-fill" style="width: ' + analysis.overallScore + '%; background-color: currentColor;"></div>';
+      html += '</div>';
+      html += '</div>';
+      html += '</div>';
+      
+      // Summary
+      html += '<div class="accessibility-section">';
+      html += '<h4 class="text-sm font-bold mb-2">Summary</h4>';
+      html += '<div class="grid grid-cols-3 gap-3 mb-3">';
+      html += '<div class="text-center p-2 card">';
+      html += '<div class="font-bold text-lg">' + analysis.summary.totalIssues + '</div>';
+      html += '<div class="text-xs text-muted-foreground">Total Issues</div>';
+      html += '</div>';
+      html += '<div class="text-center p-2 card">';
+      html += '<div class="font-bold text-lg text-red-600">' + analysis.summary.criticalIssues + '</div>';
+      html += '<div class="text-xs text-muted-foreground">Critical</div>';
+      html += '</div>';
+      html += '<div class="text-center p-2 card">';
+      html += '<div class="font-bold text-lg text-orange-600">' + analysis.summary.warnings + '</div>';
+      html += '<div class="text-xs text-muted-foreground">Warnings</div>';
+      html += '</div>';
+      html += '</div>';
+      
+      // Recommendations
+      if (analysis.summary.recommendations.length > 0) {
+        html += '<div class="mb-3">';
+        html += '<h5 class="text-xs font-bold mb-2">Recommendations</h5>';
+        for (let i = 0; i < analysis.summary.recommendations.length; i++) {
+          html += '<div class="text-xs text-muted-foreground mb-1">' + analysis.summary.recommendations[i] + '</div>';
+        }
+        html += '</div>';
+      }
+      html += '</div>';
+      
+      // Color contrast issues
+      if (analysis.colorContrast.length > 0) {
+        html += '<div class="accessibility-section">';
+        html += '<h4 class="text-sm font-bold mb-3">Color Contrast Issues</h4>';
+        for (let i = 0; i < Math.min(5, analysis.colorContrast.length); i++) {
+          const issue = analysis.colorContrast[i];
+          html += '<div class="accessibility-item">';
+          html += '<div class="accessibility-message">';
+          html += '<div class="font-medium">' + issue.message + '</div>';
+          html += '<div class="accessibility-suggestion">' + issue.suggestion + '</div>';
+          
+          // Contrast demo
+          html += '<div class="contrast-demo" style="background-color: ' + issue.colors[1].value + '; color: ' + issue.colors[0].value + ';">';
+          html += '<span>Sample Text</span>';
+          html += '<span class="contrast-ratio">' + issue.contrastRatio.toFixed(2) + ':1</span>';
+          html += '<span class="wcag-badge ' + (issue.wcagAA ? 'wcag-pass' : 'wcag-fail') + '">WCAG AA</span>';
+          html += '</div>';
+          html += '</div>';
+          html += '</div>';
+        }
+        if (analysis.colorContrast.length > 5) {
+          html += '<div class="text-xs text-muted-foreground">+ ' + (analysis.colorContrast.length - 5) + ' more issues</div>';
+        }
+        html += '</div>';
+      }
+      
+      // Typography issues
+      if (analysis.typography.length > 0) {
+        html += '<div class="accessibility-section">';
+        html += '<h4 class="text-sm font-bold mb-3">Typography Issues</h4>';
+        for (let i = 0; i < Math.min(3, analysis.typography.length); i++) {
+          const issue = analysis.typography[i];
+          html += '<div class="accessibility-item">';
+          html += '<div class="accessibility-message">';
+          html += '<div class="font-medium">' + issue.message + '</div>';
+          html += '<div class="accessibility-suggestion">' + issue.suggestion + '</div>';
+          html += '</div>';
+          html += '<div class="accessibility-token">' + issue.token + '</div>';
+          html += '</div>';
+        }
+        if (analysis.typography.length > 3) {
+          html += '<div class="text-xs text-muted-foreground">+ ' + (analysis.typography.length - 3) + ' more issues</div>';
+        }
+        html += '</div>';
+      }
+      
+      // Spacing issues
+      if (analysis.spacing.length > 0) {
+        html += '<div class="accessibility-section">';
+        html += '<h4 class="text-sm font-bold mb-3">Spacing Issues</h4>';
+        for (let i = 0; i < Math.min(3, analysis.spacing.length); i++) {
+          const issue = analysis.spacing[i];
+          html += '<div class="accessibility-item">';
+          html += '<div class="accessibility-message">';
+          html += '<div class="font-medium">' + issue.message + '</div>';
+          html += '<div class="accessibility-suggestion">' + issue.suggestion + '</div>';
+          html += '</div>';
+          html += '<div class="accessibility-token">' + issue.token + '</div>';
+          html += '</div>';
+        }
+        if (analysis.spacing.length > 3) {
+          html += '<div class="text-xs text-muted-foreground">+ ' + (analysis.spacing.length - 3) + ' more issues</div>';
+        }
+        html += '</div>';
+      }
+      
+      return html;
+    }
+
+    // Get CSS class for accessibility score
+    function getAccessibilityScoreClass(score) {
+      if (score >= 90) return 'accessibility-excellent';
+      if (score >= 75) return 'accessibility-good';
+      if (score >= 50) return 'accessibility-warning';
+      return 'accessibility-poor';
+    }
+
+      // Update analytics with exported data
     function updateAnalytics(data) {
       const analyticsContent = document.getElementById('analyticsContent');
       if (!analyticsContent || !data) return;
@@ -2389,6 +3030,28 @@
           });
         }
       }, 100);
+    }
+    
+    // Update accessibility tab with exported data
+    function updateAccessibility(data) {
+      const accessibilityContent = document.getElementById('accessibilityContent');
+      if (!accessibilityContent || !data) return;
+      
+      console.log('Updating accessibility with data:', data);
+      
+      // Perform accessibility analysis
+      accessibilityAnalysis = analyzeAccessibility(data);
+      
+      // Show export button
+      const accessibilityExport = document.getElementById('accessibilityExport');
+      if (accessibilityExport) {
+        accessibilityExport.classList.remove('hidden');
+        accessibilityExport.classList.add('fade-in');
+      }
+      
+      // Create accessibility HTML content
+      const accessibilityHTML = createAccessibilityAnalysisHTML(accessibilityAnalysis);
+      accessibilityContent.innerHTML = accessibilityHTML;
     }
 
     // Generate statistics from exported data
@@ -2447,6 +3110,9 @@
         }
       }
       
+      // Perform accessibility analysis
+      const accessibilityAnalysis = analyzeAccessibility(data);
+      
       return {
         totalTokens: totalTokens,
         totalCollections: totalCollections,
@@ -2454,6 +3120,7 @@
         collectionBreakdown: collectionBreakdown,
         colorSamples: colorSamples,
         numberSamples: numberSamples,
+        accessibilityAnalysis: accessibilityAnalysis,
         exportedAt: data.metadata.exportedAt
       };
     }
@@ -2692,6 +3359,136 @@
       }
     }
 
+    // Handle accessibility compliance export
+    function handleAccessibilityExport() {
+      const analysisData = accessibilityAnalysis || (analyticsStats && analyticsStats.accessibilityAnalysis);
+      
+      if (!analysisData) {
+        showStatus('error', 'No accessibility data available to export');
+        return;
+      }
+      
+      try {
+        const csvData = generateAccessibilityCSVData(analysisData);
+        const dateStr = new Date().toISOString().split('T')[0];
+        downloadFile(csvData, 'text/csv', 'accessibility-compliance-' + dateStr + '.csv');
+        showStatus('success', 'Accessibility compliance report exported successfully!');
+      } catch (error) {
+        console.error('Accessibility export error:', error);
+        showStatus('error', 'Failed to export accessibility report');
+      }
+    }
+
+    // Generate CSV data specifically for accessibility compliance
+    function generateAccessibilityCSVData(analysis) {
+      let csv = '';
+      
+      // Header
+      csv += 'WCAG Accessibility Compliance Report\n';
+      csv += 'Generated on: ' + new Date().toISOString() + '\n';
+      csv += '\n';
+      
+      // Executive Summary
+      csv += 'EXECUTIVE SUMMARY\n';
+      csv += 'Overall Accessibility Score,' + Math.round(analysis.overallScore) + '%\n';
+      csv += 'Total Issues Identified,' + analysis.summary.totalIssues + '\n';
+      csv += 'Critical Issues (WCAG Failures),' + analysis.summary.criticalIssues + '\n';
+      csv += 'Warnings & Recommendations,' + analysis.summary.warnings + '\n';
+      csv += '\n';
+      
+      // Compliance Level
+      let complianceLevel = '';
+      if (analysis.overallScore >= 90) {
+        complianceLevel = 'Excellent - WCAG AAA Ready';
+      } else if (analysis.overallScore >= 75) {
+        complianceLevel = 'Good - WCAG AA Compliant';
+      } else if (analysis.overallScore >= 50) {
+        complianceLevel = 'Needs Improvement - Partial Compliance';
+      } else {
+        complianceLevel = 'Poor - Major Accessibility Issues';
+      }
+      csv += 'Compliance Assessment,' + escapeCSV(complianceLevel) + '\n';
+      csv += '\n';
+      
+      // Detailed Issues
+      if (analysis.colorContrast.length > 0) {
+        csv += 'COLOR CONTRAST ISSUES (WCAG 1.4.3 & 1.4.6)\n';
+        csv += 'Severity,Issue Description,Token Pair,Contrast Ratio,WCAG AA Status,WCAG AAA Status,Recommendation\n';
+        
+        for (let i = 0; i < analysis.colorContrast.length; i++) {
+          const issue = analysis.colorContrast[i];
+          csv += escapeCSV(issue.severity.toUpperCase()) + ',';
+          csv += escapeCSV(issue.message) + ',';
+          csv += escapeCSV(issue.colors[0].name + ' ↔ ' + issue.colors[1].name) + ',';
+          csv += issue.contrastRatio.toFixed(2) + ':1,';
+          csv += (issue.wcagAA ? 'PASS' : 'FAIL') + ',';
+          csv += (issue.wcagAAA ? 'PASS' : 'FAIL') + ',';
+          csv += escapeCSV(issue.suggestion) + '\n';
+        }
+        csv += '\n';
+      }
+      
+      if (analysis.typography.length > 0) {
+        csv += 'TYPOGRAPHY ACCESSIBILITY ISSUES (WCAG 1.4.4 & 1.4.8)\n';
+        csv += 'Severity,Token Name,Current Value,Issue Description,WCAG Guideline,Recommendation\n';
+        
+        for (let i = 0; i < analysis.typography.length; i++) {
+          const issue = analysis.typography[i];
+          csv += escapeCSV(issue.severity.toUpperCase()) + ',';
+          csv += escapeCSV(issue.token) + ',';
+          csv += issue.value + 'px,';
+          csv += escapeCSV(issue.message) + ',';
+          csv += escapeCSV('WCAG 1.4.4 (Resize text) / 1.4.8 (Visual presentation)') + ',';
+          csv += escapeCSV(issue.suggestion) + '\n';
+        }
+        csv += '\n';
+      }
+      
+      if (analysis.spacing.length > 0) {
+        csv += 'SPACING & TOUCH TARGET ISSUES (WCAG 2.5.5)\n';
+        csv += 'Severity,Token Name,Current Value,Issue Description,WCAG Guideline,Recommendation\n';
+        
+        for (let i = 0; i < analysis.spacing.length; i++) {
+          const issue = analysis.spacing[i];
+          csv += escapeCSV(issue.severity.toUpperCase()) + ',';
+          csv += escapeCSV(issue.token) + ',';
+          csv += issue.value + 'px,';
+          csv += escapeCSV(issue.message) + ',';
+          csv += escapeCSV('WCAG 2.5.5 (Target Size)') + ',';
+          csv += escapeCSV(issue.suggestion) + '\n';
+        }
+        csv += '\n';
+      }
+      
+      // Action Items
+      csv += 'PRIORITY ACTION ITEMS\n';
+      csv += 'Priority,Action Item\n';
+      
+      let priority = 1;
+      if (analysis.summary.criticalIssues > 0) {
+        csv += 'HIGH,' + escapeCSV('Fix ' + analysis.summary.criticalIssues + ' critical color contrast issues immediately') + '\n';
+        priority++;
+      }
+      
+      for (let i = 0; i < analysis.summary.recommendations.length; i++) {
+        const level = i < 2 ? 'MEDIUM' : 'LOW';
+        csv += level + ',' + escapeCSV(analysis.summary.recommendations[i]) + '\n';
+      }
+      csv += '\n';
+      
+      // WCAG Guidelines Reference
+      csv += 'WCAG 2.1 GUIDELINES REFERENCE\n';
+      csv += 'Guideline,Level,Description\n';
+      csv += '1.4.3 Contrast (Minimum),AA,' + escapeCSV('Text has contrast ratio of at least 4.5:1') + '\n';
+      csv += '1.4.6 Contrast (Enhanced),AAA,' + escapeCSV('Text has contrast ratio of at least 7:1') + '\n';
+      csv += '1.4.4 Resize text,AA,' + escapeCSV('Text can be resized up to 200% without loss of functionality') + '\n';
+      csv += '1.4.8 Visual Presentation,AAA,' + escapeCSV('Line height at least 1.5x font size') + '\n';
+      csv += '2.5.5 Target Size,AAA,' + escapeCSV('Touch targets are at least 44x44 CSS pixels') + '\n';
+      csv += '\n';
+      
+      return csv;
+    }
+
     // Generate CSV data from analytics
     function generateCSVData(stats) {
       let csv = '';
@@ -2754,6 +3551,79 @@
           csv += escapeCSV(sample.name) + ',' + sample.value + '\n';
         }
         csv += '\n';
+      }
+      
+      // Accessibility Analysis section
+      if (stats.accessibilityAnalysis) {
+        const analysis = stats.accessibilityAnalysis;
+        
+        csv += 'Accessibility Compliance Summary\n';
+        csv += 'Metric,Value\n';
+        csv += 'Overall Score,' + Math.round(analysis.overallScore) + '%\n';
+        csv += 'Total Issues,' + analysis.summary.totalIssues + '\n';
+        csv += 'Critical Issues,' + analysis.summary.criticalIssues + '\n';
+        csv += 'Warnings,' + analysis.summary.warnings + '\n';
+        csv += '\n';
+        
+        // Color contrast issues
+        if (analysis.colorContrast.length > 0) {
+          csv += 'Color Contrast Issues\n';
+          csv += 'Issue,Colors,Contrast Ratio,WCAG AA,Severity,Suggestion\n';
+          
+          for (let i = 0; i < analysis.colorContrast.length; i++) {
+            const issue = analysis.colorContrast[i];
+            csv += escapeCSV(issue.message) + ',';
+            csv += escapeCSV(issue.colors[0].name + ' + ' + issue.colors[1].name) + ',';
+            csv += issue.contrastRatio.toFixed(2) + ':1,';
+            csv += (issue.wcagAA ? 'Pass' : 'Fail') + ',';
+            csv += escapeCSV(issue.severity) + ',';
+            csv += escapeCSV(issue.suggestion) + '\n';
+          }
+          csv += '\n';
+        }
+        
+        // Typography issues
+        if (analysis.typography.length > 0) {
+          csv += 'Typography Issues\n';
+          csv += 'Token,Issue,Value,Severity,Suggestion\n';
+          
+          for (let i = 0; i < analysis.typography.length; i++) {
+            const issue = analysis.typography[i];
+            csv += escapeCSV(issue.token) + ',';
+            csv += escapeCSV(issue.message) + ',';
+            csv += issue.value + 'px,';
+            csv += escapeCSV(issue.severity) + ',';
+            csv += escapeCSV(issue.suggestion) + '\n';
+          }
+          csv += '\n';
+        }
+        
+        // Spacing issues
+        if (analysis.spacing.length > 0) {
+          csv += 'Spacing Issues\n';
+          csv += 'Token,Issue,Value,Severity,Suggestion\n';
+          
+          for (let i = 0; i < analysis.spacing.length; i++) {
+            const issue = analysis.spacing[i];
+            csv += escapeCSV(issue.token) + ',';
+            csv += escapeCSV(issue.message) + ',';
+            csv += issue.value + 'px,';
+            csv += escapeCSV(issue.severity) + ',';
+            csv += escapeCSV(issue.suggestion) + '\n';
+          }
+          csv += '\n';
+        }
+        
+        // Recommendations
+        if (analysis.summary.recommendations.length > 0) {
+          csv += 'Accessibility Recommendations\n';
+          csv += 'Recommendation\n';
+          
+          for (let i = 0; i < analysis.summary.recommendations.length; i++) {
+            csv += escapeCSV(analysis.summary.recommendations[i]) + '\n';
+          }
+          csv += '\n';
+        }
       }
       
       return csv;
