@@ -820,28 +820,10 @@
       css += '/* File: ' + (data.metadata.figmaFileKey || 'Unknown') + ' */\n';
       css += '/* Collections: ' + Object.keys(data.collections).join(', ') + ' */\n\n';
       
-      css += '/* Semantic Usage Examples:\n';
-      css += ' * .button-primary { background: var(--colors-primary); }\n';
-      css += ' * .button-secondary { background: var(--colors-secondary); }\n';
-      css += ' * .text-error { color: var(--colors-error); }\n';
-      css += ' * .text-success { color: var(--colors-success); }\n';
-      css += ' * .heading-large { font-size: var(--typography-heading-large); }\n';
-      css += ' * .component { gap: var(--spacing-component-gap); }\n';
-      css += ' *\n';
-      css += ' * Semantic Token Naming Best Practices:\n';
-      css += ' * Colors: primary, secondary, error, warning, success, info\n';
-      css += ' * Typography: heading-xl, heading-lg, body-lg, body-sm, caption\n';
-      css += ' * Spacing: xs, sm, md, lg, xl, component-gap, section-gap\n';
-      css += ' * Shadows: elevation-low, elevation-mid, elevation-high\n';
+      css += '/* Usage Examples:\n';
+      css += ' * .button { background: var(--colors-primary); }\n';
+      css += ' * .text { font-size: var(--typography-body-size); }\n';
       css += ' */\n\n';
-      
-      // Add semantic naming guidance in the CSS output
-      if (Object.keys(data.collections).length > 0) {
-        css += '  /* ================================== */\n';
-        css += '  /* SEMANTIC DESIGN TOKENS            */\n';
-        css += '  /* Generated from Figma Variables    */\n';
-        css += '  /* ================================== */\n\n';
-      }
       
       css += ':root {\n';
       
