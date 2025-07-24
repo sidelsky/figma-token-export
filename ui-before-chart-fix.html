@@ -241,7 +241,7 @@
     }
     
     .chart-header.collapsed {
-      margin-bottom: 8px;
+      margin-bottom: 0;
     }
     
     .chart-title {
@@ -275,7 +275,7 @@
     .chart-content {
       overflow: hidden;
       transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-      /* max-height: 1000px; */
+      max-height: 1000px;
       opacity: 1;
     }
     
@@ -287,24 +287,22 @@
     }
     
     .chart-container {
-      height: 150px;
+      height: 120px;
       position: relative;
-      margin-bottom: 30px;
-      padding: 0;
+      margin-bottom: 12px;
     }
     
     .bar-chart {
       display: flex;
       align-items: end;
-      height: calc(100% - 40px);
+      height: 100%;
       gap: 8px;
-      margin: 20px 0;
     }
     
     .bar {
       background: #18a0fb;
       border-radius: 3px 3px 0 0;
-      min-width: 24px;
+      min-width: 20px;
       flex: 1;
       position: relative;
       transition: background-color 0.2s ease;
@@ -316,33 +314,27 @@
     
     .bar-label {
       position: absolute;
-      bottom: -25px;
+      bottom: -20px;
       left: 50%;
       transform: translateX(-50%);
       font-size: 10px;
       color: #666;
       white-space: nowrap;
-      max-width: 60px;
-      text-align: center;
-      line-height: 1.2;
     }
     
     .bar-value {
       position: absolute;
-      top: -18px;
+      top: -20px;
       left: 50%;
       transform: translateX(-50%);
       font-size: 10px;
       color: #333;
       font-weight: 500;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 1px 3px;
-      border-radius: 2px;
     }
     
     .collection-list {
-      /* max-height: 150px;
-      overflow-y: auto; */
+      max-height: 150px;
+      overflow-y: auto;
     }
     
     .collection-item {
