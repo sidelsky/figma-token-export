@@ -12,8 +12,8 @@
       --card-foreground: 222.2 84% 4.9%;
       --popover: 0 0% 100%;
       --popover-foreground: 222.2 84% 4.9%;
-      --primary: 221.2 83.2% 53.3%;
-      --primary-foreground: 210 40% 98%;
+      --primary: 0 0% 0%;
+      --primary-foreground: 0 0% 100%;
       --secondary: 210 40% 96%;
       --secondary-foreground: 222.2 84% 4.9%;
       --muted: 210 40% 96%;
@@ -24,7 +24,7 @@
       --destructive-foreground: 210 40% 98%;
       --border: 214.3 31.8% 91.4%;
       --input: 214.3 31.8% 91.4%;
-      --ring: 221.2 83.2% 53.3%;
+      --ring: 0 0% 0%;
       --radius: 0.5rem;
     }
 
@@ -260,6 +260,12 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
     .gap-3 {
       gap: 0.75rem;
     }
@@ -461,8 +467,17 @@
     }
 
     .form-input:focus {
-      outline: 2px solid hsl(var(--ring));
-      outline-offset: 2px;
+      outline: none;
+    }
+
+    /* Radio buttons - remove outline completely */
+    input[type="radio"].form-input {
+      accent-color: hsl(var(--primary));
+    }
+
+    input[type="radio"].form-input:focus {
+      outline: none;
+      box-shadow: none;
     }
 
     .form-label {
@@ -509,6 +524,57 @@
 
     .toggle-switch.active .toggle-slider {
       transform: translateX(20px);
+    }
+
+    /* Small Switch - for checkboxes replacement */
+    .small-switch {
+      position: relative;
+      width: 32px;
+      height: 18px;
+      background-color: hsl(var(--input));
+      border-radius: 9px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      border: 2px solid transparent;
+      display: inline-block;
+    }
+
+    .small-switch:focus-within {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+
+    .small-switch.active {
+      background-color: hsl(var(--primary));
+    }
+
+    .small-switch-slider {
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .small-switch.active .small-switch-slider {
+      transform: translateX(14px);
+    }
+
+    /* Hidden input for accessibility */
+    .switch-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     /* Toggle Button - for expand/collapse functionality */
@@ -614,6 +680,76 @@
       color: hsl(var(--primary));
     }
 
+    /* Copy Button */
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.5rem;
+      height: 1.5rem;
+      border: none;
+      background: none;
+      border-radius: calc(var(--radius) - 4px);
+      color: hsl(var(--muted-foreground));
+      cursor: pointer;
+      transition: all 150ms ease;
+      opacity: 0;
+    }
+
+    .copy-btn:hover {
+      background-color: hsl(var(--muted));
+      color: hsl(var(--foreground));
+    }
+
+    .copy-btn:focus-visible {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+
+    .copy-btn.copied {
+      color: hsl(var(--primary));
+      background-color: hsl(var(--primary) / 0.1);
+    }
+
+    /* Sample Item - show copy button on hover */
+    .sample-item {
+      position: relative;
+      transition: all 150ms ease;
+    }
+
+    .sample-item:hover .copy-btn {
+      opacity: 1;
+    }
+
+    .sample-item .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+
+    /* Copy feedback tooltip */
+    .copy-tooltip {
+      position: absolute;
+      top: -2rem;
+      right: 0;
+      background: hsl(var(--foreground));
+      color: hsl(var(--background));
+      padding: 0.25rem 0.5rem;
+      border-radius: calc(var(--radius) - 4px);
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: all 150ms ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .copy-tooltip.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* Code Block */
     .code-block {
       background-color: hsl(var(--muted));
@@ -654,7 +790,7 @@
     .chart-container {
       height: 150px;
       position: relative;
-      margin-bottom: 30px;
+      margin-bottom: 0px;
       padding: 0;
       overflow-x: visible;
     }
@@ -744,6 +880,11 @@
       .grid-cols-2 {
         grid-template-columns: 1fr;
       }
+      
+      /* Keep stats always side by side */
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
   </style>
 </head>
@@ -751,8 +892,8 @@
   <div class="container">
     <!-- Header -->
     <div class="mb-6">
-      <h1 class="text-2xl font-semibold tracking-tight mb-2 text-foreground">Design Token Export</h1>
-      <p class="text-sm text-muted-foreground leading-relaxed">
+      <h1 class="text-2xl font-semibold tracking-tight text-foreground">Design Token Export</h1>
+      <p class="text-md text-muted-foreground leading-relaxed pt-0">
         Export your Figma variables and design tokens into a JSON format that developers can easily use in their projects.
       </p>
     </div>
@@ -784,9 +925,9 @@
     <!-- Export Tab Content -->
     <div id="exportTab" class="tab-content" role="tabpanel">
       <!-- Export Options Card -->
-      <div class="card p-6 mb-4">
+      <div class="card p-4 ">
         <div class="mb-4">
-          <h3 class="text-lg font-semibold">Export Options</h3>
+          <h3 class="text-lg font-semibold" style="margin-top: 0; margin-bottom: 0;">Export Options</h3>
           <p class="text-sm text-muted-foreground mt-1">
             Generate your design tokens from Figma, then select which ones to export.
           </p>
@@ -795,7 +936,7 @@
         <!-- Token Selection Section -->
         <div id="tokenSelection" class="card p-4 mb-6 hidden" style="background-color: hsl(var(--muted) / 0.5);">
           <div class="flex items-center justify-between mb-4">
-            <h4 class="text-sm font-medium">Select Tokens to Export</h4>
+            <h4 class="text-sm font-bold">Select Tokens to Export</h4>
             <div class="flex items-center space-x-2">
               <label class="text-xs text-muted-foreground">Select All</label>
               <div class="toggle-switch active" id="selectAllToggle" role="switch" aria-checked="true">
@@ -808,7 +949,7 @@
         
         <!-- Format Options -->
         <div class="mb-6">
-          <label class="text-sm font-medium mb-3" style="display: block;">Export Format</label>
+          <label class="text-sm font-bold mb-2" style="display: block;">Export Format</label>
           <div class="space-y-3">
             <label class="form-label">
               <input type="radio" name="exportFormat" value="json" checked class="form-input">
@@ -817,6 +958,14 @@
             <label class="form-label">
               <input type="radio" name="exportFormat" value="css" class="form-input">
               <span class="text-sm">CSS Custom Properties</span>
+            </label>
+            <label class="form-label">
+              <input type="radio" name="exportFormat" value="ios" class="form-input">
+              <span class="text-sm">iOS Swift (UIColor extensions)</span>
+            </label>
+            <label class="form-label">
+              <input type="radio" name="exportFormat" value="android" class="form-input">
+              <span class="text-sm">Android XML (colors.xml)</span>
             </label>
           </div>
         </div>
@@ -831,7 +980,7 @@
       </div>
       
       <!-- Preview Section -->
-      <div id="previewSection" class="card p-6 mb-4 hidden">
+      <div id="previewSection" class="card p-6 hidden">
         <h3 id="previewTitle" class="text-lg font-semibold mb-4">Export Preview</h3>
         <div class="code-block">
           <pre id="previewContent" class="code-preview"></pre>
@@ -839,13 +988,6 @@
         
         <button id="downloadBtn" class="btn btn-primary">
           Download
-        </button>
-      </div>
-      
-      <!-- Close Button -->
-      <div class="text-center">
-        <button id="closeBtn" class="btn btn-secondary btn-sm">
-          Close
         </button>
       </div>
     </div>
@@ -865,8 +1007,8 @@
       </div>
       
       <!-- Analytics Export Button -->
-      <div id="analyticsExport" class="mt-6 text-center hidden">
-        <button id="exportAnalyticsBtn" class="btn btn-primary btn-sm">
+      <div id="analyticsExport" class="mt-4 text-center hidden">
+        <button id="exportAnalyticsBtn" class="btn btn-primary  ">
           <svg class="icon mr-2" viewBox="0 0 24 24">
             <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
           </svg>
@@ -893,7 +1035,7 @@
     
     let analyticsStats = null;
     // DOM elements
-    let exportBtn, downloadBtn, closeBtn, status, previewSection, previewContent, previewTitle;
+    let exportBtn, downloadBtn, status, previewSection, previewContent, previewTitle;
     let tokenSelection, tokenCollections, selectAllToggle;
 
     // Initialize plugin after DOM is ready
@@ -903,7 +1045,6 @@
       // DOM elements
       exportBtn = document.getElementById('exportBtn');
       downloadBtn = document.getElementById('downloadBtn');
-      closeBtn = document.getElementById('closeBtn');
       status = document.getElementById('status');
       previewSection = document.getElementById('previewSection');
       previewContent = document.getElementById('previewContent');
@@ -917,7 +1058,6 @@
       // Event listeners
       exportBtn.addEventListener('click', handleExport);
       downloadBtn.addEventListener('click', handleDownload);
-      closeBtn.addEventListener('click', handleClose);
       
       // Token selection event listeners
       if (selectAllToggle) {
@@ -1087,8 +1227,13 @@
         
         html += '<div class="card overflow-hidden">';
         html += '<div class="collection-header" onclick="toggleCollection(\''+collectionName+'\');">';
-        html += '<input type="checkbox" class="form-input mr-3" id="col-'+collectionName+'" ';
+        html += '<div class="flex items-center mr-3">';
+        html += '<input type="checkbox" class="switch-input" id="col-'+collectionName+'" ';
         html += 'checked onchange="toggleCollectionSelection(\''+collectionName+'\');">';
+        html += '<div class="small-switch active" id="switch-col-'+collectionName+'" onclick="toggleCollectionSwitch(\''+collectionName+'\', event)">';
+        html += '<div class="small-switch-slider"></div>';
+        html += '</div>';
+        html += '</div>';
         html += '<span class="font-medium text-sm flex-1">'+escapeHtml(collection.name)+'</span>';
         html += '<span class="token-badge mr-2">'+variableCount+' tokens</span>';
         html += '<button class="toggle-btn" id="toggle-'+collectionName+'">';
@@ -1105,9 +1250,14 @@
           selectedTokens[collectionName].tokens[varName] = true;
           
           html += '<div class="flex items-center space-x-3 py-1">';
-          html += '<input type="checkbox" class="form-input" ';
+          html += '<div class="flex items-center">';
+          html += '<input type="checkbox" class="switch-input" ';
           html += 'id="token-'+collectionName+'-'+varName+'" checked ';
           html += 'onchange="toggleTokenSelection(\''+collectionName+'\', \''+varName+'\');">';
+          html += '<div class="small-switch active" id="switch-token-'+collectionName+'-'+varName+'" onclick="toggleTokenSwitch(\''+collectionName+'\', \''+varName+'\', event)">';
+          html += '<div class="small-switch-slider"></div>';
+          html += '</div>';
+          html += '</div>';
           html += '<span class="text-sm flex-1">'+escapeHtml(varName)+'</span>';
           
           // Show value preview
@@ -1162,22 +1312,72 @@
       
       selectedTokens[collectionName].selected = isSelected;
       
+      // Update visual switch state
+      const switchElement = document.getElementById('switch-col-'+collectionName);
+      if (switchElement) {
+        if (isSelected) {
+          switchElement.classList.add('active');
+        } else {
+          switchElement.classList.remove('active');
+        }
+      }
+      
       // Update all token checkboxes in this collection
       for (const varName in selectedTokens[collectionName].tokens) {
         const tokenCheckbox = document.getElementById('token-'+collectionName+'-'+varName);
+        const tokenSwitch = document.getElementById('switch-token-'+collectionName+'-'+varName);
         if (tokenCheckbox) {
           tokenCheckbox.checked = isSelected;
           selectedTokens[collectionName].tokens[varName] = isSelected;
+          
+          // Update token switch visual state
+          if (tokenSwitch) {
+            if (isSelected) {
+              tokenSwitch.classList.add('active');
+            } else {
+              tokenSwitch.classList.remove('active');
+            }
+          }
         }
       }
       
       updateToggleState();
       updateExportButton();
     }
+
+    // Handle collection switch clicks
+    function toggleCollectionSwitch(collectionName, event) {
+      event.stopPropagation(); // Prevent triggering collection toggle
+      const collectionCheckbox = document.getElementById('col-'+collectionName);
+      const switchElement = document.getElementById('switch-col-'+collectionName);
+      
+      // Toggle the checkbox
+      collectionCheckbox.checked = !collectionCheckbox.checked;
+      
+      // Update switch visual state
+      if (collectionCheckbox.checked) {
+        switchElement.classList.add('active');
+      } else {
+        switchElement.classList.remove('active');
+      }
+      
+      // Trigger the change event
+      collectionCheckbox.dispatchEvent(new Event('change'));
+    }
     
     function toggleTokenSelection(collectionName, varName) {
       const tokenCheckbox = document.getElementById('token-'+collectionName+'-'+varName);
       selectedTokens[collectionName].tokens[varName] = tokenCheckbox.checked;
+      
+      // Update visual switch state
+      const tokenSwitch = document.getElementById('switch-token-'+collectionName+'-'+varName);
+      if (tokenSwitch) {
+        if (tokenCheckbox.checked) {
+          tokenSwitch.classList.add('active');
+        } else {
+          tokenSwitch.classList.remove('active');
+        }
+      }
       
       // Update collection checkbox based on token selections
       const tokenCheckboxes = Object.keys(selectedTokens[collectionName].tokens);
@@ -1186,22 +1386,47 @@
       ).length;
       
       const collectionCheckbox = document.getElementById('col-'+collectionName);
+      const collectionSwitch = document.getElementById('switch-col-'+collectionName);
+      
       if (selectedCount === 0) {
         collectionCheckbox.checked = false;
         collectionCheckbox.indeterminate = false;
         selectedTokens[collectionName].selected = false;
+        if (collectionSwitch) collectionSwitch.classList.remove('active');
       } else if (selectedCount === tokenCheckboxes.length) {
         collectionCheckbox.checked = true;
         collectionCheckbox.indeterminate = false;
         selectedTokens[collectionName].selected = true;
+        if (collectionSwitch) collectionSwitch.classList.add('active');
       } else {
         collectionCheckbox.checked = false;
         collectionCheckbox.indeterminate = true;
         selectedTokens[collectionName].selected = true;
+        if (collectionSwitch) collectionSwitch.classList.add('active'); // Show as active when partially selected
       }
       
       updateToggleState();
       updateExportButton();
+    }
+
+    // Handle token switch clicks
+    function toggleTokenSwitch(collectionName, varName, event) {
+      event.stopPropagation(); // Prevent any parent click handlers
+      const tokenCheckbox = document.getElementById('token-'+collectionName+'-'+varName);
+      const switchElement = document.getElementById('switch-token-'+collectionName+'-'+varName);
+      
+      // Toggle the checkbox
+      tokenCheckbox.checked = !tokenCheckbox.checked;
+      
+      // Update switch visual state
+      if (tokenCheckbox.checked) {
+        switchElement.classList.add('active');
+      } else {
+        switchElement.classList.remove('active');
+      }
+      
+      // Trigger the change event
+      tokenCheckbox.dispatchEvent(new Event('change'));
     }
     
     function toggleAllTokens() {
@@ -1224,16 +1449,32 @@
       for (const collectionName in selectedTokens) {
         selectedTokens[collectionName].selected = shouldSelectAll;
         const collectionCheckbox = document.getElementById('col-'+collectionName);
+        const collectionSwitch = document.getElementById('switch-col-'+collectionName);
         if (collectionCheckbox) {
           collectionCheckbox.checked = shouldSelectAll;
           collectionCheckbox.indeterminate = false;
+        }
+        if (collectionSwitch) {
+          if (shouldSelectAll) {
+            collectionSwitch.classList.add('active');
+          } else {
+            collectionSwitch.classList.remove('active');
+          }
         }
         
         for (const varName in selectedTokens[collectionName].tokens) {
           selectedTokens[collectionName].tokens[varName] = shouldSelectAll;
           const tokenCheckbox = document.getElementById('token-'+collectionName+'-'+varName);
+          const tokenSwitch = document.getElementById('switch-token-'+collectionName+'-'+varName);
           if (tokenCheckbox) {
             tokenCheckbox.checked = shouldSelectAll;
+          }
+          if (tokenSwitch) {
+            if (shouldSelectAll) {
+              tokenSwitch.classList.add('active');
+            } else {
+              tokenSwitch.classList.remove('active');
+            }
           }
         }
       }
@@ -1385,6 +1626,14 @@
           const content = convertToCSS(exportedData);
           downloadFile(content, 'text/css', 'design-tokens-' + dateStr + '.css');
           showStatus('success', 'CSS file downloaded successfully!');
+        } else if (format === 'ios') {
+          const content = convertToiOS(exportedData);
+          downloadFile(content, 'text/plain', 'DesignTokens+UIColor-' + dateStr + '.swift');
+          showStatus('success', 'iOS Swift file downloaded successfully!');
+        } else if (format === 'android') {
+          const content = convertToAndroid(exportedData);
+          downloadFile(content, 'text/xml', 'colors-' + dateStr + '.xml');
+          showStatus('success', 'Android XML file downloaded successfully!');
         }
       } catch (error) {
         console.error('Download error:', error);
@@ -1417,6 +1666,10 @@
         downloadBtn.textContent = 'Download JSON';
       } else if (format === 'css') {
         downloadBtn.textContent = 'Download CSS';
+      } else if (format === 'ios') {
+        downloadBtn.textContent = 'Download Swift';
+      } else if (format === 'android') {
+        downloadBtn.textContent = 'Download XML';
       } else {
         downloadBtn.textContent = 'Download';
       }
@@ -1449,6 +1702,14 @@
         const cssContent = convertToCSS(exportedData);
         previewContent.textContent = cssContent;
         if (previewTitle) previewTitle.textContent = 'CSS Preview';
+      } else if (format === 'ios') {
+        const iosContent = convertToiOS(exportedData);
+        previewContent.textContent = iosContent;
+        if (previewTitle) previewTitle.textContent = 'iOS Swift Preview';
+      } else if (format === 'android') {
+        const androidContent = convertToAndroid(exportedData);
+        previewContent.textContent = androidContent;
+        if (previewTitle) previewTitle.textContent = 'Android XML Preview';
       } else {
         const preview = createJSONPreview(exportedData);
         previewContent.textContent = JSON.stringify(preview, null, 2);
@@ -1543,6 +1804,141 @@
       css += '}\n';
       
       return css;
+    }
+
+    // Convert JSON data to iOS Swift UIColor extensions
+    function convertToiOS(data) {
+      let swift = '// Design Tokens exported from Figma\n';
+      swift += '// Exported at: ' + data.metadata.exportedAt + '\n';
+      swift += '// File: ' + (data.metadata.figmaFileKey || 'Unknown') + '\n';
+      swift += '// Collections: ' + Object.keys(data.collections).join(', ') + '\n\n';
+      
+      swift += 'import UIKit\n\n';
+      swift += '// MARK: - Design Tokens\n';
+      swift += 'extension UIColor {\n\n';
+      
+      // Add usage examples
+      swift += '    /* Usage Examples:\n';
+      swift += '     * myView.backgroundColor = .primaryColor\n';
+      swift += '     * myLabel.textColor = .secondaryColor\n';
+      swift += '     * myButton.tintColor = .accentColor\n';
+      swift += '     */\n\n';
+      
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        
+        swift += '    // MARK: - ' + collection.name + '\n';
+        
+        for (const varName in collection.variables) {
+          const variable = collection.variables[varName];
+          
+          // Only process color tokens for iOS
+          if (variable.type === 'COLOR') {
+            for (const modeName in variable.values) {
+              const value = variable.values[modeName];
+              const swiftVarName = toCamelCase(collectionName + '-' + varName);
+              const comment = variable.description ? ' // ' + variable.description : '';
+              
+              // Convert hex to UIColor
+              if (value.startsWith('#')) {
+                const hex = value.replace('#', '');
+                const r = parseInt(hex.substr(0, 2), 16) / 255.0;
+                const g = parseInt(hex.substr(2, 2), 16) / 255.0;
+                const b = parseInt(hex.substr(4, 2), 16) / 255.0;
+                const alpha = hex.length === 8 ? parseInt(hex.substr(6, 2), 16) / 255.0 : 1.0;
+                
+                swift += '    static let ' + swiftVarName + ' = UIColor(red: ' + r.toFixed(3) + ', green: ' + g.toFixed(3) + ', blue: ' + b.toFixed(3) + ', alpha: ' + alpha.toFixed(3) + ')' + comment + '\n';
+              } else if (value.startsWith('rgb')) {
+                // Handle rgb() values
+                const rgbMatch = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                if (rgbMatch) {
+                  const r = parseInt(rgbMatch[1]) / 255.0;
+                  const g = parseInt(rgbMatch[2]) / 255.0;
+                  const b = parseInt(rgbMatch[3]) / 255.0;
+                  swift += '    static let ' + swiftVarName + ' = UIColor(red: ' + r.toFixed(3) + ', green: ' + g.toFixed(3) + ', blue: ' + b.toFixed(3) + ', alpha: 1.0)' + comment + '\n';
+                }
+              }
+              break; // Use first mode only
+            }
+          }
+        }
+        swift += '\n';
+      }
+      
+      swift += '}\n';
+      
+      return swift;
+    }
+
+    // Convert JSON data to Android XML colors
+    function convertToAndroid(data) {
+      let xml = '<?xml version="1.0" encoding="utf-8"?>\n';
+      xml += '<!-- Design Tokens exported from Figma -->\n';
+      xml += '<!-- Exported at: ' + data.metadata.exportedAt + ' -->\n';
+      xml += '<!-- File: ' + (data.metadata.figmaFileKey || 'Unknown') + ' -->\n';
+      xml += '<!-- Collections: ' + Object.keys(data.collections).join(', ') + ' -->\n\n';
+      
+      xml += '<resources>\n\n';
+      
+      // Add usage examples
+      xml += '    <!-- Usage Examples:\n';
+      xml += '         android:background="@color/primary_color"\n';
+      xml += '         android:textColor="@color/secondary_color"\n';
+      xml += '         app:tint="@color/accent_color" -->\n\n';
+      
+      for (const collectionName in data.collections) {
+        const collection = data.collections[collectionName];
+        
+        xml += '    <!-- ' + collection.name + ' -->\n';
+        
+        for (const varName in collection.variables) {
+          const variable = collection.variables[varName];
+          
+          // Only process color tokens for Android
+          if (variable.type === 'COLOR') {
+            for (const modeName in variable.values) {
+              const value = variable.values[modeName];
+              const androidVarName = toSnakeCase(collectionName + '_' + varName);
+              const comment = variable.description ? ' <!-- ' + variable.description + ' -->' : '';
+              
+              // Convert to Android color format
+              let androidColor = value;
+              if (value.startsWith('rgb')) {
+                // Convert rgb to hex
+                const rgbMatch = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                if (rgbMatch) {
+                  const r = parseInt(rgbMatch[1]).toString(16).padStart(2, '0');
+                  const g = parseInt(rgbMatch[2]).toString(16).padStart(2, '0');
+                  const b = parseInt(rgbMatch[3]).toString(16).padStart(2, '0');
+                  androidColor = '#' + r + g + b;
+                }
+              }
+              
+              xml += '    <color name="' + androidVarName + '">' + androidColor.toUpperCase() + '</color>' + comment + '\n';
+              break; // Use first mode only
+            }
+          }
+        }
+        xml += '\n';
+      }
+      
+      xml += '</resources>\n';
+      
+      return xml;
+    }
+
+    // Helper function to convert to camelCase
+    function toCamelCase(str) {
+      return str.replace(/[-_\s]+(.)?/g, function(match, char) {
+        return char ? char.toUpperCase() : '';
+      }).replace(/^./, function(char) {
+        return char.toLowerCase();
+      });
+    }
+
+    // Helper function to convert to snake_case
+    function toSnakeCase(str) {
+      return str.replace(/[-\s]+/g, '_').replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
     }
 
     // Update analytics with exported data
@@ -1650,7 +2046,7 @@
       let html = '';
       
       // Overview stats
-      html += '<div class="grid grid-cols-2 gap-4 mb-6">';
+      html += '<div class="stats-grid mb-6">';
       html += '<div class="card stat-card">';
       html += '<div class="stat-value">' + stats.totalTokens + '</div>';
       html += '<div class="stat-label">Total Tokens</div>';
@@ -1691,12 +2087,16 @@
         html += '<div class="grid grid-cols-2 gap-3">';
         for (let i = 0; i < stats.colorSamples.length; i++) {
           const sample = stats.colorSamples[i];
-          html += '<div class="card p-3">';
+          html += '<div class="card p-3 sample-item">';
           html += '<div class="flex items-center space-x-2 mb-2">';
           html += '<div class="w-4 h-4 rounded border-border" style="background-color: ' + sample.value + '; border: 1px solid hsl(var(--border));"></div>';
           html += '<span class="text-sm font-medium">' + sample.name + '</span>';
           html += '</div>';
           html += '<code class="text-xs text-muted-foreground font-mono">' + sample.value + '</code>';
+          html += '<button class="copy-btn" onclick="copyToClipboard(\'' + escapeForAttribute(sample.value) + '\', this)" title="Copy value">';
+          html += '<svg class="icon" viewBox="0 0 24 24" style="width: 0.75rem; height: 0.75rem;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg>';
+          html += '</button>';
+          html += '<div class="copy-tooltip">Copied!</div>';
           html += '</div>';
         }
         html += '</div>';
@@ -1717,9 +2117,14 @@
         html += '<div class="grid grid-cols-2 gap-3">';
         for (let i = 0; i < stats.numberSamples.length; i++) {
           const sample = stats.numberSamples[i];
-          html += '<div class="card p-3">';
+          const valueWithUnit = sample.value + 'px';
+          html += '<div class="card p-3 sample-item">';
           html += '<div class="text-sm font-medium mb-1">' + sample.name + '</div>';
-          html += '<code class="text-xs text-muted-foreground font-mono">' + sample.value + 'px</code>';
+          html += '<code class="text-xs text-muted-foreground font-mono">' + valueWithUnit + '</code>';
+          html += '<button class="copy-btn" onclick="copyToClipboard(\'' + escapeForAttribute(valueWithUnit) + '\', this)" title="Copy value">';
+          html += '<svg class="icon" viewBox="0 0 24 24" style="width: 0.75rem; height: 0.75rem;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg>';
+          html += '</button>';
+          html += '<div class="copy-tooltip">Copied!</div>';
           html += '</div>';
         }
         html += '</div>';
@@ -1754,6 +2159,85 @@
       }
       
       return html;
+    }
+
+    // Helper function to escape values for HTML attributes
+    function escapeForAttribute(text) {
+      return text.replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+    // Copy to clipboard functionality
+    function copyToClipboard(text, buttonElement) {
+      // Use modern Clipboard API if available
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function() {
+          showCopyFeedback(buttonElement, true);
+        }).catch(function(err) {
+          console.error('Failed to copy text: ', err);
+          // Fallback to legacy method
+          copyToClipboardFallback(text, buttonElement);
+        });
+      } else {
+        // Fallback for older browsers or non-secure contexts
+        copyToClipboardFallback(text, buttonElement);
+      }
+    }
+
+    // Fallback copy method for older browsers
+    function copyToClipboardFallback(text, buttonElement) {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      try {
+        const successful = document.execCommand('copy');
+        showCopyFeedback(buttonElement, successful);
+      } catch (err) {
+        console.error('Fallback copy failed: ', err);
+        showCopyFeedback(buttonElement, false);
+      }
+      
+      document.body.removeChild(textArea);
+    }
+
+    // Show visual feedback for copy operation
+    function showCopyFeedback(buttonElement, success) {
+      const tooltip = buttonElement.parentElement.querySelector('.copy-tooltip');
+      
+      if (success) {
+        // Update button appearance
+        buttonElement.classList.add('copied');
+        
+        // Show tooltip
+        if (tooltip) {
+          tooltip.textContent = 'Copied!';
+          tooltip.classList.add('show');
+        }
+        
+        // Reset after delay
+        setTimeout(function() {
+          buttonElement.classList.remove('copied');
+          if (tooltip) {
+            tooltip.classList.remove('show');
+          }
+        }, 1500);
+      } else {
+        // Show error feedback
+        if (tooltip) {
+          tooltip.textContent = 'Failed to copy';
+          tooltip.classList.add('show');
+          
+          setTimeout(function() {
+            tooltip.classList.remove('show');
+            tooltip.textContent = 'Copied!'; // Reset for next time
+          }, 2000);
+        }
+      }
     }
 
     // Create a simple bar chart
