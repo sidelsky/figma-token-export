@@ -491,15 +491,15 @@
           <strong>No Data Available</strong><br>
           Export your design tokens first to see analytics and statistics.
         </div>
-      </div>
       
       <!-- Analytics Export Button -->
       <div id="analyticsExport" class="analytics-export" style="display: none;">
-        <button id="exportAnalyticsBtn" class="button">📊 Export Analytics to CSV</button>
+        <button id="exportAnalyticsBtn" class="button">📊 Export Analytics to Excel</button>
+      </div>
+        </div>
       </div>
     </div>
   </div>
-
 
   <script>
     console.log('UI script starting to execute...');
@@ -1076,95 +1076,143 @@
     }
 
 
-    // Handle analytics export to Excel (CSV format)
+    // Handle analytics export to Excel
     function handleAnalyticsExport() {
       if (!analyticsStats) return;
       
       try {
-        const csvData = generateCSVData(analyticsStats);
+        const excelData = generateExcelData(analyticsStats);
         const dateStr = new Date().toISOString().split('T')[0];
-        downloadFile(csvData, 'text/csv', 'design-tokens-analytics-' + dateStr + '.csv');
-        showStatus('success', 'Analytics exported to CSV successfully!');
+        downloadFile(excelData, 'application/vnd.ms-excel', 'design-tokens-analytics-' + dateStr + '.xls');
+        showStatus('success', 'Analytics exported to Excel successfully!');
       } catch (error) {
-        console.error('CSV export error:', error);
+        console.error('Excel export error:', error);
         showStatus('error', 'Failed to export analytics');
       }
     }
 
-    // Generate CSV data from analytics
-    function generateCSVData(stats) {
-      let csv = '';
+    // Generate Excel data from analytics
+    function generateExcelData(stats) {
+      let excel = '';
       
-      // Overview section
-      csv += 'Design Token Analytics Overview\n';
-      csv += '\n';
-      csv += 'Metric,Value\n';
-      csv += 'Total Tokens,' + stats.totalTokens + '\n';
-      csv += 'Total Collections,' + stats.totalCollections + '\n';
-      csv += 'Export Date,' + stats.exportedAt + '\n';
-      csv += '\n';
+      // Excel XML header
+      excel += '<?xml version="1.0"?>\n';
+      excel += '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"\n';
+      excel += ' xmlns:o="urn:schemas-microsoft-com:office:office"\n';
+      excel += ' xmlns:x="urn:schemas-microsoft-com:office:excel"\n';
+      excel += ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"\n';
+      excel += ' xmlns:html="http://www.w3.org/TR/REC-html40">\n';
       
-      // Token Types section
+      // Styles
+      excel += '<Styles>\n';
+      excel += '<Style ss:ID="Header">\n';
+      excel += '<Font ss:Bold="1"/>\n';
+      excel += '<Interior ss:Color="#18a0fb" ss:Pattern="Solid"/>\n';
+      excel += '<Font ss:Color="#FFFFFF"/>\n';
+      excel += '</Style>\n';
+      excel += '<Style ss:ID="SubHeader">\n';
+      excel += '<Font ss:Bold="1"/>\n';
+      excel += '<Interior ss:Color="#f8f9fa" ss:Pattern="Solid"/>\n';
+      excel += '</Style>\n';
+      excel += '</Styles>\n';
+      
+      // Overview worksheet
+      excel += '<Worksheet ss:Name="Overview">\n';
+      excel += '<Table>\n';
+      excel += '<Row><Cell ss:StyleID="Header"><Data ss:Type="String">Design Token Analytics Overview</Data></Cell></Row>\n';
+      excel += '<Row><Cell><Data ss:Type="String"></Data></Cell></Row>\n';
+      excel += '<Row><Cell ss:StyleID="SubHeader"><Data ss:Type="String">Metric</Data></Cell><Cell ss:StyleID="SubHeader"><Data ss:Type="String">Value</Data></Cell></Row>\n';
+      excel += '<Row><Cell><Data ss:Type="String">Total Tokens</Data></Cell><Cell><Data ss:Type="Number">' + stats.totalTokens + '</Data></Cell></Row>\n';
+      excel += '<Row><Cell><Data ss:Type="String">Total Collections</Data></Cell><Cell><Data ss:Type="Number">' + stats.totalCollections + '</Data></Cell></Row>\n';
+      excel += '<Row><Cell><Data ss:Type="String">Export Date</Data></Cell><Cell><Data ss:Type="String">' + stats.exportedAt + '</Data></Cell></Row>\n';
+      excel += '</Table>\n';
+      excel += '</Worksheet>\n';
+      
+      // Token Types worksheet
       if (Object.keys(stats.typeBreakdown).length > 0) {
-        csv += 'Token Types Distribution\n';
-        csv += 'Type,Count\n';
+        excel += '<Worksheet ss:Name="Token Types">\n';
+        excel += '<Table>\n';
+        excel += '<Row><Cell ss:StyleID="Header"><Data ss:Type="String">Token Types Distribution</Data></Cell></Row>\n';
+        excel += '<Row><Cell><Data ss:Type="String"></Data></Cell></Row>\n';
+        excel += '<Row><Cell ss:StyleID="SubHeader"><Data ss:Type="String">Type</Data></Cell><Cell ss:StyleID="SubHeader"><Data ss:Type="String">Count</Data></Cell></Row>\n';
         
         for (const type in stats.typeBreakdown) {
           const count = stats.typeBreakdown[type];
           const label = getTypeLabel(type);
-          csv += escapeCSV(label) + ',' + count + '\n';
+          excel += '<Row><Cell><Data ss:Type="String">' + label + '</Data></Cell><Cell><Data ss:Type="Number">' + count + '</Data></Cell></Row>\n';
         }
-        csv += '\n';
+        
+        excel += '</Table>\n';
+        excel += '</Worksheet>\n';
       }
       
-      // Collections section
+      // Collections worksheet
       if (Object.keys(stats.collectionBreakdown).length > 0) {
-        csv += 'Collections Breakdown\n';
-        csv += 'Collection Name,Token Count\n';
+        excel += '<Worksheet ss:Name="Collections">\n';
+        excel += '<Table>\n';
+        excel += '<Row><Cell ss:StyleID="Header"><Data ss:Type="String">Collections Breakdown</Data></Cell></Row>\n';
+        excel += '<Row><Cell><Data ss:Type="String"></Data></Cell></Row>\n';
+        excel += '<Row><Cell ss:StyleID="SubHeader"><Data ss:Type="String">Collection Name</Data></Cell><Cell ss:StyleID="SubHeader"><Data ss:Type="String">Token Count</Data></Cell></Row>\n';
         
         for (const collectionName in stats.collectionBreakdown) {
           const collection = stats.collectionBreakdown[collectionName];
           if (collection.count > 0) {
-            csv += escapeCSV(collection.name) + ',' + collection.count + '\n';
+            excel += '<Row><Cell><Data ss:Type="String">' + escapeXml(collection.name) + '</Data></Cell><Cell><Data ss:Type="Number">' + collection.count + '</Data></Cell></Row>\n';
           }
         }
-        csv += '\n';
+        
+        excel += '</Table>\n';
+        excel += '</Worksheet>\n';
       }
       
-      // Color Samples section
+      // Color Samples worksheet
       if (stats.colorSamples && stats.colorSamples.length > 0) {
-        csv += 'Color Token Samples\n';
-        csv += 'Token Name,Color Value\n';
+        excel += '<Worksheet ss:Name="Color Samples">\n';
+        excel += '<Table>\n';
+        excel += '<Row><Cell ss:StyleID="Header"><Data ss:Type="String">Color Token Samples</Data></Cell></Row>\n';
+        excel += '<Row><Cell><Data ss:Type="String"></Data></Cell></Row>\n';
+        excel += '<Row><Cell ss:StyleID="SubHeader"><Data ss:Type="String">Token Name</Data></Cell><Cell ss:StyleID="SubHeader"><Data ss:Type="String">Color Value</Data></Cell></Row>\n';
         
         for (let i = 0; i < stats.colorSamples.length; i++) {
           const sample = stats.colorSamples[i];
-          csv += escapeCSV(sample.name) + ',' + escapeCSV(sample.value) + '\n';
+          excel += '<Row><Cell><Data ss:Type="String">' + escapeXml(sample.name) + '</Data></Cell><Cell><Data ss:Type="String">' + escapeXml(sample.value) + '</Data></Cell></Row>\n';
         }
-        csv += '\n';
+        
+        excel += '</Table>\n';
+        excel += '</Worksheet>\n';
       }
       
-      // Number Samples section
+      // Number Samples worksheet
       if (stats.numberSamples && stats.numberSamples.length > 0) {
-        csv += 'Number/Spacing Token Samples\n';
-        csv += 'Token Name,Value (px)\n';
+        excel += '<Worksheet ss:Name="Number Samples">\n';
+        excel += '<Table>\n';
+        excel += '<Row><Cell ss:StyleID="Header"><Data ss:Type="String">Number/Spacing Token Samples</Data></Cell></Row>\n';
+        excel += '<Row><Cell><Data ss:Type="String"></Data></Cell></Row>\n';
+        excel += '<Row><Cell ss:StyleID="SubHeader"><Data ss:Type="String">Token Name</Data></Cell><Cell ss:StyleID="SubHeader"><Data ss:Type="String">Value (px)</Data></Cell></Row>\n';
         
         for (let i = 0; i < stats.numberSamples.length; i++) {
           const sample = stats.numberSamples[i];
-          csv += escapeCSV(sample.name) + ',' + sample.value + '\n';
+          excel += '<Row><Cell><Data ss:Type="String">' + escapeXml(sample.name) + '</Data></Cell><Cell><Data ss:Type="Number">' + sample.value + '</Data></Cell></Row>\n';
         }
-        csv += '\n';
+        
+        excel += '</Table>\n';
+        excel += '</Worksheet>\n';
       }
       
-      return csv;
+      excel += '</Workbook>';
+      
+      return excel;
     }
     
-    // Escape CSV special characters
-    function escapeCSV(text) {
+    // Escape XML special characters
+    function escapeXml(text) {
       if (typeof text !== 'string') return text;
-      if (text.includes(',') || text.includes('"') || text.includes('\n')) {
-        return '"' + text.replace(/"/g, '""') + '"';
-      }
-      return text;
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
     }
 
     // Get friendly label for token type

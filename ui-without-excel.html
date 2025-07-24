@@ -241,7 +241,7 @@
     }
     
     .chart-header.collapsed {
-      margin-bottom: 8px;
+      margin-bottom: 7px;
     }
     
     .chart-title {
@@ -415,19 +415,6 @@
       margin-right: 8px;
       vertical-align: middle;
     }
-  
-    .analytics-export {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid #e1e5e9;
-      text-align: center;
-    }
-    
-    .analytics-export .button {
-      width: auto;
-      min-width: 160px;
-      padding: 10px 20px;
-    }
   </style>
 </head>
 <body>
@@ -492,14 +479,8 @@
           Export your design tokens first to see analytics and statistics.
         </div>
       </div>
-      
-      <!-- Analytics Export Button -->
-      <div id="analyticsExport" class="analytics-export" style="display: none;">
-        <button id="exportAnalyticsBtn" class="button">📊 Export Analytics to CSV</button>
-      </div>
     </div>
   </div>
-
 
   <script>
     console.log('UI script starting to execute...');
@@ -514,7 +495,6 @@
       'collections': false
     };
     
-    let analyticsStats = null;
     // DOM elements
     let exportBtn, downloadBtn, closeBtn, status, previewSection, previewContent, previewTitle;
 
@@ -586,13 +566,6 @@
           showStatus('error', 'Error: ' + message);
         }
       };
-
-      
-      // Analytics export button
-      const exportAnalyticsBtn = document.getElementById('exportAnalyticsBtn');
-      if (exportAnalyticsBtn) {
-        exportAnalyticsBtn.addEventListener('click', handleAnalyticsExport);
-      }
 
       console.log('✅ Plugin UI initialized successfully!');
     }
@@ -860,13 +833,6 @@
       
       const stats = generateStatistics(data);
       const analyticsHTML = createAnalyticsHTML(stats);
-      analyticsStats = stats;
-      
-      // Show export button
-      const analyticsExport = document.getElementById('analyticsExport');
-      if (analyticsExport) {
-        analyticsExport.style.display = 'block';
-      }
       
       analyticsContent.innerHTML = analyticsHTML;
       
@@ -1073,98 +1039,6 @@
       
       html += '</div>';
       return html;
-    }
-
-
-    // Handle analytics export to Excel (CSV format)
-    function handleAnalyticsExport() {
-      if (!analyticsStats) return;
-      
-      try {
-        const csvData = generateCSVData(analyticsStats);
-        const dateStr = new Date().toISOString().split('T')[0];
-        downloadFile(csvData, 'text/csv', 'design-tokens-analytics-' + dateStr + '.csv');
-        showStatus('success', 'Analytics exported to CSV successfully!');
-      } catch (error) {
-        console.error('CSV export error:', error);
-        showStatus('error', 'Failed to export analytics');
-      }
-    }
-
-    // Generate CSV data from analytics
-    function generateCSVData(stats) {
-      let csv = '';
-      
-      // Overview section
-      csv += 'Design Token Analytics Overview\n';
-      csv += '\n';
-      csv += 'Metric,Value\n';
-      csv += 'Total Tokens,' + stats.totalTokens + '\n';
-      csv += 'Total Collections,' + stats.totalCollections + '\n';
-      csv += 'Export Date,' + stats.exportedAt + '\n';
-      csv += '\n';
-      
-      // Token Types section
-      if (Object.keys(stats.typeBreakdown).length > 0) {
-        csv += 'Token Types Distribution\n';
-        csv += 'Type,Count\n';
-        
-        for (const type in stats.typeBreakdown) {
-          const count = stats.typeBreakdown[type];
-          const label = getTypeLabel(type);
-          csv += escapeCSV(label) + ',' + count + '\n';
-        }
-        csv += '\n';
-      }
-      
-      // Collections section
-      if (Object.keys(stats.collectionBreakdown).length > 0) {
-        csv += 'Collections Breakdown\n';
-        csv += 'Collection Name,Token Count\n';
-        
-        for (const collectionName in stats.collectionBreakdown) {
-          const collection = stats.collectionBreakdown[collectionName];
-          if (collection.count > 0) {
-            csv += escapeCSV(collection.name) + ',' + collection.count + '\n';
-          }
-        }
-        csv += '\n';
-      }
-      
-      // Color Samples section
-      if (stats.colorSamples && stats.colorSamples.length > 0) {
-        csv += 'Color Token Samples\n';
-        csv += 'Token Name,Color Value\n';
-        
-        for (let i = 0; i < stats.colorSamples.length; i++) {
-          const sample = stats.colorSamples[i];
-          csv += escapeCSV(sample.name) + ',' + escapeCSV(sample.value) + '\n';
-        }
-        csv += '\n';
-      }
-      
-      // Number Samples section
-      if (stats.numberSamples && stats.numberSamples.length > 0) {
-        csv += 'Number/Spacing Token Samples\n';
-        csv += 'Token Name,Value (px)\n';
-        
-        for (let i = 0; i < stats.numberSamples.length; i++) {
-          const sample = stats.numberSamples[i];
-          csv += escapeCSV(sample.name) + ',' + sample.value + '\n';
-        }
-        csv += '\n';
-      }
-      
-      return csv;
-    }
-    
-    // Escape CSV special characters
-    function escapeCSV(text) {
-      if (typeof text !== 'string') return text;
-      if (text.includes(',') || text.includes('"') || text.includes('\n')) {
-        return '"' + text.replace(/"/g, '""') + '"';
-      }
-      return text;
     }
 
     // Get friendly label for token type
