@@ -256,8 +256,20 @@
       margin-top: 0.75rem;
     }
 
+    .grid-cols-1 {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
     .grid-cols-2 {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-rows-1 {
+      grid-template-rows: repeat(1, minmax(0, 1fr));
+    }
+
+    .grid-cols-3-always {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     }
 
     .stats-grid {
@@ -2896,25 +2908,25 @@
       // Summary
       html += '<div class="accessibility-section">';
       html += '<h4 class="text-sm font-bold mb-2">Summary</h4>';
-      html += '<div class="grid grid-cols-3 gap-3 mb-3">';
-      html += '<div class="text-center p-2 card">';
-      html += '<div class="font-bold text-lg">' + analysis.summary.totalIssues + '</div>';
-      html += '<div class="text-xs text-muted-foreground">Total Issues</div>';
+      html += '<div class="grid grid-cols-3-always grid-rows-1 gap-3 mb-3">';
+      html += '<div class="text-center p-2 card stat-card">';
+      html += '<div class="font-bold stat-value">' + analysis.summary.totalIssues + '</div>';
+      html += '<div class="text-sm font-bold mb-2 text-muted-foreground">Total Issues</div>';
       html += '</div>';
-      html += '<div class="text-center p-2 card">';
-      html += '<div class="font-bold text-lg text-red-600">' + analysis.summary.criticalIssues + '</div>';
-      html += '<div class="text-xs text-muted-foreground">Critical</div>';
+      html += '<div class="text-center p-2 card stat-card">';
+      html += '<div class="font-bold stat-value text-red-600">' + analysis.summary.criticalIssues + '</div>';
+      html += '<div class="text-sm font-bold mb-2 text-muted-foreground">Critical</div>';
       html += '</div>';
-      html += '<div class="text-center p-2 card">';
-      html += '<div class="font-bold text-lg text-orange-600">' + analysis.summary.warnings + '</div>';
-      html += '<div class="text-xs text-muted-foreground">Warnings</div>';
+      html += '<div class="text-center p-2 card stat-card">';
+      html += '<div class="font-bold stat-value text-orange-600">' + analysis.summary.warnings + '</div>';
+      html += '<div class="text-sm font-bold mb-2 text-muted-foreground">Warnings</div>';
       html += '</div>';
       html += '</div>';
       
       // Recommendations
       if (analysis.summary.recommendations.length > 0) {
         html += '<div class="mb-3">';
-        html += '<h5 class="text-xs font-bold mb-2">Recommendations</h5>';
+        html += '<h5 class="text-sm font-bold mb-2 font-bold mb-2">Recommendations</h5>';
         for (let i = 0; i < analysis.summary.recommendations.length; i++) {
           html += '<div class="text-xs text-muted-foreground mb-1">' + analysis.summary.recommendations[i] + '</div>';
         }
