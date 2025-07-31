@@ -928,6 +928,222 @@
       overflow-x: visible;
     }
 
+    .area-chart-container {
+      position: relative;
+      margin-bottom: 1rem;
+      padding: 1rem 1rem 0.25rem 1rem;
+      background: hsl(var(--card));
+      border-radius: var(--radius);
+      border: 1px solid hsl(var(--border));
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+ 
+    }
+
+    .area-chart {
+      width: 100%;
+      height: 150px;
+      position: relative;
+      overflow: hidden;
+     
+    }
+
+    .area-chart svg {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .area-chart-gradient {
+      stop-color: hsl(var(--primary));
+    }
+
+    .area-chart-gradient-stop-0 {
+      stop-color: hsl(var(--primary));
+      stop-opacity: 0.8;
+    }
+
+    .area-chart-gradient-stop-100 {
+      stop-color: hsl(var(--primary));
+      stop-opacity: 0.1;
+    }
+
+    .area-chart-line {
+      fill: none;
+      stroke: hsl(var(--primary));
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .area-chart-area {
+      fill: url(#areaGradient);
+      opacity: 0.3;
+    }
+
+    .area-chart-grid {
+      stroke: hsl(var(--border));
+      stroke-width: 1;
+      opacity: 0.2;
+    }
+
+    .area-chart-axis {
+      stroke: hsl(var(--border));
+      stroke-width: 1;
+    }
+
+    .area-chart-label {
+      fill: hsl(var(--muted-foreground));
+      font-size: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .area-chart-tooltip {
+      position: absolute;
+      background: hsl(var(--popover));
+      border: 1px solid hsl(var(--border));
+      border-radius: calc(var(--radius) - 2px);
+      padding: 0.5rem;
+      font-size: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 10;
+    }
+
+    .area-chart-tooltip.show {
+      opacity: 1;
+    }
+
+    .area-chart-tooltip-label {
+      font-weight: 600;
+      color: hsl(var(--foreground));
+      margin-bottom: 0.25rem;
+    }
+
+    .area-chart-tooltip-value {
+      color: hsl(var(--muted-foreground));
+    }
+
+    .area-chart-trend {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: hsl(var(--muted-foreground));
+      width: 120px;
+    }
+
+    /* Time Period Selector */
+    .time-period-selector {
+      display: flex;
+      gap: 0.25rem;
+      background: hsl(var(--muted));
+      border-radius: calc(var(--radius) - 2px);
+      padding: 0.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .time-period-btn {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      border: none;
+      background: transparent;
+      color: hsl(var(--muted-foreground));
+      border-radius: calc(var(--radius) - 4px);
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .time-period-btn:hover {
+      color: hsl(var(--foreground));
+    }
+
+    .time-period-btn.active {
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+
+    .area-chart-trend-up {
+      color: #10b981;
+    }
+
+    .area-chart-trend-down {
+      color: #ef4444;
+    }
+
+    .area-chart-legend {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+    }
+
+    .area-chart-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .area-chart-legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+
+    /* Analytics Sub-tabs */
+    .analytics-sub-nav {
+      border-bottom: 1px solid hsl(var(--border));
+      margin-bottom: 1.5rem;
+    }
+
+    .analytics-sub-nav nav {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .analytics-sub-tab {
+      border-bottom: 2px solid transparent;
+      padding: 0.5rem 0.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: hsl(var(--muted-foreground));
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      cursor: pointer;
+      transition: all 200ms;
+    }
+
+    .analytics-sub-tab:hover {
+      color: hsl(var(--foreground));
+      border-bottom-color: hsl(var(--border));
+    }
+
+    .analytics-sub-tab.active {
+      color: hsl(var(--foreground));
+      border-bottom-color: hsl(var(--primary));
+    }
+
+    /* Insertion Charts Container */
+    .insertion-charts {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .insertion-chart-content {
+      margin-bottom: 0;
+    }
+
     .bar-chart {
       display: flex;
       align-items: end;
@@ -1025,7 +1241,7 @@
   <div class="container">
     <!-- Header -->
     <div class="mb-6">
-      <h1 class="text-2xl font-semibold tracking-tight text-foreground">Design Token Export</h1>
+      <h1 class="text-2xl font-semibold tracking-tight text-foreground" style="margin-top: 0px;">Design Token Export</h1>
       <p class="text-md text-muted-foreground leading-relaxed pt-0">
         Export your Figma variables and design tokens into a JSON format that developers can easily use in their projects.
       </p>
@@ -1130,6 +1346,9 @@
         
         <!-- Export Button -->
         <button id="exportBtn" class="btn btn-primary">
+          <svg class="icon mr-2" viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
           Generate Design Tokens
         </button>
         
@@ -1220,6 +1439,11 @@
     
     let analyticsStats = null;
     let accessibilityAnalysis = null;
+    let currentTimePeriods = {
+      'styles': '30days',
+      'components': '30days', 
+      'variables': '30days'
+    };
     // DOM elements
     let exportBtn, downloadBtn, status, previewSection, previewContent, previewTitle;
     let tokenSelection, tokenCollections, selectAllToggle;
@@ -1297,7 +1521,7 @@
           updateAccessibility(data);
         } else if (type === 'error') {
           exportBtn.disabled = false;
-          exportBtn.textContent = 'Generate Design Tokens';
+          exportBtn.innerHTML = '<svg class="icon mr-2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>Generate Design Tokens';
           showStatus('error', 'Error: ' + message);
         }
       };
@@ -1314,6 +1538,9 @@
       if (exportAccessibilityReportBtn) {
         exportAccessibilityReportBtn.addEventListener('click', handleAccessibilityExport);
       }
+
+      // Initialize with sample data for Analytics and Accessibility
+      initializeSampleData();
 
       console.log('✅ Plugin UI initialized successfully!');
     }
@@ -1353,6 +1580,63 @@
         exportTab.classList.add('hidden');
         analyticsTab.classList.add('hidden');
         accessibilityTab.classList.remove('hidden');
+      }
+    }
+
+    // Switch insertion analytics sub-tabs
+    function switchInsertionTab(tabName) {
+      console.log('Switching to insertion tab:', tabName);
+      
+      // Update tab buttons
+      const tabButtons = document.querySelectorAll('.analytics-sub-tab');
+      for (let i = 0; i < tabButtons.length; i++) {
+        const button = tabButtons[i];
+        if (button.getAttribute('data-insertion-tab') === tabName) {
+          button.classList.add('active');
+        } else {
+          button.classList.remove('active');
+        }
+      }
+      
+      // Update chart content
+      const chartContents = document.querySelectorAll('.insertion-chart-content');
+      for (let i = 0; i < chartContents.length; i++) {
+        const content = chartContents[i];
+        if (content.getAttribute('data-insertion-content') === tabName) {
+          content.classList.remove('hidden');
+          content.classList.add('fade-in');
+        } else {
+          content.classList.add('hidden');
+          content.classList.remove('fade-in');
+        }
+      }
+      
+      // Initialize tooltips for the newly shown chart
+      setTimeout(function() {
+        initializeAreaChartTooltips(tabName + '-area-chart');
+      }, 100);
+    }
+
+    // Change time period for a specific chart type
+    function changeTimePeriod(chartType, period) {
+      console.log('Changing time period for', chartType, 'to', period);
+      
+      // Update the current time period
+      currentTimePeriods[chartType] = period;
+      
+      // Generate new data for this period
+      const newData = generateInsertionData(period);
+      
+      // Update the specific chart container
+      const chartContainer = document.getElementById(chartType + '-chart');
+      if (chartContainer) {
+        const newChartHTML = createAreaChart(newData[chartType], chartType, chartType + '-area-chart', period);
+        chartContainer.innerHTML = newChartHTML;
+        
+        // Initialize tooltips for the updated chart
+        setTimeout(function() {
+          initializeAreaChartTooltips(chartType + '-area-chart');
+        }, 100);
       }
     }
 
@@ -1484,7 +1768,8 @@
       tokenSelection.classList.add('fade-in');
       
       // Update export button
-      exportBtn.textContent = 'Export Selected Tokens';
+      const iconSvg = '<svg class="icon mr-2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>';
+      exportBtn.innerHTML = iconSvg + 'Export Selected Tokens';
       
       // Update button state since all tokens are selected by default
       updateToggleState();
@@ -1722,11 +2007,13 @@
         }
       }
       
+      const iconSvg = '<svg class="icon mr-2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>';
+      
       if (totalSelected === 0) {
-        exportBtn.textContent = 'Select Tokens to Export';
+        exportBtn.innerHTML = iconSvg + 'Select Tokens to Export';
         exportBtn.disabled = true;
       } else {
-        exportBtn.textContent = 'Export Selected Tokens (' + totalSelected + ')';
+        exportBtn.innerHTML = iconSvg + 'Export Selected Tokens (' + totalSelected + ')';
         exportBtn.disabled = false;
       }
     }
@@ -1777,7 +2064,7 @@
         // First time - extract all tokens
         showStatus('loading', 'Extracting design tokens...');
         exportBtn.disabled = true;
-        exportBtn.textContent = 'Extracting...';
+        exportBtn.innerHTML = '<svg class="icon mr-2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>Extracting...';
         
         // Send message to plugin code to start extraction
         console.log('Sending message to plugin code...');
@@ -3031,7 +3318,7 @@
       
       analyticsContent.innerHTML = analyticsHTML;
       
-      // Add event listeners for toggle buttons after content is inserted
+      // Add event listeners for toggle buttons and initialize tooltips after content is inserted
       setTimeout(function() {
         const toggleButtons = document.querySelectorAll('.toggle-btn[data-section]');
         for (let i = 0; i < toggleButtons.length; i++) {
@@ -3041,6 +3328,9 @@
             toggleSection(sectionId);
           });
         }
+        
+        // Initialize tooltips for the default chart (styles)
+        initializeAreaChartTooltips('styles-area-chart');
       }, 100);
     }
     
@@ -3122,6 +3412,13 @@
         }
       }
       
+      // Generate insertion analytics data for each time period
+      const insertionData = {
+        styles: generateInsertionData(currentTimePeriods.styles).styles,
+        components: generateInsertionData(currentTimePeriods.components).components,
+        variables: generateInsertionData(currentTimePeriods.variables).variables
+      };
+      
       // Perform accessibility analysis
       const accessibilityAnalysis = analyzeAccessibility(data);
       
@@ -3132,9 +3429,54 @@
         collectionBreakdown: collectionBreakdown,
         colorSamples: colorSamples,
         numberSamples: numberSamples,
+        insertionData: insertionData,
         accessibilityAnalysis: accessibilityAnalysis,
         exportedAt: data.metadata.exportedAt
       };
+    }
+
+    // Initialize area chart tooltips
+    function initializeAreaChartTooltips(chartId) {
+      const chart = document.getElementById(chartId);
+      if (!chart) return;
+      
+      const tooltip = document.getElementById('tooltip-' + chartId);
+      if (!tooltip) return;
+      
+      const points = chart.querySelectorAll('.area-chart-point');
+      
+      for (let i = 0; i < points.length; i++) {
+        const point = points[i];
+        
+        point.addEventListener('mouseenter', function(e) {
+          const value = point.getAttribute('data-value');
+          const label = point.getAttribute('data-label');
+          
+          tooltip.querySelector('.area-chart-tooltip-label').textContent = label;
+          tooltip.querySelector('.area-chart-tooltip-value').textContent = value + ' insertions';
+          
+          // Position tooltip with bounds checking
+          const rect = point.getBoundingClientRect();
+          const chartRect = chart.getBoundingClientRect();
+          const containerRect = chart.parentElement.getBoundingClientRect();
+          
+          let left = rect.left - chartRect.left - 40;
+          let top = rect.top - chartRect.top - 60;
+          
+          // Keep tooltip within container bounds
+          if (left < 10) left = 10;
+          if (left + 80 > chartRect.width) left = chartRect.width - 90;
+          if (top < 10) top = rect.top - chartRect.top + 20;
+          
+          tooltip.style.left = left + 'px';
+          tooltip.style.top = top + 'px';
+          tooltip.classList.add('show');
+        });
+        
+        point.addEventListener('mouseleave', function() {
+          tooltip.classList.remove('show');
+        });
+      }
     }
 
     // Create analytics HTML with standardized toggle buttons
@@ -3152,6 +3494,43 @@
       html += '<div class="stat-label">Collections</div>';
       html += '</div>';
       html += '</div>';
+
+      // Analytics Sub-tabs for insertion tracking
+      html += '<div class="analytics-sub-nav mb-6">';
+      html += '<nav>';
+      html += '<button class="analytics-sub-tab active" data-insertion-tab="styles" onclick="switchInsertionTab(\'styles\')">';
+      html += 'Style Insertions';
+      html += '</button>';
+      html += '<button class="analytics-sub-tab" data-insertion-tab="components" onclick="switchInsertionTab(\'components\')">';
+      html += 'Component Insertions';
+      html += '</button>';
+      html += '<button class="analytics-sub-tab" data-insertion-tab="variables" onclick="switchInsertionTab(\'variables\')">';
+      html += 'Variable Insertions';
+      html += '</button>';
+      html += '</nav>';
+      html += '</div>';
+
+      // Area charts for each insertion type
+      if (stats.insertionData) {
+        html += '<div class="insertion-charts">';
+        
+        // Styles chart (shown by default)
+        html += '<div class="insertion-chart-content" id="styles-chart" data-insertion-content="styles">';
+        html += createAreaChart(stats.insertionData.styles, 'styles', 'styles-area-chart', currentTimePeriods.styles);
+        html += '</div>';
+        
+        // Components chart (hidden by default)
+        html += '<div class="insertion-chart-content hidden" id="components-chart" data-insertion-content="components">';
+        html += createAreaChart(stats.insertionData.components, 'components', 'components-area-chart', currentTimePeriods.components);
+        html += '</div>';
+        
+        // Variables chart (hidden by default)
+        html += '<div class="insertion-chart-content hidden" id="variables-chart" data-insertion-content="variables">';
+        html += createAreaChart(stats.insertionData.variables, 'variables', 'variables-area-chart', currentTimePeriods.variables);
+        html += '</div>';
+        
+        html += '</div>';
+      }
       
       // Token types chart - start collapsed
       if (Object.keys(stats.typeBreakdown).length > 0) {
@@ -3354,6 +3733,264 @@
       
       html += '</div>';
       return html;
+    }
+
+    // Generate sample time-series data for insertion analytics
+    function generateInsertionData(period = '30days') {
+      const now = new Date();
+      const data = {
+        styles: [],
+        components: [],
+        variables: []
+      };
+      
+      let dataPoints, timeUnit, labelFormatter;
+      
+      if (period === '30days') {
+        // 30 days of data (daily)
+        dataPoints = 30;
+        timeUnit = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+        labelFormatter = formatDateLabel;
+      } else if (period === '60days') {
+        // 60 days of data (every 2 days)
+        dataPoints = 30;
+        timeUnit = 2 * 24 * 60 * 60 * 1000; // 2 days in milliseconds
+        labelFormatter = formatDateLabel;
+      } else if (period === '90days') {
+        // 90 days of data (every 3 days)
+        dataPoints = 30;
+        timeUnit = 3 * 24 * 60 * 60 * 1000; // 3 days in milliseconds
+        labelFormatter = formatDateLabel;
+      } else if (period === '1year') {
+        // 12 months of data (monthly)
+        dataPoints = 12;
+        timeUnit = 30 * 24 * 60 * 60 * 1000; // ~1 month in milliseconds
+        labelFormatter = (date) => (date.getMonth() + 1) + '/' + date.getFullYear().toString().slice(-2);
+      }
+      
+      // Generate data points
+      for (let i = dataPoints - 1; i >= 0; i--) {
+        const date = new Date(now.getTime() - (i * timeUnit));
+        const dateStr = date.toISOString().split('T')[0];
+        
+        // Adjust base values based on period
+        let styleMultiplier = 1, componentMultiplier = 1, variableMultiplier = 1;
+        
+        if (period === '60days') {
+          styleMultiplier = 2; // Slightly higher for 2-day intervals
+          componentMultiplier = 1.8;
+          variableMultiplier = 2.2;
+        } else if (period === '90days') {
+          styleMultiplier = 3; // Higher for 3-day intervals
+          componentMultiplier = 2.5;
+          variableMultiplier = 3.5;
+        } else if (period === '1year') {
+          styleMultiplier = 20; // Much higher monthly totals
+          componentMultiplier = 15;
+          variableMultiplier = 30;
+        }
+        
+        // Generate realistic sample data with some variation
+        const baseStyle = (15 + Math.sin(i * 0.2) * 8 + Math.random() * 10) * styleMultiplier;
+        const baseComponent = (8 + Math.sin(i * 0.15) * 5 + Math.random() * 6) * componentMultiplier;
+        const baseVariable = (25 + Math.sin(i * 0.1) * 12 + Math.random() * 15) * variableMultiplier;
+        
+        data.styles.push({
+          date: dateStr,
+          value: Math.max(0, Math.round(baseStyle)),
+          label: labelFormatter(date)
+        });
+        
+        data.components.push({
+          date: dateStr,
+          value: Math.max(0, Math.round(baseComponent)),
+          label: labelFormatter(date)
+        });
+        
+        data.variables.push({
+          date: dateStr,
+          value: Math.max(0, Math.round(baseVariable)),
+          label: labelFormatter(date)
+        });
+      }
+      
+      return data;
+    }
+
+    // Format date for chart labels
+    function formatDateLabel(date) {
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      return month + '/' + day;
+    }
+
+    // Create an area chart with line overlay
+    function createAreaChart(data, type, containerId, period = '30days') {
+      if (!data || data.length === 0) return '';
+      
+      const width = 600;
+      const height = 220;
+      const margin = { top: 10, right: 20, bottom: 35, left: 35 };
+      const chartWidth = width - margin.left - margin.right;
+      const chartHeight = height - margin.top - margin.bottom;
+      
+      // Calculate scales
+      const maxValue = Math.max.apply(Math, data.map(function(d) { return d.value; }));
+      const minValue = Math.min.apply(Math, data.map(function(d) { return d.value; }));
+      const valueRange = maxValue - minValue;
+      
+      // Create SVG path for area and line
+      let areaPath = '';
+      let linePath = '';
+      
+      for (let i = 0; i < data.length; i++) {
+        const d = data[i];
+        const x = margin.left + (i / (data.length - 1)) * chartWidth;
+        const y = margin.top + chartHeight - ((d.value - minValue) / valueRange) * chartHeight;
+        
+        if (i === 0) {
+          areaPath += 'M' + x + ',' + (margin.top + chartHeight);
+          linePath += 'M' + x + ',' + y;
+        }
+        
+        areaPath += 'L' + x + ',' + y;
+        linePath += 'L' + x + ',' + y;
+      }
+      
+      // Close the area path
+      const lastX = margin.left + chartWidth;
+      areaPath += 'L' + lastX + ',' + (margin.top + chartHeight) + 'Z';
+      
+      // Calculate trend
+      const firstValue = data[0].value;
+      const lastValue = data[data.length - 1].value;
+      const trendPercent = ((lastValue - firstValue) / firstValue * 100).toFixed(1);
+      const isPositive = trendPercent > 0;
+      
+      // Get period-specific trend text
+      const periodText = {
+        '30days': 'last 30 days',
+        '60days': 'last 60 days', 
+        '90days': 'last 90 days',
+        '1year': 'this year'
+      };
+      
+      // Get type-specific colors and labels
+      const typeConfig = getInsertionTypeConfig(type);
+      
+      let html = '<div class="area-chart-container">';
+      html += '<div class="flex flex-start justify-between mb-4 w-full" style="width: 100%;">';
+      html += '<div class="w-full">';
+      html += '<h4 class="text-lg font-semibold" style="margin-bottom: 0px; margin-top: 0px;">' + typeConfig.title + '</h4>';
+      html += '<p class="text-sm text-muted-foreground mt-1 mb-1">' + typeConfig.description + '</p>';
+      html += '</div>';
+      html += '<div class="area-chart-trend">';
+      html += '<span class="' + (isPositive ? 'area-chart-trend-up' : 'area-chart-trend-down') + '">';
+      html += isPositive ? '↗' : '↘';
+      html += ' ' + Math.abs(trendPercent) + '%';
+      html += '</span>';
+      html += '<span>' + periodText[period] + '</span>';
+      html += '</div>';
+      html += '</div>';
+      
+      // Add time period selector
+      html += '<div class="time-period-selector">';
+      html += '<button class="time-period-btn ' + (period === '30days' ? 'active' : '') + '" onclick="changeTimePeriod(\'' + type + '\', \'30days\')">30 Days</button>';
+      html += '<button class="time-period-btn ' + (period === '60days' ? 'active' : '') + '" onclick="changeTimePeriod(\'' + type + '\', \'60days\')">60 Days</button>';
+      html += '<button class="time-period-btn ' + (period === '90days' ? 'active' : '') + '" onclick="changeTimePeriod(\'' + type + '\', \'90days\')">90 Days</button>';
+      html += '<button class="time-period-btn ' + (period === '1year' ? 'active' : '') + '" onclick="changeTimePeriod(\'' + type + '\', \'1year\')">1 Year</button>';
+      html += '</div>';
+      
+      html += '<div class="area-chart" id="' + containerId + '">';
+      html += '<svg viewBox="0 0 ' + width + ' ' + height + '">';
+      
+      // Add gradient definition
+      html += '<defs>';
+      html += '<linearGradient id="areaGradient' + type + '" x1="0%" y1="0%" x2="0%" y2="100%">';
+      html += '<stop offset="0%" class="area-chart-gradient-stop-0" style="stop-color: ' + typeConfig.color + '; stop-opacity: 0.8;" />';
+      html += '<stop offset="100%" class="area-chart-gradient-stop-100" style="stop-color: ' + typeConfig.color + '; stop-opacity: 0.1;" />';
+      html += '</linearGradient>';
+      html += '</defs>';
+      
+      // Add grid lines
+      for (let i = 0; i <= 4; i++) {
+        const y = margin.top + (i / 4) * chartHeight;
+        html += '<line x1="' + margin.left + '" y1="' + y + '" x2="' + (margin.left + chartWidth) + '" y2="' + y + '" class="area-chart-grid" />';
+      }
+      
+      // Add area
+      html += '<path d="' + areaPath + '" style="fill: url(#areaGradient' + type + '); opacity: 0.3;" />';
+      
+      // Add line
+      html += '<path d="' + linePath + '" style="fill: none; stroke: ' + typeConfig.color + '; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;" />';
+      
+      // Add data points
+      for (let i = 0; i < data.length; i++) {
+        const d = data[i];
+        const x = margin.left + (i / (data.length - 1)) * chartWidth;
+        const y = margin.top + chartHeight - ((d.value - minValue) / valueRange) * chartHeight;
+        
+        html += '<circle cx="' + x + '" cy="' + y + '" r="3" fill="' + typeConfig.color + '" class="area-chart-point" ';
+        html += 'data-value="' + d.value + '" data-label="' + d.label + '" />';
+      }
+      
+      // Add axes
+      html += '<line x1="' + margin.left + '" y1="' + (margin.top + chartHeight) + '" x2="' + (margin.left + chartWidth) + '" y2="' + (margin.top + chartHeight) + '" class="area-chart-axis" />';
+      html += '<line x1="' + margin.left + '" y1="' + margin.top + '" x2="' + margin.left + '" y2="' + (margin.top + chartHeight) + '" class="area-chart-axis" />';
+      
+      // Add labels for key dates
+      const labelIndices = [0, Math.floor(data.length / 3), Math.floor(2 * data.length / 3), data.length - 1];
+      for (let i = 0; i < labelIndices.length; i++) {
+        const index = labelIndices[i];
+        const d = data[index];
+        const x = margin.left + (index / (data.length - 1)) * chartWidth;
+        const y = margin.top + chartHeight + 15;
+        
+        html += '<text x="' + x + '" y="' + y + '" class="area-chart-label" text-anchor="middle">' + d.label + '</text>';
+      }
+      
+      // Add value labels
+      for (let i = 0; i <= 4; i++) {
+        const value = Math.round(minValue + (i / 4) * valueRange);
+        const y = margin.top + chartHeight - (i / 4) * chartHeight + 4;
+        html += '<text x="' + (margin.left - 5) + '" y="' + y + '" class="area-chart-label" text-anchor="end">' + value + '</text>';
+      }
+      
+      html += '</svg>';
+      html += '</div>';
+      
+      // Add tooltip
+      html += '<div class="area-chart-tooltip" id="tooltip-' + containerId + '">';
+      html += '<div class="area-chart-tooltip-label"></div>';
+      html += '<div class="area-chart-tooltip-value"></div>';
+      html += '</div>';
+      
+      html += '</div>';
+      
+      return html;
+    }
+
+    // Get configuration for insertion type
+    function getInsertionTypeConfig(type) {
+      const configs = {
+        styles: {
+          title: 'Style Insertions',
+          description: 'Design system styles applied to components',
+          color: 'hsl(142 76% 36%)', // Green
+        },
+        components: {
+          title: 'Component Insertions',
+          description: 'New component instances created',
+          color: 'hsl(221 83% 53%)', // Blue
+        },
+        variables: {
+          title: 'Variable Insertions',
+          description: 'Design tokens and variables usage',
+          color: 'hsl(262 83% 58%)', // Purple
+        }
+      };
+      
+      return configs[type] || configs.styles;
     }
 
     // Handle analytics export to Excel (CSV format)
@@ -3660,6 +4297,143 @@
         'UNKNOWN': 'Other'
       };
       return labels[type] || type;
+    }
+
+    // Generate sample token data for demonstration
+    function generateSampleTokenData() {
+      const now = new Date();
+      return {
+        metadata: {
+          exportedAt: now.toISOString(),
+          figmaFileKey: 'sample-design-system',
+          version: '1.0.0'
+        },
+        collections: {
+          'colors': {
+            name: 'Color Tokens',
+            modes: ['Light', 'Dark'],
+            variables: {
+              'primary': {
+                type: 'COLOR',
+                description: 'Primary brand color',
+                values: { 'Light': '#3b82f6', 'Dark': '#60a5fa' }
+              },
+              'secondary': {
+                type: 'COLOR', 
+                description: 'Secondary accent color',
+                values: { 'Light': '#8b5cf6', 'Dark': '#a78bfa' }
+              },
+              'background': {
+                type: 'COLOR',
+                description: 'Main background color', 
+                values: { 'Light': '#ffffff', 'Dark': '#0f172a' }
+              },
+              'text': {
+                type: 'COLOR',
+                description: 'Primary text color',
+                values: { 'Light': '#1e293b', 'Dark': '#f1f5f9' }
+              },
+              'success': {
+                type: 'COLOR',
+                description: 'Success state color',
+                values: { 'Light': '#10b981', 'Dark': '#34d399' }
+              },
+              'warning': {
+                type: 'COLOR', 
+                description: 'Warning state color',
+                values: { 'Light': '#f59e0b', 'Dark': '#fbbf24' }
+              },
+              'error': {
+                type: 'COLOR',
+                description: 'Error state color', 
+                values: { 'Light': '#ef4444', 'Dark': '#f87171' }
+              }
+            }
+          },
+          'spacing': {
+            name: 'Spacing Tokens',
+            modes: ['Base'],
+            variables: {
+              'xs': {
+                type: 'FLOAT',
+                description: 'Extra small spacing',
+                values: { 'Base': '4' }
+              },
+              'sm': {
+                type: 'FLOAT',
+                description: 'Small spacing', 
+                values: { 'Base': '8' }
+              },
+              'md': {
+                type: 'FLOAT',
+                description: 'Medium spacing',
+                values: { 'Base': '16' }
+              },
+              'lg': {
+                type: 'FLOAT',
+                description: 'Large spacing',
+                values: { 'Base': '24' }
+              },
+              'xl': {
+                type: 'FLOAT',
+                description: 'Extra large spacing',
+                values: { 'Base': '32' }
+              }
+            }
+          },
+          'typography': {
+            name: 'Typography Tokens',
+            modes: ['Base'],
+            variables: {
+              'heading-xl': {
+                type: 'FLOAT',
+                description: 'Extra large heading size',
+                values: { 'Base': '36' }
+              },
+              'heading-lg': {
+                type: 'FLOAT', 
+                description: 'Large heading size',
+                values: { 'Base': '30' }
+              },
+              'heading-md': {
+                type: 'FLOAT',
+                description: 'Medium heading size', 
+                values: { 'Base': '24' }
+              },
+              'body-lg': {
+                type: 'FLOAT',
+                description: 'Large body text size',
+                values: { 'Base': '18' }
+              },
+              'body-sm': {
+                type: 'FLOAT',
+                description: 'Small body text size',
+                values: { 'Base': '14' }
+              },
+              'caption': {
+                type: 'FLOAT',
+                description: 'Caption text size',
+                values: { 'Base': '12' }
+              }
+            }
+          }
+        }
+      };
+    }
+
+    // Initialize sample data for Analytics and Accessibility tabs
+    function initializeSampleData() {
+      console.log('Initializing sample data for Analytics and Accessibility...');
+      
+      const sampleData = generateSampleTokenData();
+      
+      // Update Analytics tab with sample data
+      updateAnalytics(sampleData);
+      
+      // Update Accessibility tab with sample data  
+      updateAccessibility(sampleData);
+      
+      console.log('Sample data initialized successfully');
     }
 
     // Initialize when DOM is ready
