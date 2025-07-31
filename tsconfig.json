@@ -25,13 +25,11 @@
     "typeRoots": ["./node_modules/@types", "./node_modules/@figma"]
   },
   "include": [
-    "src/**/*",
-    "tests/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "**/*.test.ts"
+    "dist"
   ],
   "types": ["@figma/plugin-typings"]
 } 

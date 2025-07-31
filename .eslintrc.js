@@ -34,7 +34,5 @@ module.exports = {
     'dist/',
     'node_modules/',
     '*.config.js',
-    '**/*.test.ts',
-    'tests/',
   ],
 }; 
