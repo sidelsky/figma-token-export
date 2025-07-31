@@ -164,14 +164,10 @@
       
       <div class="format-options" style="margin-bottom: 16px;">
         <div style="font-size: 12px; font-weight: 500; margin-bottom: 8px; color: #1a1a1a;">Export Format:</div>
-        <label style="display: flex; align-items: center; margin-bottom: 8px; font-size: 14px; cursor: pointer;">
-          <input type="radio" name="exportFormat" value="json" checked style="margin-right: 8px;">
-          <span>JSON (for JavaScript/build tools)</span>
-        </label>
-        <label style="display: flex; align-items: center; font-size: 14px; cursor: pointer;">
-          <input type="radio" name="exportFormat" value="css" style="margin-right: 8px;">
-          <span>CSS Custom Properties</span>
-        </label>
+        <select id="exportFormat" style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px; background: #ffffff; color: #333;">
+          <option value="json">JSON (for JavaScript/build tools)</option>
+          <option value="css">CSS Custom Properties</option>
+        </select>
       </div>
       
       <button id="exportBtn" class="button">

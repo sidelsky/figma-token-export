@@ -41,17 +41,14 @@ function initializePlugin(): void {
   // Set initial button text
   updateDownloadButtonText();
 
-  // Add event listeners for format radio buttons
-  const formatRadios = document.querySelectorAll('input[name="exportFormat"]');
-  formatRadios.forEach(element => {
-    const radio = element as HTMLInputElement;
-    radio.addEventListener('change', () => {
-      console.log('Export format changed to:', radio.value);
-      updateDownloadButtonText();
-      if (exportedData) {
-        updatePreviewContent();
-      }
-    });
+  // Add event listener for format select dropdown
+  const formatSelect = getElementById('exportFormat') as HTMLSelectElement;
+  formatSelect.addEventListener('change', () => {
+    console.log('Export format changed to:', formatSelect.value);
+    updateDownloadButtonText();
+    if (exportedData) {
+      updatePreviewContent();
+    }
   });
 
   // Listen for messages from plugin code
@@ -136,13 +133,10 @@ function handleExport(): void {
  * Get the currently selected export format
  */
 function getSelectedFormat(): ExportFormat {
-  const formatRadios = document.querySelectorAll('input[name="exportFormat"]');
-
-  for (let i = 0; i < formatRadios.length; i++) {
-    const radio = formatRadios[i] as HTMLInputElement;
-    if (radio.checked) {
-      return radio.value as ExportFormat;
-    }
+  const formatSelect = document.getElementById('exportFormat') as HTMLSelectElement;
+  
+  if (formatSelect) {
+    return formatSelect.value as ExportFormat;
   }
 
   return 'json'; // default fallback

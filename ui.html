@@ -492,6 +492,123 @@
       box-shadow: none;
     }
 
+    /* ShadCN Select/Dropdown Component */
+    .select {
+      position: relative;
+      width: 100%;
+    }
+
+    .select-trigger {
+      display: flex;
+      height: 2.5rem;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: calc(var(--radius) - 2px);
+      border: 1px solid hsl(var(--input));
+      background-color: hsl(var(--background));
+      padding: 0 0.75rem;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      color: hsl(var(--foreground));
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .select-trigger:hover {
+      background-color: hsl(var(--accent));
+    }
+
+    .select-trigger:focus {
+      outline: none;
+      border-color: hsl(var(--ring));
+      box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+    }
+
+    .select-trigger[data-disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .select-content {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      min-width: 8rem;
+      overflow: hidden;
+      border-radius: calc(var(--radius) - 2px);
+      border: 1px solid hsl(var(--border));
+      background-color: hsl(var(--popover));
+      color: hsl(var(--popover-foreground));
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    .select-content.show {
+      display: block;
+    }
+
+    .select-viewport {
+      padding: 0.25rem;
+    }
+
+    .select-item {
+      position: relative;
+      display: flex;
+      cursor: pointer;
+      user-select: none;
+      align-items: center;
+      border-radius: calc(var(--radius) - 2px);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      color: hsl(var(--popover-foreground));
+      transition: all 0.2s ease;
+    }
+
+    .select-item:hover {
+      background-color: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+    }
+
+    .select-item[data-highlighted] {
+      background-color: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+    }
+
+    .select-item[data-disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .select-item[data-state="checked"] {
+      background-color: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+    }
+
+    .select-separator {
+      height: 1px;
+      background-color: hsl(var(--border));
+      margin: 0.25rem 0;
+    }
+
+    .select-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1rem;
+      height: 1rem;
+      color: hsl(var(--muted-foreground));
+      transition: transform 0.2s ease;
+    }
+
+    .select-trigger[data-state="open"] .select-arrow {
+      transform: rotate(180deg);
+    }
+
     .form-label {
       display: flex;
       align-items: center;
@@ -1308,39 +1425,25 @@
         <!-- Format Options -->
         <div class="mb-6">
           <label class="text-sm font-bold mb-2" style="display: block;">Export Format</label>
-          <div class="space-y-3">
-            <label class="form-label">
-              <input type="radio" name="exportFormat" value="json" checked class="form-input">
-              <span class="text-sm">JSON (for JavaScript/build tools)</span>
-            </label>
-            <label class="form-label">
-              <input type="radio" name="exportFormat" value="css" class="form-input">
-              <span class="text-sm">CSS Custom Properties</span>
-            </label>
-            <label class="form-label">
-              <input type="radio" name="exportFormat" value="scss" class="form-input">
-              <span class="text-sm">SCSS/Sass (variables & mixins)</span>
-            </label>
-            <label class="form-label">
-              <input type="radio" name="exportFormat" value="tailwind" class="form-input">
-              <span class="text-sm">Tailwind CSS (config.js)</span>
-            </label>
-            <label class="form-label">
-              <input type="radio" name="exportFormat" value="react-native" class="form-input">
-              <span class="text-sm">React Native (StyleSheet)</span>
-            </label>
-            <label class="form-label">
-              <input type="radio" name="exportFormat" value="flutter" class="form-input">
-              <span class="text-sm">Flutter/Dart (Color classes)</span>
-            </label>
-            <label class="form-label">
-              <input type="radio" name="exportFormat" value="ios" class="form-input">
-              <span class="text-sm">iOS Swift (UIColor extensions)</span>
-            </label>
-            <label class="form-label">
-              <input type="radio" name="exportFormat" value="android" class="form-input">
-              <span class="text-sm">Android XML (colors.xml)</span>
-            </label>
+          <div class="select">
+            <button type="button" class="select-trigger" id="exportFormatTrigger" aria-haspopup="listbox" aria-expanded="false">
+              <span id="exportFormatValue">JSON (for JavaScript/build tools)</span>
+              <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m6 9 6 6 6-6"/>
+              </svg>
+            </button>
+            <div class="select-content" id="exportFormatContent">
+              <div class="select-viewport">
+                <div class="select-item" data-value="json" data-state="checked">JSON (for JavaScript/build tools)</div>
+                <div class="select-item" data-value="css">CSS Custom Properties</div>
+                <div class="select-item" data-value="scss">SCSS/Sass (variables & mixins)</div>
+                <div class="select-item" data-value="tailwind">Tailwind CSS (config.js)</div>
+                <div class="select-item" data-value="react-native">React Native (StyleSheet)</div>
+                <div class="select-item" data-value="flutter">Flutter/Dart (Color classes)</div>
+                <div class="select-item" data-value="ios">iOS Swift (UIColor extensions)</div>
+                <div class="select-item" data-value="android">Android XML (colors.xml)</div>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -1486,15 +1589,59 @@
       // Set initial button text
       updateDownloadButtonText();
 
-      // Add event listeners for format radio buttons
-      const formatRadios = document.querySelectorAll('input[name="exportFormat"]');
-      for (let i = 0; i < formatRadios.length; i++) {
-        const radio = formatRadios[i];
-        radio.addEventListener('change', function() {
-          console.log('Export format changed to:', radio.value);
-          updateDownloadButtonText();
-          if (exportedData) {
-            updatePreviewContent();
+      // Add event listeners for ShadCN dropdown
+      const formatTrigger = document.getElementById('exportFormatTrigger');
+      const formatContent = document.getElementById('exportFormatContent');
+      const formatValue = document.getElementById('exportFormatValue');
+      const formatItems = document.querySelectorAll('.select-item');
+      
+      if (formatTrigger && formatContent) {
+        // Toggle dropdown
+        formatTrigger.addEventListener('click', function() {
+          const isOpen = formatContent.classList.contains('show');
+          if (isOpen) {
+            formatContent.classList.remove('show');
+            formatTrigger.setAttribute('aria-expanded', 'false');
+            formatTrigger.setAttribute('data-state', 'closed');
+          } else {
+            formatContent.classList.add('show');
+            formatTrigger.setAttribute('aria-expanded', 'true');
+            formatTrigger.setAttribute('data-state', 'open');
+          }
+        });
+
+        // Handle item selection
+        formatItems.forEach(item => {
+          item.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+            const text = this.textContent;
+            
+            // Update display
+            formatValue.textContent = text;
+            
+            // Update selected state
+            formatItems.forEach(i => i.setAttribute('data-state', ''));
+            this.setAttribute('data-state', 'checked');
+            
+            // Close dropdown
+            formatContent.classList.remove('show');
+            formatTrigger.setAttribute('aria-expanded', 'false');
+            formatTrigger.setAttribute('data-state', 'closed');
+            
+            console.log('Export format changed to:', value);
+            updateDownloadButtonText();
+            if (exportedData) {
+              updatePreviewContent();
+            }
+          });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+          if (!formatTrigger.contains(event.target) && !formatContent.contains(event.target)) {
+            formatContent.classList.remove('show');
+            formatTrigger.setAttribute('aria-expanded', 'false');
+            formatTrigger.setAttribute('data-state', 'closed');
           }
         });
       }
@@ -2085,13 +2232,10 @@
 
     // Get the currently selected export format
     function getSelectedFormat() {
-      const formatRadios = document.querySelectorAll('input[name="exportFormat"]');
+      const selectedItem = document.querySelector('.select-item[data-state="checked"]');
       
-      for (let i = 0; i < formatRadios.length; i++) {
-        const radio = formatRadios[i];
-        if (radio.checked) {
-          return radio.value;
-        }
+      if (selectedItem) {
+        return selectedItem.getAttribute('data-value');
       }
       
       return 'json'; // default fallback
