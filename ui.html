@@ -5,1008 +5,1640 @@
   <meta charset="utf-8">
   <title>Design Token Export</title>
   <style>
+    /* Shadcn-inspired Design System */
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 222.2 84% 4.9%;
+      --card: 0 0% 100%;
+      --card-foreground: 222.2 84% 4.9%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 222.2 84% 4.9%;
+      --primary: 0 0% 0%;
+      --primary-foreground: 0 0% 100%;
+      --secondary: 210 40% 96%;
+      --secondary-foreground: 222.2 84% 4.9%;
+      --muted: 210 40% 96%;
+      --muted-foreground: 215.4 16.3% 46.9%;
+      --accent: 210 40% 96%;
+      --accent-foreground: 222.2 84% 4.9%;
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 210 40% 98%;
+      --border: 214.3 31.8% 91.4%;
+      --input: 214.3 31.8% 91.4%;
+      --ring: 0 0% 0%;
+      --radius: 0.5rem;
+    }
+
     * {
       box-sizing: border-box;
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       margin: 0;
-      padding: 20px;
-      background: #ffffff;
-      color: #333;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
     }
 
+    /* Layout */
     .container {
-      max-width: 100%;
+      max-width: 768px;
+      min-width: 440px;
+      margin: 0 auto;
+      padding: 20px;
     }
 
-    h1 {
-      font-size: 18px;
+    /* Typography */
+    .text-2xl {
+      font-size: 1.5rem;
+      line-height: 2rem;
+    }
+
+    .text-lg {
+      font-size: 1.125rem;
+      line-height: 1.75rem;
+    }
+
+    .text-sm {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+
+    .text-xs {
+      font-size: 0.75rem;
+      line-height: 1rem;
+    }
+
+    .font-semibold {
       font-weight: 600;
-      margin: 0 0 16px 0;
-      color: #1a1a1a;
     }
 
-    .description {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 24px;
-      line-height: 1.4;
-    }
-
-    .export-section {
-      border: 1px solid #e1e5e9;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-
-    .export-title {
-      font-size: 14px;
+    .font-medium {
       font-weight: 500;
-      margin-bottom: 8px;
-      color: #1a1a1a;
     }
 
-    .export-info {
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 16px;
+    .font-bold {
+      font-weight: 700;
     }
 
-    .button {
-      background: #18a0fb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: 500;
+    .font-mono {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    }
+
+    .tracking-tight {
+      letter-spacing: -0.025em;
+    }
+
+    .leading-relaxed {
+      line-height: 1.625;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    /* Colors */
+    .text-foreground {
+      color: hsl(var(--foreground));
+    }
+
+    .text-muted-foreground {
+      color: hsl(var(--muted-foreground));
+    }
+
+    .text-primary {
+      color: hsl(var(--primary));
+    }
+
+    .text-primary-foreground {
+      color: hsl(var(--primary-foreground));
+    }
+
+    .text-card-foreground {
+      color: hsl(var(--card-foreground));
+    }
+
+    .bg-background {
+      background-color: hsl(var(--background));
+    }
+
+    .bg-card {
+      background-color: hsl(var(--card));
+    }
+
+    .bg-muted {
+      background-color: hsl(var(--muted));
+    }
+
+    .bg-primary {
+      background-color: hsl(var(--primary));
+    }
+
+    .bg-primary-foreground {
+      background-color: hsl(var(--primary-foreground));
+    }
+
+    .bg-input {
+      background-color: hsl(var(--input));
+    }
+
+    /* Spacing */
+    .mb-2 {
+      margin-bottom: 0.5rem;
+    }
+
+    .mb-4 {
+      margin-bottom: 1rem;
+    }
+
+    .mb-6 {
+      margin-bottom: 1.5rem;
+    }
+
+    .mt-1 {
+      margin-top: 0.25rem;
+    }
+
+    .mt-4 {
+      margin-top: 1rem;
+    }
+
+    .mt-6 {
+      margin-top: 1.5rem;
+    }
+
+    .mr-2 {
+      margin-right: 0.5rem;
+    }
+
+    .mr-3 {
+      margin-right: 0.75rem;
+    }
+
+    .ml-2 {
+      margin-left: 0.5rem;
+    }
+
+    .p-3 {
+      padding: 0.75rem;
+    }
+
+    .p-4 {
+      padding: 1rem;
+    }
+
+    .p-5 {
+      padding: 1.25rem;
+    }
+
+    .p-6 {
+      padding: 1.5rem;
+    }
+
+    .p-8 {
+      padding: 2rem;
+    }
+
+    .px-2 {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    .px-4 {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    .px-6 {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    .py-1 {
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+    }
+
+    .py-2 {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+    }
+
+    /* Borders */
+    .border {
+      border: 1px solid hsl(var(--border));
+    }
+
+    .border-b {
+      border-bottom: 1px solid hsl(var(--border));
+    }
+
+    .border-input {
+      border: 1px solid hsl(var(--input));
+    }
+
+    .border-border {
+      border: 1px solid hsl(var(--border));
+    }
+
+    .rounded-md {
+      border-radius: calc(var(--radius) - 2px);
+    }
+
+    .rounded-lg {
+      border-radius: var(--radius);
+    }
+
+    .rounded {
+      border-radius: 0.25rem;
+    }
+
+    .rounded-full {
+      border-radius: 9999px;
+    }
+
+    /* Shadows */
+    .shadow-sm {
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+
+    /* Layout */
+    .flex {
+      display: flex;
+    }
+
+    .grid {
+      display: grid;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .inline-flex {
+      display: inline-flex;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .justify-center {
+      justify-content: center;
+    }
+
+    .justify-between {
+      justify-content: space-between;
+    }
+
+    .flex-1 {
+      flex: 1 1 0%;
+    }
+
+    .space-x-2>*+* {
+      margin-left: 0.5rem;
+    }
+
+    .space-x-3>*+* {
+      margin-left: 0.75rem;
+    }
+
+    .space-x-8>*+* {
+      margin-left: 2rem;
+    }
+
+    .space-y-2>*+* {
+      margin-top: 0.5rem;
+    }
+
+    .space-y-3>*+* {
+      margin-top: 0.75rem;
+    }
+
+    .grid-cols-1 {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    .grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-rows-1 {
+      grid-template-rows: repeat(1, minmax(0, 1fr));
+    }
+
+    .grid-cols-3-always {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .gap-3 {
+      gap: 0.75rem;
+    }
+
+    .gap-4 {
+      gap: 1rem;
+    }
+
+    /* Sizing */
+    .w-4 {
+      width: 1rem;
+    }
+
+    .h-4 {
+      height: 1rem;
+    }
+
+    .w-12 {
+      width: 3rem;
+    }
+
+    .h-12 {
+      height: 3rem;
+    }
+
+    .h-10 {
+      height: 2.5rem;
+    }
+
+    .max-h-48 {
+      max-height: 12rem;
+    }
+
+    .mx-auto {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Positioning */
+    .relative {
+      position: relative;
+    }
+
+    /* Overflow */
+    .overflow-auto {
+      overflow: auto;
+    }
+
+    .overflow-hidden {
+      overflow: hidden;
+    }
+
+    /* Transitions */
+    .transition-colors {
+      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
+
+    .transition-all {
+      transition-property: all;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
+
+    .transition-transform {
+      transition-property: transform;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
+
+    .duration-200 {
+      transition-duration: 200ms;
+    }
+
+    /* Opacity */
+    .opacity-50 {
+      opacity: 0.5;
+    }
+
+    /* Cursor */
+    .cursor-pointer {
       cursor: pointer;
+    }
+
+    /* Text wrapping */
+    .whitespace-pre-wrap {
+      white-space: pre-wrap;
+    }
+
+    .break-words {
+      word-wrap: break-word;
+    }
+
+    /* Button Component */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: calc(var(--radius) - 2px);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      border: none;
+      outline: none;
+      height: 2.5rem;
+      padding: 0 1rem;
       width: 100%;
-      transition: background-color 0.2s ease;
     }
 
-    .button:hover {
-      background: #1592e6;
+    .btn:focus-visible {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
     }
 
-    .button:disabled {
-      background: #b3d9ff;
+    .btn:disabled {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .btn-primary {
+      background-color: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+    }
+
+    .btn-primary:hover {
+      background-color: hsl(var(--primary) / 0.9);
+    }
+
+    .btn-secondary {
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
+      border: 1px solid hsl(var(--input));
+    }
+
+    .btn-secondary:hover {
+      background-color: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+    }
+
+    .btn-sm {
+      height: auto;
+      padding: 0.5rem 1.5rem;
+      width: auto;
+    }
+
+    /* Card Component */
+    .card {
+      border-radius: var(--radius);
+      border: 1px solid hsl(var(--border));
+      background-color: hsl(var(--card));
+      color: hsl(var(--card-foreground));
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06);
+    }
+
+    /* Tab Navigation */
+    .tab-nav {
+      border-bottom: 1px solid hsl(var(--border));
+      margin-bottom: 1.5rem;
+    }
+
+    .tab-nav nav {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .tab-button {
+      border-bottom: 2px solid transparent;
+      padding: 0.5rem 0.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: hsl(var(--muted-foreground));
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      cursor: pointer;
+      transition: all 200ms;
+    }
+
+    .tab-button:hover {
+      color: hsl(var(--foreground));
+      border-bottom-color: hsl(var(--border));
+    }
+
+    .tab-button[data-state="active"] {
+      color: hsl(var(--foreground));
+      border-bottom-color: hsl(var(--primary));
+    }
+
+    /* Form Elements */
+    .form-input {
+      width: 1rem;
+      height: 1rem;
+      color: hsl(var(--primary));
+      border: 1px solid hsl(var(--input));
+      border-radius: 0.25rem;
+    }
+
+    .form-input:focus {
+      outline: none;
+    }
+
+    /* Radio buttons - remove outline completely */
+    input[type="radio"].form-input {
+      accent-color: hsl(var(--primary));
+    }
+
+    input[type="radio"].form-input:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    /* ShadCN Select/Dropdown Component */
+    .select {
+      position: relative;
+      width: 100%;
+    }
+
+    .select-trigger {
+      display: flex;
+      height: 2.5rem;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: calc(var(--radius) - 2px);
+      border: 1px solid hsl(var(--input));
+      background-color: hsl(var(--background));
+      padding: 0 0.75rem;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      color: hsl(var(--foreground));
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .select-trigger:hover {
+      background-color: hsl(var(--accent));
+    }
+
+    .select-trigger:focus {
+      outline: none;
+      border-color: hsl(var(--ring));
+      box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+    }
+
+    .select-trigger[data-disabled] {
+      opacity: 0.5;
       cursor: not-allowed;
     }
 
-    .button.secondary {
-      background: #ffffff;
-      color: #666;
-      border: 1px solid #e1e5e9;
-    }
-
-    .button.secondary:hover {
-      background: #f8f9fa;
-    }
-
-    .status {
-      margin-top: 16px;
-      padding: 12px;
-      border-radius: 6px;
-      font-size: 12px;
+    .select-content {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      min-width: 8rem;
+      overflow: hidden;
+      border-radius: calc(var(--radius) - 2px);
+      border: 1px solid hsl(var(--border));
+      background-color: hsl(var(--popover));
+      color: hsl(var(--popover-foreground));
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      margin-top: 0.25rem;
       display: none;
     }
 
-    .status.success {
-      background: #e8f5e8;
-      color: #2d6a2d;
-      border: 1px solid #c3e6c3;
+    .select-content.show {
+      display: block;
     }
 
-    .status.error {
-      background: #ffeaea;
-      color: #c53030;
-      border: 1px solid #feb2b2;
+    .select-viewport {
+      padding: 0.25rem;
     }
 
-    .status.loading {
-      background: #e6f3ff;
-      color: #1a73e8;
-      border: 1px solid #b3d9ff;
-    }
-
-    .preview-section {
-      margin-top: 16px;
-      display: none;
-    }
-
-    .preview-title {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: #1a1a1a;
-    }
-
-    .preview-content {
-      background: #f8f9fa;
-      border: 1px solid #e1e5e9;
-      border-radius: 6px;
-      padding: 12px;
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-      font-size: 11px;
-      max-height: 200px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .actions {
+    .select-item {
+      position: relative;
       display: flex;
-      gap: 8px;
-      margin-top: 16px;
+      cursor: pointer;
+      user-select: none;
+      align-items: center;
+      border-radius: calc(var(--radius) - 2px);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      color: hsl(var(--popover-foreground));
+      transition: all 0.2s ease;
     }
 
-    .actions .button {
+    .select-item:hover {
+      background-color: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+    }
+
+    .select-item[data-highlighted] {
+      background-color: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+    }
+
+    .select-item[data-disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .select-item[data-state="checked"] {
+      background-color: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+    }
+
+    .select-separator {
+      height: 1px;
+      background-color: hsl(var(--border));
+      margin: 0.25rem 0;
+    }
+
+    .select-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1rem;
+      height: 1rem;
+      color: hsl(var(--muted-foreground));
+      transition: transform 0.2s ease;
+    }
+
+    .select-trigger[data-state="open"] .select-arrow {
+      transform: rotate(180deg);
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    /* STANDARDIZED TOGGLE COMPONENTS */
+
+    /* Toggle Switch - for on/off states like "Select All" */
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background-color: hsl(var(--input));
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      border: 2px solid transparent;
+    }
+
+    .toggle-switch:focus-within {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+
+    .toggle-switch.active {
+      background-color: hsl(var(--primary));
+    }
+
+    .toggle-slider {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .toggle-switch.active .toggle-slider {
+      transform: translateX(20px);
+    }
+
+    /* Small Switch - for checkboxes replacement */
+    .small-switch {
+      position: relative;
+      width: 32px;
+      height: 18px;
+      background-color: hsl(var(--input));
+      border-radius: 9px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      border: 2px solid transparent;
+      display: inline-block;
+    }
+
+    .small-switch:focus-within {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+
+    .small-switch.active {
+      background-color: hsl(var(--primary));
+    }
+
+    .small-switch-slider {
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .small-switch.active .small-switch-slider {
+      transform: translateX(14px);
+    }
+
+    /* Hidden input for accessibility */
+    .switch-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Toggle Button - for expand/collapse functionality */
+    .toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border: none;
+      background: none;
+      border-radius: calc(var(--radius) - 2px);
+      color: hsl(var(--muted-foreground));
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .toggle-btn:hover {
+      background-color: hsl(var(--muted));
+      color: hsl(var(--foreground));
+    }
+
+    .toggle-btn:focus-visible {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+
+    .toggle-btn .icon {
+      transition: transform 150ms ease;
+    }
+
+    .toggle-btn.expanded .icon {
+      transform: rotate(90deg);
+    }
+
+    /* Collapsible Section Headers */
+    .collapsible-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .75rem;
+      border-bottom: 1px solid hsl(var(--border));
+      cursor: pointer;
+      transition: background-color 150ms ease;
+    }
+
+    .collapsible-header:hover {
+      background-color: hsl(var(--muted) / 0.5);
+    }
+
+    .collapsible-header h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* Collection Item Headers */
+    .collection-header {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem;
+      background-color: hsl(var(--muted) / 0.3);
+      border-bottom: 1px solid hsl(var(--border));
+      cursor: pointer;
+      transition: background-color 150ms ease;
+    }
+
+    .collection-header:hover {
+      background-color: hsl(var(--muted) / 0.5);
+    }
+
+    .collection-header .toggle-btn {
+      margin-left: auto;
+    }
+
+    /* Stat Cards */
+    .stat-card {
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: hsl(var(--primary));
+      line-height: 2rem;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: hsl(var(--muted-foreground));
+    }
+
+    /* Token Badge */
+    .token-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      background-color: hsl(var(--primary) / 0.1);
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: hsl(var(--primary));
+    }
+
+    /* Copy Button */
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.5rem;
+      height: 1.5rem;
+      border: none;
+      background: none;
+      border-radius: calc(var(--radius) - 4px);
+      color: hsl(var(--muted-foreground));
+      cursor: pointer;
+      transition: all 150ms ease;
+      opacity: 0;
+    }
+
+    .copy-btn:hover {
+      background-color: hsl(var(--muted));
+      color: hsl(var(--foreground));
+    }
+
+    .copy-btn:focus-visible {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+
+    .copy-btn.copied {
+      color: hsl(var(--primary));
+      background-color: hsl(var(--primary) / 0.1);
+    }
+
+    /* Sample Item - show copy button on hover */
+    .sample-item {
+      position: relative;
+      transition: all 150ms ease;
+    }
+
+    .sample-item:hover .copy-btn {
+      opacity: 1;
+    }
+
+    .sample-item .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+
+    /* Copy feedback tooltip */
+    .copy-tooltip {
+      position: absolute;
+      top: -2rem;
+      right: 0;
+      background: hsl(var(--foreground));
+      color: hsl(var(--background));
+      padding: 0.25rem 0.5rem;
+      border-radius: calc(var(--radius) - 4px);
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: all 150ms ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .copy-tooltip.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Accessibility Analysis Styles */
+    .accessibility-score {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      border-radius: calc(var(--radius) - 2px);
+      margin-bottom: 1rem;
+    }
+
+    .accessibility-score-large {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .accessibility-excellent {
+      background-color: rgb(240 253 244);
+      color: rgb(22 101 52);
+      border: 1px solid rgb(187 247 208);
+    }
+
+    .accessibility-good {
+      background-color: rgb(254 249 195);
+      color: rgb(133 77 14);
+      border: 1px solid rgb(251 191 36);
+    }
+
+    .accessibility-warning {
+      background-color: rgb(255 247 237);
+      color: rgb(154 52 18);
+      border: 1px solid rgb(251 146 60);
+    }
+
+    .accessibility-poor {
+      background-color: rgb(254 242 242);
+      color: rgb(153 27 27);
+      border: 1px solid rgb(252 165 165);
+    }
+
+    .accessibility-progress-bar {
+      width: 100%;
+      height: 8px;
+      background-color: hsl(var(--muted));
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .accessibility-progress-fill {
+      height: 100%;
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+
+    .accessibility-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .accessibility-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-radius: calc(var(--radius) - 2px);
+      border: 1px solid hsl(var(--border));
+    }
+
+    .accessibility-token {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
+      font-size: 0.75rem;
+      background-color: hsl(var(--muted));
+      padding: 0.25rem 0.5rem;
+      border-radius: calc(var(--radius) - 4px);
+    }
+
+    .accessibility-message {
+      font-size: 0.875rem;
       flex: 1;
+      margin-right: 1rem;
+    }
+
+    .accessibility-suggestion {
+      font-size: 0.75rem;
+      color: hsl(var(--muted-foreground));
+      margin-top: 0.25rem;
+    }
+
+    .contrast-demo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      border-radius: calc(var(--radius) - 2px);
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    .contrast-ratio {
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+
+    .wcag-badge {
+      padding: 0.125rem 0.375rem;
+      border-radius: calc(var(--radius) - 4px);
+      font-size: 0.625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .wcag-pass {
+      background-color: rgb(240 253 244);
+      color: rgb(22 101 52);
+    }
+
+    .wcag-fail {
+      background-color: rgb(254 242 242);
+      color: rgb(153 27 27);
+    }
+
+    /* Code Block */
+    .code-block {
+      background-color: hsl(var(--muted));
+      padding: 1rem;
+      border-radius: calc(var(--radius) - 2px);
+      margin-bottom: 1rem;
+    }
+
+    .code-preview {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
+      font-size: 0.75rem;
+      overflow: auto;
+      max-height: 12rem;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    /* Status Messages */
+    .status-success {
+      background-color: rgb(240 253 244);
+      color: rgb(22 101 52);
+      border: 1px solid rgb(187 247 208);
+    }
+
+    .status-error {
+      background-color: rgb(254 242 242);
+      color: rgb(153 27 27);
+      border: 1px solid rgb(252 165 165);
+    }
+
+    .status-loading {
+      background-color: rgb(239 246 255);
+      color: rgb(29 78 216);
+      border: 1px solid rgb(147 197 253);
+    }
+
+    /* Charts */
+    .chart-container {
+      height: 150px;
+      position: relative;
+      margin-bottom: 0px;
+      padding: 0;
+      overflow-x: visible;
+    }
+
+    .area-chart-container {
+      position: relative;
+      margin-bottom: 1rem;
+      padding: 1rem 1rem 0.25rem 1rem;
+      background: hsl(var(--card));
+      border-radius: var(--radius);
+      border: 1px solid hsl(var(--border));
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+
+    }
+
+    .area-chart {
+      width: 100%;
+      height: 150px;
+      position: relative;
+      overflow: hidden;
+
+    }
+
+    .area-chart svg {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .area-chart-gradient {
+      stop-color: hsl(var(--primary));
+    }
+
+    .area-chart-gradient-stop-0 {
+      stop-color: hsl(var(--primary));
+      stop-opacity: 0.8;
+    }
+
+    .area-chart-gradient-stop-100 {
+      stop-color: hsl(var(--primary));
+      stop-opacity: 0.1;
+    }
+
+    .area-chart-line {
+      fill: none;
+      stroke: hsl(var(--primary));
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .area-chart-area {
+      fill: url(#areaGradient);
+      opacity: 0.3;
+    }
+
+    .area-chart-grid {
+      stroke: hsl(var(--border));
+      stroke-width: 1;
+      opacity: 0.2;
+    }
+
+    .area-chart-axis {
+      stroke: hsl(var(--border));
+      stroke-width: 1;
+    }
+
+    .area-chart-label {
+      fill: hsl(var(--muted-foreground));
+      font-size: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .area-chart-tooltip {
+      position: absolute;
+      background: hsl(var(--popover));
+      border: 1px solid hsl(var(--border));
+      border-radius: calc(var(--radius) - 2px);
+      padding: 0.5rem;
+      font-size: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 10;
+    }
+
+    .area-chart-tooltip.show {
+      opacity: 1;
+    }
+
+    .area-chart-tooltip-label {
+      font-weight: 600;
+      color: hsl(var(--foreground));
+      margin-bottom: 0.25rem;
+    }
+
+    .area-chart-tooltip-value {
+      color: hsl(var(--muted-foreground));
+    }
+
+    .area-chart-trend {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: hsl(var(--muted-foreground));
+      width: 120px;
+    }
+
+    /* Time Period Selector */
+    .time-period-selector {
+      display: flex;
+      gap: 0.25rem;
+      background: hsl(var(--muted));
+      border-radius: calc(var(--radius) - 2px);
+      padding: 0.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .time-period-btn {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      border: none;
+      background: transparent;
+      color: hsl(var(--muted-foreground));
+      border-radius: calc(var(--radius) - 4px);
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .time-period-btn:hover {
+      color: hsl(var(--foreground));
+    }
+
+    .time-period-btn.active {
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+
+    .area-chart-trend-up {
+      color: #10b981;
+    }
+
+    .area-chart-trend-down {
+      color: #ef4444;
+    }
+
+    .area-chart-legend {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+    }
+
+    .area-chart-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .area-chart-legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+
+    /* Analytics Sub-tabs */
+    .analytics-sub-nav {
+      border-bottom: 1px solid hsl(var(--border));
+      margin-bottom: 1.5rem;
+    }
+
+    .analytics-sub-nav nav {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .analytics-sub-tab {
+      border-bottom: 2px solid transparent;
+      padding: 0.5rem 0.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: hsl(var(--muted-foreground));
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      cursor: pointer;
+      transition: all 200ms;
+    }
+
+    .analytics-sub-tab:hover {
+      color: hsl(var(--foreground));
+      border-bottom-color: hsl(var(--border));
+    }
+
+    .analytics-sub-tab.active {
+      color: hsl(var(--foreground));
+      border-bottom-color: hsl(var(--primary));
+    }
+
+    /* Insertion Charts Container */
+    .insertion-charts {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .insertion-chart-content {
+      margin-bottom: 0;
+    }
+
+    .bar-chart {
+      display: flex;
+      align-items: end;
+      height: calc(100% - 40px);
+      gap: 12px;
+      margin: 20px 0;
+      overflow-x: visible;
+      justify-content: flex-start;
+    }
+
+    .bar {
+      background: hsl(var(--primary));
+      border-radius: 3px 3px 0 0;
+      min-width: 24px;
+      flex: 1;
+      position: relative;
+      transition: opacity 0.2s ease;
+    }
+
+    .bar:hover {
+      opacity: 0.8;
+    }
+
+    .bar-label {
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: hsl(var(--muted-foreground));
+      white-space: nowrap;
+      max-width: 80px;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .bar-value {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: hsl(var(--foreground));
+      font-weight: 500;
+      background: hsl(var(--background) / 0.9);
+      padding: 1px 3px;
+      border-radius: 2px;
+    }
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.2s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* SVG Icons */
+    .icon {
+      width: 1rem;
+      height: 1rem;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .container {
+        padding: 16px;
+      }
+
+      .grid-cols-2 {
+        grid-template-columns: 1fr;
+      }
+
+      /* Keep stats always side by side */
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>Design Token Export</h1>
-    <p class="description">
-      Export your Figma variables and design tokens into a JSON format that developers can easily use in their projects.
-    </p>
-
-    <div class="export-section">
-      <div class="export-title">Export Options</div>
-      <div class="export-info">
-        This will export all local variable collections including colors, typography, spacing, and other design tokens.
-      </div>
-
-      <div class="format-options" style="margin-bottom: 16px;">
-        <div style="font-size: 12px; font-weight: 500; margin-bottom: 8px; color: #1a1a1a;">Export Format:</div>
-        <select id="exportFormat"
-          style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px; background: #ffffff; color: #333;">
-          <option value="json">JSON (for JavaScript/build tools)</option>
-          <option value="css">CSS Custom Properties</option>
-          <option value="developer">Developer JSON (W3C Format)</option>
-        </select>
-      </div>
-
-      <button id="exportBtn" class="button">
-        Export Design Tokens
-      </button>
-
-      <div id="status" class="status"></div>
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-2xl font-semibold tracking-tight text-foreground" style="margin-top: 0px;">Design Token Export
+      </h1>
+      <p class="text-md text-muted-foreground leading-relaxed pt-0">
+        Export your Figma variables and design tokens into a JSON format that developers can easily use in their
+        projects.
+      </p>
     </div>
 
-    <div id="previewSection" class="preview-section">
-      <div id="previewTitle" class="preview-title">Export Preview</div>
-      <div id="previewContent" class="preview-content"></div>
-
-      <div class="actions">
-        <button id="downloadBtn" class="button">Download</button>
-        <button id="copyBtn" class="button secondary">Copy to Clipboard</button>
-      </div>
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <nav>
+        <button class="tab-button" data-tab="export" data-state="active" role="tab" aria-selected="true">
+          Export
+        </button>
+        <button class="tab-button" data-tab="analytics" data-state="inactive" role="tab" aria-selected="false">
+          Analytics
+        </button>
+        <button class="tab-button" data-tab="accessibility" data-state="inactive" role="tab" aria-selected="false">
+          Accessibility
+        </button>
+      </nav>
     </div>
 
-    <!-- GitHub Integration Section -->
-    <div id="githubSection" class="export-section" style="display: none;">
-      <div class="export-title"
-        style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" id="githubToggle">
-        <span>🔗 Push to GitHub</span>
-        <span id="githubToggleIcon">▼</span>
+    <!-- Export Tab Content -->
+    <div id="exportTab" class="tab-content" role="tabpanel">
+      <!-- Export Options Card -->
+      <div class="card p-4 ">
+        <div class="mb-4">
+          <h3 class="text-lg font-semibold" style="margin-top: 0; margin-bottom: 0;">Export Options</h3>
+          <p class="text-sm text-muted-foreground mt-1">
+            Generate your design tokens from Figma, then select which ones to export.
+          </p>
+        </div>
+
+        <!-- Token Selection Section -->
+        <div id="tokenSelection" class="card p-4 mb-6 hidden" style="background-color: hsl(var(--muted) / 0.5);">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="text-sm font-bold">Select Tokens to Export</h4>
+            <div class="flex items-center space-x-2">
+              <label class="text-xs text-muted-foreground">Select All</label>
+              <div class="toggle-switch active" id="selectAllToggle" role="switch" aria-checked="true">
+                <div class="toggle-slider"></div>
+              </div>
+            </div>
+          </div>
+          <div id="tokenCollections" class="space-y-3"></div>
+        </div>
+
+        <!-- Format Options -->
+        <div class="mb-6">
+          <label class="text-sm font-bold mb-2" style="display: block;">Export Format</label>
+          <div class="select">
+            <button type="button" class="select-trigger" id="exportFormatTrigger" aria-haspopup="listbox"
+              aria-expanded="false">
+              <span id="exportFormatValue">Developer JSON (W3C Format)</span>
+              <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            <div class="select-content" id="exportFormatContent">
+              <div class="select-viewport">
+                <div class="select-item" data-value="developer" data-state="checked">Developer JSON (W3C Format)</div>
+                <div class="select-item" data-value="json">JSON (Figma export)</div>
+                <div class="select-item" data-value="css">CSS Custom Properties</div>
+                <div class="select-item" data-value="scss">SCSS/Sass (variables & mixins)</div>
+                <div class="select-item" data-value="tailwind">Tailwind CSS (config.js)</div>
+                <div class="select-item" data-value="react-native">React Native (StyleSheet)</div>
+                <div class="select-item" data-value="flutter">Flutter/Dart (Color classes)</div>
+                <div class="select-item" data-value="ios">iOS Swift (UIColor extensions)</div>
+                <div class="select-item" data-value="android">Android XML (colors.xml)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Export Button -->
+        <button id="exportBtn" class="btn btn-primary">
+          <svg class="icon mr-2" viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+          Generate Design Tokens
+        </button>
+
+        <!-- Status Message -->
+        <div id="status" class="mt-4 hidden p-3 rounded-md text-sm border"></div>
       </div>
 
-      <div id="githubSettings" style="margin-top: 16px;">
-        <div class="export-info">
-          Configure your GitHub repository to automatically push design tokens.
+      <!-- Preview Section -->
+      <div id="previewSection" class="card p-6 hidden">
+        <h3 id="previewTitle" class="text-lg font-semibold mb-4">Export Preview</h3>
+        <div class="code-block">
+          <pre id="previewContent" class="code-preview"></pre>
         </div>
 
-        <div style="margin-bottom: 12px;">
-          <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
-            Repository URL or owner/repo
-          </label>
-          <input id="githubRepo" type="text" placeholder="username/repo or https://github.com/username/repo"
-            style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
-          <div style="font-size: 11px; color: #666; margin-top: 4px;">
-            Example: myorg/design-tokens
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-          <div style="flex: 1;">
-            <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
-              Branch
-            </label>
-            <input id="githubBranch" type="text" value="main" placeholder="main"
-              style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
-          </div>
-          <div style="flex: 2;">
-            <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
-              File Path
-            </label>
-            <input id="githubFilePath" type="text" value="tokens/design-tokens.json"
-              placeholder="tokens/design-tokens.json"
-              style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
-          </div>
-        </div>
-
-        <div style="margin-bottom: 12px;">
-          <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
-            GitHub Personal Access Token
-          </label>
-          <input id="githubToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-            style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
-          <div style="font-size: 11px; color: #666; margin-top: 4px;">
-            <a href="https://github.com/settings/tokens/new?scopes=repo&description=Figma%20Token%20Export"
-              target="_blank" style="color: #18a0fb; text-decoration: none;">
-              Create a token
-            </a> with 'repo' scope
-          </div>
-        </div>
-
-        <div style="margin-bottom: 12px;">
-          <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
-            Commit Message
-          </label>
-          <input id="githubCommitMessage" type="text" value="Update design tokens from Figma"
-            placeholder="Update design tokens"
-            style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
-        </div>
-
-        <div style="display: flex; gap: 8px;">
-          <button id="saveGithubSettings" class="button secondary" style="flex: 1;">
-            💾 Save Settings
-          </button>
-          <button id="pushToGithub" class="button" style="flex: 2;" disabled>
-            🚀 Push to GitHub
-          </button>
-        </div>
-
-        <div id="githubStatus" class="status" style="margin-top: 12px;"></div>
+        <button id="downloadBtn" class="btn btn-primary">
+          Download
+        </button>
       </div>
     </div>
 
-    <div class="actions">
-      <button id="closeBtn" class="button secondary">Close</button>
+    <!-- Analytics Tab Content -->
+    <div id="analyticsTab" class="tab-content hidden" role="tabpanel">
+      <div id="analyticsContent">
+        <div class="card p-8 text-center">
+          <div class="text-muted-foreground">
+            <svg class="icon mx-auto w-12 h-12 mb-4" viewBox="0 0 24 24">
+              <path
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            <h3 class="text-lg font-semibold text-foreground mb-2">No Data Available</h3>
+            <p class="text-sm">Generate your design tokens first to see analytics and statistics.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics Export Button -->
+      <div id="analyticsExport" class="mt-4 text-center hidden">
+        <button id="exportAnalyticsBtn" class="btn btn-primary">
+          <svg class="icon mr-2" viewBox="0 0 24 24">
+            <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+          </svg>
+          Export Analytics to CSV
+        </button>
+      </div>
+    </div>
+
+    <!-- Accessibility Tab Content -->
+    <div id="accessibilityTab" class="tab-content hidden" role="tabpanel">
+      <div id="accessibilityContent">
+        <div class="card p-8 text-center">
+          <div class="text-muted-foreground">
+            <svg class="icon mx-auto w-12 h-12 mb-4" viewBox="0 0 24 24">
+              <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
+              <path d="M12 6a2 2 0 1 1-2 2 2 2 0 0 1 2-2zm-2 7h4v5h-4z"></path>
+            </svg>
+            <h3 class="text-lg font-semibold text-foreground mb-2">No Accessibility Data Available</h3>
+            <p class="text-sm">Generate your design tokens first to see WCAG compliance analysis.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GitHub Integration Section -->
+      <div id="githubSection" class="card p-6 mt-6 hidden">
+        <div class="flex justify-between items-center mb-4 cursor-pointer" id="githubToggle">
+          <h2 class="text-2xl font-bold tracking-tight">🔗 Push to GitHub</h2>
+          <span id="githubToggleIcon" class="text-muted-foreground">▼</span>
+        </div>
+
+        <div id="githubSettings">
+          <p class="text-sm text-muted-foreground mb-4">
+            Configure your GitHub repository to automatically push design tokens.
+          </p>
+
+          <div class="space-y-3">
+            <div>
+              <label class="text-sm font-medium mb-2 block">Repository URL or owner/repo</label>
+              <input id="githubRepo" type="text" placeholder="username/repo or https://github.com/username/repo"
+                class="select-trigger w-full" />
+              <p class="text-xs text-muted-foreground mt-1">Example: myorg/design-tokens</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-sm font-medium mb-2 block">Branch</label>
+                <input id="githubBranch" type="text" value="main" placeholder="main" class="select-trigger w-full" />
+              </div>
+              <div>
+                <label class="text-sm font-medium mb-2 block">File Path</label>
+                <input id="githubFilePath" type="text" value="tokens/design-tokens.json"
+                  placeholder="tokens/design-tokens.json" class="select-trigger w-full" />
+              </div>
+            </div>
+
+            <div>
+              <label class="text-sm font-medium mb-2 block">GitHub Personal Access Token</label>
+              <input id="githubToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                class="select-trigger w-full" />
+              <p class="text-xs text-muted-foreground mt-1">
+                <a href="https://github.com/settings/tokens/new?scopes=repo&description=Figma%20Token%20Export"
+                  target="_blank" class="text-primary hover:underline">
+                  Create a token
+                </a> with 'repo' scope
+              </p>
+            </div>
+
+            <div>
+              <label class="text-sm font-medium mb-2 block">Commit Message</label>
+              <input id="githubCommitMessage" type="text" value="Update design tokens from Figma"
+                placeholder="Update design tokens" class="select-trigger w-full" />
+            </div>
+
+            <div class="flex gap-3 mt-4">
+              <button id="saveGithubSettings" class="btn btn-secondary flex-1">
+                💾 Save Settings
+              </button>
+              <button id="pushToGithub" class="btn btn-primary flex-1" disabled>
+                🚀 Push to GitHub
+              </button>
+            </div>
+
+            <div id="githubStatus" class="status mt-3 hidden"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accessibility Export Button -->
+      <div id="accessibilityExport" class="mt-4 text-center hidden">
+        <button id="exportAccessibilityReportBtn" class="btn btn-primary">
+          <svg class="icon mr-2" viewBox="0 0 24 24">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
+            <path d="M12 6a2 2 0 1 1-2 2 2 2 0 0 1 2-2zm-2 7h4v5h-4z"></path>
+          </svg>
+          Export WCAG Compliance Report
+        </button>
+      </div>
     </div>
   </div>
 
-  <script>
-"use strict";
-(() => {
-  // src/github.ts
-  async function pushToGitHub(options) {
-    const { config, content, commitMessage } = options;
-    const { token, owner, repo, branch, filePath } = config;
-    try {
-      const sha = await getFileSHA(config);
-      const response = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/vnd.github.v3+json"
-          },
-          body: JSON.stringify({
-            message: commitMessage,
-            content: btoa(unescape(encodeURIComponent(content))),
-            // Base64 encode
-            branch,
-            ...sha ? { sha } : {}
-            // Include SHA if file exists
-          })
-        }
-      );
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(
-          error.message || `GitHub API error: ${response.statusText}`
-        );
-      }
-      const result = await response.json();
-      return {
-        success: true,
-        message: "Successfully pushed to GitHub!",
-        commitUrl: result.commit?.html_url
-      };
-    } catch (error) {
-      console.error("GitHub push error:", error);
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : "Failed to push to GitHub. Please check your settings."
-      };
-    }
-  }
-  async function getFileSHA(config) {
-    const { token, owner, repo, branch, filePath } = config;
-    try {
-      const response = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}?ref=${branch}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/vnd.github.v3+json"
-          }
-        }
-      );
-      if (response.status === 404) {
-        return null;
-      }
-      if (!response.ok) {
-        throw new Error(`Failed to get file info: ${response.statusText}`);
-      }
-      const data = await response.json();
-      return data.sha;
-    } catch (error) {
-      console.log("File does not exist yet, will create new file");
-      return null;
-    }
-  }
-  function parseRepoUrl(url) {
-    const cleaned = url.trim().replace(/\/$/, "").replace(/\.git$/, "");
-    const httpsMatch = cleaned.match(/github\.com\/([^/]+)\/([^/]+)/);
-    if (httpsMatch && httpsMatch[1] && httpsMatch[2]) {
-      return { owner: httpsMatch[1], repo: httpsMatch[2] };
-    }
-    const sshMatch = cleaned.match(/git@github\.com:([^/]+)\/(.+)/);
-    if (sshMatch && sshMatch[1] && sshMatch[2]) {
-      return { owner: sshMatch[1], repo: sshMatch[2] };
-    }
-    const shortMatch = cleaned.match(/^([^/]+)\/([^/]+)$/);
-    if (shortMatch && shortMatch[1] && shortMatch[2]) {
-      return { owner: shortMatch[1], repo: shortMatch[2] };
-    }
-    return null;
-  }
-
-  // src/ui.ts
-  console.log("UI script starting to execute...");
-  var exportedData = null;
-  var exportBtn;
-  var downloadBtn;
-  var copyBtn;
-  var closeBtn;
-  var status;
-  var previewSection;
-  var previewContent;
-  var previewTitle;
-  var githubSection;
-  var githubToggle;
-  var githubSettings;
-  var githubToggleIcon;
-  var githubRepoInput;
-  var githubBranchInput;
-  var githubFilePathInput;
-  var githubTokenInput;
-  var githubCommitMessageInput;
-  var saveGithubSettingsBtn;
-  var pushToGithubBtn;
-  var githubStatus;
-  var githubSettingsCollapsed = false;
-  function initializePlugin() {
-    console.log("initializePlugin called");
-    exportBtn = getElementById("exportBtn");
-    downloadBtn = getElementById("downloadBtn");
-    copyBtn = getElementById("copyBtn");
-    closeBtn = getElementById("closeBtn");
-    status = getElementById("status");
-    previewSection = getElementById("previewSection");
-    previewContent = getElementById("previewContent");
-    previewTitle = getElementById("previewTitle");
-    githubSection = getElementById("githubSection");
-    githubToggle = getElementById("githubToggle");
-    githubSettings = getElementById("githubSettings");
-    githubToggleIcon = getElementById("githubToggleIcon");
-    githubRepoInput = getElementById("githubRepo");
-    githubBranchInput = getElementById("githubBranch");
-    githubFilePathInput = getElementById("githubFilePath");
-    githubTokenInput = getElementById("githubToken");
-    githubCommitMessageInput = getElementById("githubCommitMessage");
-    saveGithubSettingsBtn = getElementById("saveGithubSettings");
-    pushToGithubBtn = getElementById("pushToGithub");
-    githubStatus = getElementById("githubStatus");
-    console.log("All DOM elements found, setting up event listeners...");
-    exportBtn.addEventListener("click", handleExport);
-    downloadBtn.addEventListener("click", handleDownload);
-    copyBtn.addEventListener("click", handleCopy);
-    closeBtn.addEventListener("click", handleClose);
-    githubToggle.addEventListener("click", toggleGithubSettings);
-    saveGithubSettingsBtn.addEventListener("click", saveGithubSettings);
-    pushToGithubBtn.addEventListener("click", handlePushToGithub);
-    loadGithubSettings();
-    updateDownloadButtonText();
-    const formatSelect = getElementById("exportFormat");
-    formatSelect.addEventListener("change", () => {
-      console.log("Export format changed to:", formatSelect.value);
-      updateDownloadButtonText();
-      if (exportedData) {
-        updatePreviewContent();
-      }
-    });
-    window.onmessage = (event) => {
-      console.log("Received message:", event.data);
-      if (!event.data.pluginMessage) return;
-      const { type, data, message } = event.data.pluginMessage;
-      switch (type) {
-        case "tokens-extracted":
-          if (data) {
-            handleTokensExtractedWithGithub(data);
-          }
-          break;
-        case "error":
-          handleError(message || "Unknown error occurred");
-          break;
-        default:
-          console.warn("Unknown message type:", type);
-      }
-    };
-    console.log("\u2705 Plugin UI initialized successfully!");
-  }
-  function getElementById(id) {
-    const element = document.getElementById(id);
-    if (!element) {
-      throw new Error(`Element with id "${id}" not found`);
-    }
-    return element;
-  }
-  function handleTokensExtracted(data) {
-    exportBtn.disabled = false;
-    exportBtn.textContent = "Export Design Tokens";
-    updateDownloadButtonText();
-    const collectionCount = Object.keys(data.collections).length;
-    showStatus(
-      "success",
-      `Successfully extracted ${collectionCount} collection(s)!`
-    );
-    showPreview(data);
-  }
-  function handleError(message) {
-    exportBtn.disabled = false;
-    exportBtn.textContent = "Export Design Tokens";
-    showStatus("error", `Error: ${message}`);
-  }
-  function handleExport() {
-    console.log("Starting export process...");
-    showStatus("loading", "Extracting design tokens...");
-    exportBtn.disabled = true;
-    exportBtn.textContent = "Exporting...";
-    const message = { type: "export-tokens" };
-    parent.postMessage({ pluginMessage: message }, "*");
-  }
-  function getSelectedFormat() {
-    const formatSelect = document.getElementById(
-      "exportFormat"
-    );
-    if (formatSelect) {
-      return formatSelect.value;
-    }
-    return "json";
-  }
-  function convertToCSS(data) {
-    let css = "/* Design Tokens exported from Figma */\n";
-    css += `/* Exported at: ${data.metadata.exportedAt} */
-`;
-    css += `/* File: ${data.metadata.figmaFileKey || "Unknown"} */
-`;
-    css += `/* Collections: ${Object.keys(data.collections).join(", ")} */
-
-`;
-    const modeNames = [
-      ...new Set(
-        Object.values(data.collections).flatMap(
-          (collection) => Object.values(collection.variables).flatMap(
-            (variable) => Object.keys(variable.values)
-          )
-        )
-      )
-    ];
-    css += "/* Usage Examples:\n";
-    css += " * .button { background: var(--colors-primary); }\n";
-    css += " * .text { font-size: var(--typography-body-size); }\n";
-    if (modeNames.length > 1) {
-      const darkMode = modeNames.find((mode) => mode !== "Default" && mode !== "Light") || modeNames[1];
-      css += ` * Toggle themes: document.body.setAttribute("data-theme", "${darkMode}"); */
-
-`;
-    } else {
-      css += " */\n\n";
-    }
-    const modeGroups = {};
-    Object.entries(data.collections).forEach(([collectionName, collection]) => {
-      Object.entries(collection.variables).forEach(([varName, variable]) => {
-        Object.entries(variable.values).forEach(([modeName, value]) => {
-          if (!modeGroups[modeName]) {
-            modeGroups[modeName] = [];
-          }
-          const cssVarName = `--${collectionName.toLowerCase()}-${varName.toLowerCase()}`.replace(
-            /[^a-z0-9-]/g,
-            "-"
-          );
-          const cssValue = formatValueForCSS(value, variable.type);
-          const comment = variable.description ? ` /* ${variable.description} */` : "";
-          modeGroups[modeName].push(`  ${cssVarName}: ${cssValue};${comment}`);
-        });
-        Object.entries(variable.aliases).forEach(([modeName, alias]) => {
-          if (!modeGroups[modeName]) {
-            modeGroups[modeName] = [];
-          }
-          const cssVarName = `--${collectionName.toLowerCase()}-${varName.toLowerCase()}`.replace(
-            /[^a-z0-9-]/g,
-            "-"
-          );
-          const aliasName = alias.name.toLowerCase().replace(/[^a-z0-9-]/g, "-");
-          const comment = ` /* alias to ${alias.name} */`;
-          modeGroups[modeName].push(
-            `  ${cssVarName}: var(--${aliasName});${comment}`
-          );
-        });
-      });
-    });
-    Object.entries(modeGroups).forEach(([modeName, variables]) => {
-      if (modeName === "Default" || modeName === "Light" || Object.keys(modeGroups).length === 1) {
-        css += ":root {\n";
-        css += `  /* Mode: ${modeName} */
-`;
-      } else {
-        css += `[data-theme="${modeName}"] {
-`;
-        css += `  /* Mode: ${modeName} */
-`;
-      }
-      css += variables.join("\n") + "\n";
-      css += "}\n\n";
-    });
-    return css;
-  }
-  function formatValueForCSS(value, type) {
-    switch (type) {
-      case "COLOR":
-        return String(value);
-      case "FLOAT":
-        if (typeof value === "number" && value > 0 && value < 1e3 && Number.isInteger(value)) {
-          return `${value}px`;
-        }
-        return String(value);
-      case "STRING":
-        return `"${value}"`;
-      case "BOOLEAN":
-        return value ? "1" : "0";
-      default:
-        return String(value);
-    }
-  }
-  function convertToDeveloperFormat(data) {
-    const result = {};
-    Object.entries(data.collections).forEach(([collectionName, collection]) => {
-      const category = categorizeCollection(collectionName);
-      if (!result[category]) {
-        result[category] = {};
-      }
-      Object.entries(collection.variables).forEach(([varName, variable]) => {
-        const primaryMode = collection.modes.find(
-          (m) => m.name === "Default" || m.name === "Light"
-        ) || collection.modes[0];
-        if (!primaryMode) return;
-        const primaryModeName = primaryMode.name;
-        let value = variable.values[primaryModeName];
-        if (value === void 0 && variable.aliases[primaryModeName]) {
-          value = `{${variable.aliases[primaryModeName].name}}`;
-        }
-        if (value === void 0) return;
-        const token = {
-          $type: mapFigmaTypeToW3C(variable.type),
-          $value: value
-        };
-        if (variable.description) {
-          token.$description = variable.description;
-        }
-        const tokenPath = parseTokenName(varName);
-        setNestedValue(result[category], tokenPath, token);
-      });
-    });
-    return result;
-  }
-  function categorizeCollection(collectionName) {
-    const name = collectionName.toLowerCase();
-    if (name.includes("color") || name.includes("colour")) return "colors";
-    if (name.includes("spacing") || name.includes("space")) return "spacing";
-    if (name.includes("typography") || name.includes("font") || name.includes("text"))
-      return "typography";
-    if (name.includes("radius") || name.includes("border")) return "borderRadius";
-    if (name.includes("shadow")) return "shadows";
-    if (name.includes("size") || name.includes("sizing")) return "sizing";
-    if (name.includes("opacity") || name.includes("alpha")) return "opacity";
-    if (name.includes("duration") || name.includes("timing")) return "animation";
-    return collectionName.toLowerCase().replace(/\s+/g, "-");
-  }
-  function mapFigmaTypeToW3C(figmaType) {
-    switch (figmaType) {
-      case "COLOR":
-        return "color";
-      case "FLOAT":
-        return "number";
-      case "STRING":
-        return "string";
-      case "BOOLEAN":
-        return "boolean";
-      default:
-        return figmaType.toLowerCase();
-    }
-  }
-  function parseTokenName(name) {
-    let parts = [];
-    if (name.includes("/")) {
-      parts = name.split("/");
-    } else if (name.includes("-")) {
-      parts = name.split("-");
-    } else if (name.includes("_")) {
-      parts = name.split("_");
-    } else {
-      parts = name.split(/(?=[A-Z])/).map((p) => p.toLowerCase());
-      if (parts.length === 1) {
-        parts = [name];
-      }
-    }
-    return parts.map((p) => p.trim().toLowerCase()).filter((p) => p.length > 0);
-  }
-  function setNestedValue(obj, path, value) {
-    if (path.length === 0) return;
-    const key = path[0];
-    if (!key) return;
-    if (path.length === 1) {
-      obj[key] = value;
-      return;
-    }
-    const [first, ...rest] = path;
-    if (!first) return;
-    if (!obj[first]) {
-      obj[first] = {};
-    }
-    setNestedValue(obj[first], rest, value);
-  }
-  function handleDownload() {
-    if (!exportedData) return;
-    const format = getSelectedFormat();
-    const dateStr = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
-    try {
-      if (format === "json") {
-        const content = JSON.stringify(exportedData, null, 2);
-        downloadFile(
-          content,
-          "application/json",
-          `design-tokens-${dateStr}.json`
-        );
-        showStatus("success", "JSON file downloaded successfully!");
-      } else if (format === "css") {
-        const content = convertToCSS(exportedData);
-        downloadFile(content, "text/css", `design-tokens-${dateStr}.css`);
-        showStatus("success", "CSS file downloaded successfully!");
-      } else if (format === "developer") {
-        const content = JSON.stringify(
-          convertToDeveloperFormat(exportedData),
-          null,
-          2
-        );
-        downloadFile(
-          content,
-          "application/json",
-          `design-tokens-developer-${dateStr}.json`
-        );
-        showStatus("success", "Developer JSON file downloaded successfully!");
-      }
-    } catch (error) {
-      console.error("Download error:", error);
-      showStatus("error", "Failed to download file");
-    }
-  }
-  function downloadFile(content, mimeType, filename) {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  }
-  function updateDownloadButtonText() {
-    if (!downloadBtn || !copyBtn) return;
-    const format = getSelectedFormat();
-    switch (format) {
-      case "json":
-        downloadBtn.textContent = "Download JSON";
-        copyBtn.textContent = "Copy JSON";
-        break;
-      case "css":
-        downloadBtn.textContent = "Download CSS";
-        copyBtn.textContent = "Copy CSS";
-        break;
-      case "developer":
-        downloadBtn.textContent = "Download Developer JSON";
-        copyBtn.textContent = "Copy Developer JSON";
-        break;
-      default:
-        downloadBtn.textContent = "Download";
-        copyBtn.textContent = "Copy to Clipboard";
-    }
-  }
-  async function handleCopy() {
-    if (!exportedData) return;
-    try {
-      const format = getSelectedFormat();
-      let content;
-      let message;
-      if (format === "json") {
-        content = JSON.stringify(exportedData, null, 2);
-        message = "JSON copied to clipboard!";
-      } else if (format === "css") {
-        content = convertToCSS(exportedData);
-        message = "CSS copied to clipboard!";
-      } else if (format === "developer") {
-        content = JSON.stringify(convertToDeveloperFormat(exportedData), null, 2);
-        message = "Developer JSON copied to clipboard!";
-      } else {
-        throw new Error("Unknown format");
-      }
-      await navigator.clipboard.writeText(content);
-      showStatus("success", message);
-    } catch (error) {
-      console.error("Copy error:", error);
-      showStatus("error", "Failed to copy to clipboard");
-    }
-  }
-  function handleClose() {
-    console.log("Closing plugin...");
-    const message = { type: "close-plugin" };
-    parent.postMessage({ pluginMessage: message }, "*");
-  }
-  function showStatus(type, message) {
-    if (!status) return;
-    status.className = `status ${type}`;
-    status.textContent = message;
-    status.style.display = "block";
-    if (type === "success") {
-      setTimeout(() => {
-        status.style.display = "none";
-      }, 3e3);
-    }
-  }
-  function showPreview(data) {
-    exportedData = data;
-    updatePreviewContent();
-    if (previewSection) {
-      previewSection.style.display = "block";
-    }
-  }
-  function updatePreviewContent() {
-    if (!exportedData || !previewContent) return;
-    const format = getSelectedFormat();
-    if (format === "css") {
-      const cssContent = convertToCSS(exportedData);
-      previewContent.textContent = cssContent;
-      if (previewTitle) previewTitle.textContent = "CSS Preview";
-    } else if (format === "developer") {
-      const developerContent = convertToDeveloperFormat(exportedData);
-      previewContent.textContent = JSON.stringify(developerContent, null, 2);
-      if (previewTitle)
-        previewTitle.textContent = "Developer JSON Preview (W3C Format)";
-    } else {
-      const preview = createJSONPreview(exportedData);
-      previewContent.textContent = JSON.stringify(preview, null, 2);
-      if (previewTitle) previewTitle.textContent = "JSON Preview";
-    }
-  }
-  function createJSONPreview(data) {
-    return {
-      metadata: data.metadata,
-      collections: Object.fromEntries(
-        Object.entries(data.collections).map(([collectionName, collection]) => {
-          const variableNames = Object.keys(collection.variables);
-          const previewVariables = Object.fromEntries(
-            variableNames.slice(0, 3).map((name) => [name, collection.variables[name]])
-          );
-          if (variableNames.length > 3) {
-            previewVariables["..."] = `and ${variableNames.length - 3} more variables`;
-          }
-          return [
-            collectionName,
-            {
-              name: collection.name,
-              modes: collection.modes,
-              variableCount: variableNames.length,
-              variables: previewVariables
-            }
-          ];
-        })
-      )
-    };
-  }
-  function toggleGithubSettings() {
-    githubSettingsCollapsed = !githubSettingsCollapsed;
-    if (githubSettingsCollapsed) {
-      githubSettings.style.display = "none";
-      githubToggleIcon.textContent = "\u25B6";
-    } else {
-      githubSettings.style.display = "block";
-      githubToggleIcon.textContent = "\u25BC";
-    }
-  }
-  async function loadGithubSettings() {
-    const savedSettings = localStorage.getItem("githubSettings");
-    if (savedSettings) {
-      try {
-        const settings = JSON.parse(savedSettings);
-        githubRepoInput.value = settings.repoUrl || "";
-        githubBranchInput.value = settings.branch || "main";
-        githubFilePathInput.value = settings.filePath || "tokens/design-tokens.json";
-        if (settings.token) {
-          githubTokenInput.value = settings.token;
-        }
-      } catch (error) {
-        console.error("Failed to load GitHub settings:", error);
-      }
-    }
-  }
-  async function saveGithubSettings() {
-    const repoUrl = githubRepoInput.value.trim();
-    const branch = githubBranchInput.value.trim();
-    const filePath = githubFilePathInput.value.trim();
-    const token = githubTokenInput.value.trim();
-    if (!repoUrl || !branch || !filePath) {
-      showGithubStatus("error", "Please fill in all required fields");
-      return;
-    }
-    const parsed = parseRepoUrl(repoUrl);
-    if (!parsed) {
-      showGithubStatus("error", "Invalid repository URL format");
-      return;
-    }
-    const settings = {
-      repoUrl,
-      branch,
-      filePath
-    };
-    if (token) {
-      settings.token = token;
-    }
-    try {
-      localStorage.setItem("githubSettings", JSON.stringify(settings));
-      showGithubStatus("success", "Settings saved successfully!");
-      if (exportedData) {
-        pushToGithubBtn.disabled = false;
-      }
-    } catch (error) {
-      console.error("Failed to save settings:", error);
-      showGithubStatus("error", "Failed to save settings");
-    }
-  }
-  async function handlePushToGithub() {
-    if (!exportedData) {
-      showGithubStatus("error", "Please export tokens first");
-      return;
-    }
-    const repoUrl = githubRepoInput.value.trim();
-    const branch = githubBranchInput.value.trim();
-    const filePath = githubFilePathInput.value.trim();
-    const token = githubTokenInput.value.trim();
-    const commitMessage = githubCommitMessageInput.value.trim();
-    if (!repoUrl || !branch || !filePath || !token) {
-      showGithubStatus("error", "Please fill in all fields including token");
-      return;
-    }
-    const parsed = parseRepoUrl(repoUrl);
-    if (!parsed) {
-      showGithubStatus("error", "Invalid repository URL format");
-      return;
-    }
-    const format = getSelectedFormat();
-    let content;
-    try {
-      if (format === "json") {
-        content = JSON.stringify(exportedData, null, 2);
-      } else if (format === "css") {
-        content = convertToCSS(exportedData);
-      } else if (format === "developer") {
-        content = JSON.stringify(convertToDeveloperFormat(exportedData), null, 2);
-      } else {
-        throw new Error("Unknown format");
-      }
-    } catch (error) {
-      console.error("Failed to generate content:", error);
-      showGithubStatus("error", "Failed to generate export content");
-      return;
-    }
-    showGithubStatus("loading", "Pushing to GitHub...");
-    pushToGithubBtn.disabled = true;
-    pushToGithubBtn.textContent = "Pushing...";
-    try {
-      const result = await pushToGitHub({
-        config: {
-          token,
-          owner: parsed.owner,
-          repo: parsed.repo,
-          branch,
-          filePath
-        },
-        content,
-        commitMessage: commitMessage || "Update design tokens from Figma"
-      });
-      if (result.success) {
-        showGithubStatus("success", result.message);
-        if (result.commitUrl) {
-          githubStatus.innerHTML = `
-          \u2705 ${result.message} 
-          <a href="${result.commitUrl}" target="_blank" style="color: #18a0fb; text-decoration: none;">
-            View commit \u2192
-          </a>
-        `;
-        }
-      } else {
-        showGithubStatus("error", result.message);
-      }
-    } catch (error) {
-      console.error("Push error:", error);
-      showGithubStatus(
-        "error",
-        error instanceof Error ? error.message : "Failed to push to GitHub"
-      );
-    } finally {
-      pushToGithubBtn.disabled = false;
-      pushToGithubBtn.textContent = "\u{1F680} Push to GitHub";
-    }
-  }
-  function showGithubStatus(type, message) {
-    if (!githubStatus) return;
-    githubStatus.className = `status ${type}`;
-    githubStatus.textContent = message;
-    githubStatus.style.display = "block";
-    if (type === "success") {
-      setTimeout(() => {
-        githubStatus.style.display = "none";
-      }, 5e3);
-    }
-  }
-  function handleTokensExtractedWithGithub(data) {
-    handleTokensExtracted(data);
-    githubSection.style.display = "block";
-    const savedSettings = localStorage.getItem("githubSettings");
-    if (savedSettings) {
-      try {
-        const settings = JSON.parse(savedSettings);
-        githubRepoInput.value = settings.repoUrl || "";
-        githubBranchInput.value = settings.branch || "main";
-        githubFilePathInput.value = settings.filePath || "tokens/design-tokens.json";
-        if (settings.token) {
-          githubTokenInput.value = settings.token;
-        }
-        if (settings.repoUrl && settings.branch && settings.filePath) {
-          pushToGithubBtn.disabled = false;
-        }
-      } catch (error) {
-        console.error("Failed to parse saved settings:", error);
-      }
-    }
-  }
-  console.log("Document ready state:", document.readyState);
-  if (document.readyState === "loading") {
-    console.log("DOM still loading, waiting for DOMContentLoaded...");
-    document.addEventListener("DOMContentLoaded", () => {
-      console.log("DOM loaded via event, initializing plugin UI...");
-      initializePlugin();
-    });
-  } else {
-    console.log("DOM already loaded, initializing immediately...");
-    initializePlugin();
-  }
-})();
-
-  </script>
-</body>
 
 </html>
