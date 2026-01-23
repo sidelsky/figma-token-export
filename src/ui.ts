@@ -98,11 +98,17 @@ function initializePlugin(): void {
     }
   });
 
-  // Listen for messages from plugin code
+  // Listen for messages from plugin code (compatible with existing handlers)
+  const existingOnMessage = window.onmessage;
   window.onmessage = (
     event: MessageEvent<{ pluginMessage: PluginMessage }>
   ) => {
-    console.log('Received message:', event.data);
+    // Call existing handler first (for accessibility/analytics)
+    if (typeof existingOnMessage === 'function') {
+      existingOnMessage.call(window, event);
+    }
+
+    console.log('Received GitHub-related message:', event.data);
 
     if (!event.data.pluginMessage) return;
 
@@ -116,11 +122,12 @@ function initializePlugin(): void {
         break;
 
       case 'error':
-        handleError(message || 'Unknown error occurred');
+        // Don't call handleError if it's already handled by the original logic
+        // But we need it for GitHub push errors
+        if (type === 'error' && message?.includes('GitHub')) {
+          handleError(message);
+        }
         break;
-
-      default:
-        console.warn('Unknown message type:', type);
     }
   };
 
