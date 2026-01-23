@@ -7,14 +7,14 @@ figma.showUI(__html__, { width: 520, height: 600 });
 // Handle messages from the UI
 figma.ui.onmessage = async (msg) => {
   console.log('Plugin received message:', msg);
-  
+
   try {
     switch (msg.type) {
       case 'export-tokens': {
         console.log('Starting token extraction...');
         const tokens = await extractAllTokens();
         console.log('Tokens extracted successfully:', tokens);
-        
+
         const successMessage = {
           type: 'tokens-extracted',
           data: tokens,
@@ -22,17 +22,17 @@ figma.ui.onmessage = async (msg) => {
         figma.ui.postMessage(successMessage);
         break;
       }
-        
+
       case 'close-plugin':
         figma.closePlugin();
         break;
-        
+
       default:
         console.warn('Unknown message type:', msg);
     }
   } catch (error) {
     console.error('Error processing message:', error);
-    
+
     const errorMessage = {
       type: 'error',
       message: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -46,14 +46,14 @@ figma.ui.onmessage = async (msg) => {
  */
 async function extractAllTokens() {
   console.log('Getting variable collections...');
-  
-  const collections = figma.variables.getLocalVariableCollections();
+
+  const collections = await figma.variables.getLocalVariableCollectionsAsync();
   console.log(`Found ${collections.length} collections:`, collections.map((c) => c.name));
-  
+
   if (collections.length === 0) {
     throw new Error('No variable collections found in this file. Please create some variables first.');
   }
-  
+
   const exportData = {
     metadata: {
       exportedAt: new Date().toISOString(),
@@ -96,15 +96,19 @@ async function processCollection(collection) {
   };
 
   // Get all variables in this collection
-  const variables = collection.variableIds
-    .map((id) => figma.variables.getVariableById(id))
-    .filter((variable) => variable !== null);
-  
+  const variables = (
+    await Promise.all(
+      collection.variableIds.map((id) =>
+        figma.variables.getVariableByIdAsync(id)
+      )
+    )
+  ).filter((variable) => variable !== null);
+
   console.log(`Processing ${variables.length} variables in collection "${collection.name}"`);
 
   for (const variable of variables) {
     try {
-      const variableData = processVariable(variable, collection);
+      const variableData = await processVariable(variable, collection);
       collectionData.variables[variable.name] = variableData;
     } catch (error) {
       console.error(`Error processing variable "${variable.name}":`, error);
@@ -118,7 +122,7 @@ async function processCollection(collection) {
 /**
  * Process a single variable
  */
-function processVariable(variable, collection) {
+async function processVariable(variable, collection) {
   const variableData = {
     id: variable.id,
     name: variable.name,
@@ -132,11 +136,11 @@ function processVariable(variable, collection) {
   // Process values for each mode
   for (const mode of collection.modes) {
     const value = variable.valuesByMode[mode.modeId];
-    
+
     if (value !== undefined) {
       if (typeof value === 'object' && value !== null && 'type' in value && value.type === 'VARIABLE_ALIAS') {
         // Handle variable aliases
-        const aliasedVariable = figma.variables.getVariableById(value.id);
+        const aliasedVariable = await figma.variables.getVariableByIdAsync(value.id);
         variableData.aliases[mode.name] = {
           id: value.id,
           name: aliasedVariable ? aliasedVariable.name : 'Unknown',
@@ -159,16 +163,16 @@ function formatValue(value, type) {
     switch (type) {
       case 'COLOR':
         return formatColorValue(value);
-        
+
       case 'FLOAT':
         return typeof value === 'number' ? value : parseFloat(String(value));
-        
+
       case 'STRING':
         return String(value);
-        
+
       case 'BOOLEAN':
         return Boolean(value);
-        
+
       default:
         return value;
     }
@@ -184,19 +188,19 @@ function formatValue(value, type) {
 function formatColorValue(value) {
   if (typeof value === 'object' && value !== null && 'r' in value) {
     const colorValue = value;
-    
+
     // Convert RGB values (0-1) to 0-255 range
     const r = Math.round(Math.max(0, Math.min(1, colorValue.r)) * 255);
     const g = Math.round(Math.max(0, Math.min(1, colorValue.g)) * 255);
     const b = Math.round(Math.max(0, Math.min(1, colorValue.b)) * 255);
     const a = colorValue.a !== undefined ? Math.max(0, Math.min(1, colorValue.a)) : 1;
-    
+
     if (a < 1) {
       return `rgba(${r}, ${g}, ${b}, ${a})`;
     } else {
       return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
     }
   }
-  
+
   return String(value);
 }

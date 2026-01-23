@@ -59,7 +59,7 @@ figma.ui.onmessage = async (msg: UIMessage): Promise<void> => {
 async function extractAllTokens(): Promise<ExportData> {
   console.log('Getting variable collections...');
 
-  const collections = figma.variables.getLocalVariableCollections();
+  const collections = await figma.variables.getLocalVariableCollectionsAsync();
   console.log(
     `Found ${collections.length} collections:`,
     collections.map((c: any) => c.name)
@@ -113,9 +113,13 @@ async function processCollection(collection: any): Promise<CollectionData> {
   };
 
   // Get all variables in this collection
-  const variables = collection.variableIds
-    .map((id: string) => figma.variables.getVariableById(id))
-    .filter((variable: any): variable is any => variable !== null);
+  const variables = (
+    await Promise.all(
+      collection.variableIds.map((id: string) =>
+        figma.variables.getVariableByIdAsync(id)
+      )
+    )
+  ).filter((variable: any): variable is any => variable !== null);
 
   console.log(
     `Processing ${variables.length} variables in collection "${collection.name}"`
@@ -123,7 +127,7 @@ async function processCollection(collection: any): Promise<CollectionData> {
 
   for (const variable of variables) {
     try {
-      const variableData = processVariable(variable, collection);
+      const variableData = await processVariable(variable, collection);
       collectionData.variables[variable.name] = variableData;
     } catch (error) {
       console.error(`Error processing variable "${variable.name}":`, error);
@@ -137,7 +141,7 @@ async function processCollection(collection: any): Promise<CollectionData> {
 /**
  * Process a single variable
  */
-function processVariable(variable: any, collection: any): VariableData {
+async function processVariable(variable: any, collection: any): Promise<VariableData> {
   const variableData: VariableData = {
     id: variable.id,
     name: variable.name,
@@ -160,7 +164,7 @@ function processVariable(variable: any, collection: any): VariableData {
         value.type === 'VARIABLE_ALIAS'
       ) {
         // Handle variable aliases
-        const aliasedVariable = figma.variables.getVariableById(value.id);
+        const aliasedVariable = await figma.variables.getVariableByIdAsync(value.id);
         variableData.aliases[mode.name] = {
           id: value.id,
           name: aliasedVariable?.name || 'Unknown',
