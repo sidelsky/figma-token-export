@@ -141,7 +141,10 @@ async function processCollection(collection: any): Promise<CollectionData> {
 /**
  * Process a single variable
  */
-async function processVariable(variable: any, collection: any): Promise<VariableData> {
+async function processVariable(
+  variable: any,
+  collection: any
+): Promise<VariableData> {
   const variableData: VariableData = {
     id: variable.id,
     name: variable.name,
@@ -164,7 +167,9 @@ async function processVariable(variable: any, collection: any): Promise<Variable
         value.type === 'VARIABLE_ALIAS'
       ) {
         // Handle variable aliases
-        const aliasedVariable = await figma.variables.getVariableByIdAsync(value.id);
+        const aliasedVariable = await figma.variables.getVariableByIdAsync(
+          value.id
+        );
         variableData.aliases[mode.name] = {
           id: value.id,
           name: aliasedVariable?.name || 'Unknown',

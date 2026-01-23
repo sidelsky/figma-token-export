@@ -5,6 +5,30 @@ All notable changes to the Figma Design Token Export plugin will be documented i
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-01-23
+
+### Added
+- **Developer JSON Export Format**: New W3C Design Tokens Community Group compliant export option
+  - Clean, production-ready JSON structure without Figma metadata
+  - Hierarchical organization by token categories (colors, spacing, typography, etc.)
+  - Simple `$type`, `$value`, `$description` structure
+  - Compatible with Style Dictionary, Theo, and other design token tools
+  - Automatic categorization of tokens based on collection names
+  - Smart token name parsing for nested structures (supports `/`, `-`, `_`, and camelCase)
+  - Recommended format for most developer use cases
+
+### Changed
+- Updated UI to include three export format options: JSON (Complete), CSS, and Developer JSON (W3C)
+- Enhanced README with comprehensive documentation of all export formats
+- Added example output file demonstrating the Developer JSON format
+
+### Technical Details
+- Added `convertToDeveloperFormat()` function for W3C-compliant transformation
+- Implemented automatic token categorization logic
+- Added token name parsing for hierarchical structure creation
+- Extended TypeScript types to support the new format
+- All existing formats remain unchanged and fully functional
+
 ## [1.1.0] - 2024-01-23
 
 ### Added

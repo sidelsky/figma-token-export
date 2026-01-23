@@ -37,7 +37,7 @@ export interface AliasData {
   name: string;
 }
 
-export type ExportFormat = 'json' | 'css';
+export type ExportFormat = 'json' | 'css' | 'developer';
 
 export interface UIMessage {
   type: 'export-tokens' | 'close-plugin';
@@ -65,3 +65,12 @@ declare global {
     onmessage: (_event: MessageEvent<{ pluginMessage: PluginMessage }>) => void;
   }
 }
+
+// W3C Design Tokens Community Group format
+export interface DeveloperToken {
+  $type: string;
+  $value: any;
+  $description?: string;
+}
+
+export type DeveloperExportData = Record<string, any>;

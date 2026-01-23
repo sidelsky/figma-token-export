@@ -1,5 +1,11 @@
 // UI logic for the Design Token Export plugin
-import { ExportData, ExportFormat, UIMessage, PluginMessage } from './types';
+import {
+  ExportData,
+  ExportFormat,
+  UIMessage,
+  PluginMessage,
+  DeveloperExportData,
+} from './types';
 
 console.log('UI script starting to execute...');
 
@@ -133,8 +139,10 @@ function handleExport(): void {
  * Get the currently selected export format
  */
 function getSelectedFormat(): ExportFormat {
-  const formatSelect = document.getElementById('exportFormat') as HTMLSelectElement;
-  
+  const formatSelect = document.getElementById(
+    'exportFormat'
+  ) as HTMLSelectElement;
+
   if (formatSelect) {
     return formatSelect.value as ExportFormat;
   }
@@ -273,6 +281,166 @@ function formatValueForCSS(value: any, type: string): string {
 }
 
 /**
+ * Convert to W3C Design Tokens Community Group format
+ * Creates a simplified, developer-friendly structure
+ */
+function convertToDeveloperFormat(data: ExportData): DeveloperExportData {
+  const result: DeveloperExportData = {};
+
+  // Process each collection
+  Object.entries(data.collections).forEach(([collectionName, collection]) => {
+    // Determine category based on collection name or variable types
+    const category = categorizeCollection(collectionName);
+
+    // Initialize category if it doesn't exist
+    if (!result[category]) {
+      result[category] = {};
+    }
+
+    // Process each variable in the collection
+    Object.entries(collection.variables).forEach(([varName, variable]) => {
+      // Get the primary value (prefer Default mode, or first available mode)
+      const primaryMode =
+        collection.modes.find(
+          m => m.name === 'Default' || m.name === 'Light'
+        ) || collection.modes[0];
+
+      if (!primaryMode) return; // Skip if no modes available
+
+      const primaryModeName = primaryMode.name;
+
+      let value = variable.values[primaryModeName];
+
+      // If no direct value, check for alias
+      if (value === undefined && variable.aliases[primaryModeName]) {
+        value = `{${variable.aliases[primaryModeName].name}}`;
+      }
+
+      // Skip if still no value
+      if (value === undefined) return;
+
+      // Create the token object
+      const token: any = {
+        $type: mapFigmaTypeToW3C(variable.type),
+        $value: value,
+      };
+
+      // Add description if available
+      if (variable.description) {
+        token.$description = variable.description;
+      }
+
+      // Parse variable name to create nested structure
+      const tokenPath = parseTokenName(varName);
+      setNestedValue(result[category], tokenPath, token);
+    });
+  });
+
+  return result;
+}
+
+/**
+ * Categorize a collection into a standard category
+ */
+function categorizeCollection(collectionName: string): string {
+  const name = collectionName.toLowerCase();
+
+  // Map common collection names to standard categories
+  if (name.includes('color') || name.includes('colour')) return 'colors';
+  if (name.includes('spacing') || name.includes('space')) return 'spacing';
+  if (
+    name.includes('typography') ||
+    name.includes('font') ||
+    name.includes('text')
+  )
+    return 'typography';
+  if (name.includes('radius') || name.includes('border')) return 'borderRadius';
+  if (name.includes('shadow')) return 'shadows';
+  if (name.includes('size') || name.includes('sizing')) return 'sizing';
+  if (name.includes('opacity') || name.includes('alpha')) return 'opacity';
+  if (name.includes('duration') || name.includes('timing')) return 'animation';
+
+  // Default: use the collection name as-is (lowercase, no spaces)
+  return collectionName.toLowerCase().replace(/\s+/g, '-');
+}
+
+/**
+ * Map Figma variable types to W3C Design Token types
+ */
+function mapFigmaTypeToW3C(figmaType: string): string {
+  switch (figmaType) {
+    case 'COLOR':
+      return 'color';
+    case 'FLOAT':
+      return 'number';
+    case 'STRING':
+      return 'string';
+    case 'BOOLEAN':
+      return 'boolean';
+    default:
+      return figmaType.toLowerCase();
+  }
+}
+
+/**
+ * Parse a token name into a path array
+ * Examples:
+ *   "primary" -> ["primary"]
+ *   "text/primary" -> ["text", "primary"]
+ *   "button-primary" -> ["button", "primary"]
+ */
+function parseTokenName(name: string): string[] {
+  // Split by common separators: /, -, _, or camelCase
+  let parts: string[] = [];
+
+  // First, split by / (most explicit separator)
+  if (name.includes('/')) {
+    parts = name.split('/');
+  } else if (name.includes('-')) {
+    // Split by dash
+    parts = name.split('-');
+  } else if (name.includes('_')) {
+    // Split by underscore
+    parts = name.split('_');
+  } else {
+    // Try to split camelCase
+    parts = name.split(/(?=[A-Z])/).map(p => p.toLowerCase());
+
+    // If no camelCase detected, use the whole name
+    if (parts.length === 1) {
+      parts = [name];
+    }
+  }
+
+  // Clean up parts
+  return parts.map(p => p.trim().toLowerCase()).filter(p => p.length > 0);
+}
+
+/**
+ * Set a value in a nested object using a path array
+ */
+function setNestedValue(obj: any, path: string[], value: any): void {
+  if (path.length === 0) return;
+
+  const key = path[0];
+  if (!key) return; // Type guard for undefined
+
+  if (path.length === 1) {
+    obj[key] = value;
+    return;
+  }
+
+  const [first, ...rest] = path;
+  if (!first) return; // Type guard for undefined
+
+  if (!obj[first]) {
+    obj[first] = {};
+  }
+
+  setNestedValue(obj[first], rest, value);
+}
+
+/**
  * Handle download button click
  */
 function handleDownload(): void {
@@ -294,6 +462,18 @@ function handleDownload(): void {
       const content = convertToCSS(exportedData);
       downloadFile(content, 'text/css', `design-tokens-${dateStr}.css`);
       showStatus('success', 'CSS file downloaded successfully!');
+    } else if (format === 'developer') {
+      const content = JSON.stringify(
+        convertToDeveloperFormat(exportedData),
+        null,
+        2
+      );
+      downloadFile(
+        content,
+        'application/json',
+        `design-tokens-developer-${dateStr}.json`
+      );
+      showStatus('success', 'Developer JSON file downloaded successfully!');
     }
   } catch (error) {
     console.error('Download error:', error);
@@ -339,6 +519,10 @@ function updateDownloadButtonText(): void {
       downloadBtn.textContent = 'Download CSS';
       copyBtn.textContent = 'Copy CSS';
       break;
+    case 'developer':
+      downloadBtn.textContent = 'Download Developer JSON';
+      copyBtn.textContent = 'Copy Developer JSON';
+      break;
     default:
       downloadBtn.textContent = 'Download';
       copyBtn.textContent = 'Copy to Clipboard';
@@ -362,6 +546,9 @@ async function handleCopy(): Promise<void> {
     } else if (format === 'css') {
       content = convertToCSS(exportedData);
       message = 'CSS copied to clipboard!';
+    } else if (format === 'developer') {
+      content = JSON.stringify(convertToDeveloperFormat(exportedData), null, 2);
+      message = 'Developer JSON copied to clipboard!';
     } else {
       throw new Error('Unknown format');
     }
@@ -427,6 +614,11 @@ function updatePreviewContent(): void {
     const cssContent = convertToCSS(exportedData);
     previewContent.textContent = cssContent;
     if (previewTitle) previewTitle.textContent = 'CSS Preview';
+  } else if (format === 'developer') {
+    const developerContent = convertToDeveloperFormat(exportedData);
+    previewContent.textContent = JSON.stringify(developerContent, null, 2);
+    if (previewTitle)
+      previewTitle.textContent = 'Developer JSON Preview (W3C Format)';
   } else {
     const preview = createJSONPreview(exportedData);
     previewContent.textContent = JSON.stringify(preview, null, 2);

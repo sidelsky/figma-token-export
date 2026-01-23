@@ -1,0 +1,109 @@
+{
+    "colors": {
+        "primary": {
+            "$type": "color",
+            "$value": "#0095ff",
+            "$description": "Primary brand color"
+        },
+        "secondary": {
+            "$type": "color",
+            "$value": "#6366f1"
+        },
+        "text": {
+            "primary": {
+                "$type": "color",
+                "$value": "#111827"
+            },
+            "secondary": {
+                "$type": "color",
+                "$value": "#6b7280"
+            },
+            "tertiary": {
+                "$type": "color",
+                "$value": "#9ca3af"
+            }
+        },
+        "background": {
+            "primary": {
+                "$type": "color",
+                "$value": "#ffffff"
+            },
+            "secondary": {
+                "$type": "color",
+                "$value": "#f9fafb"
+            }
+        }
+    },
+    "spacing": {
+        "xs": {
+            "$type": "number",
+            "$value": 4
+        },
+        "sm": {
+            "$type": "number",
+            "$value": 8
+        },
+        "md": {
+            "$type": "number",
+            "$value": 16
+        },
+        "lg": {
+            "$type": "number",
+            "$value": 24
+        },
+        "xl": {
+            "$type": "number",
+            "$value": 32
+        }
+    },
+    "typography": {
+        "font": {
+            "family": {
+                "base": {
+                    "$type": "string",
+                    "$value": "Inter, sans-serif"
+                },
+                "heading": {
+                    "$type": "string",
+                    "$value": "Poppins, sans-serif"
+                }
+            },
+            "size": {
+                "sm": {
+                    "$type": "number",
+                    "$value": 12
+                },
+                "base": {
+                    "$type": "number",
+                    "$value": 16
+                },
+                "lg": {
+                    "$type": "number",
+                    "$value": 20
+                },
+                "xl": {
+                    "$type": "number",
+                    "$value": 24
+                }
+            }
+        }
+    },
+    "borderRadius": {
+        "sm": {
+            "$type": "number",
+            "$value": 4
+        },
+        "md": {
+            "$type": "number",
+            "$value": 8
+        },
+        "lg": {
+            "$type": "number",
+            "$value": 12
+        },
+        "full": {
+            "$type": "number",
+            "$value": 9999
+        }
+    }
+}

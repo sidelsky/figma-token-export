@@ -1,11 +1,12 @@
 # Figma Design Token Export Plugin
 
-A production-ready Figma plugin that exports design variables and tokens into developer-friendly JSON and CSS formats.
+A production-ready Figma plugin that exports design variables and tokens into developer-friendly formats, including W3C-compliant JSON, complete JSON, and CSS custom properties.
 
 ## Features
 
 - 🎨 **Export Design Tokens**: Extract all local variable collections from Figma
-- 📄 **Multiple Formats**: Export as JSON or CSS custom properties
+- 📄 **Multiple Formats**: Export as W3C Developer JSON, complete JSON, or CSS custom properties
+- ⭐ **W3C Compliant**: Clean, production-ready format following industry standards
 - 🔄 **Mode Support**: Handle multiple modes (light/dark themes)
 - 🎯 **Type Safety**: Built with TypeScript for reliability
 - 📱 **Modern UI**: Clean, responsive interface
@@ -138,14 +139,16 @@ figma-token-export/
 - **Jest**: Unit testing framework
 - **Figma Plugin API**: Plugin functionality
 
+
 ## Usage
 
 1. **Open the plugin in Figma:**
    - Select "Design Token Export" from the plugins menu
 
 2. **Choose export format:**
-   - JSON: For JavaScript/build tools
-   - CSS: For direct CSS usage
+   - **JSON**: Complete data with Figma metadata (for advanced use cases)
+   - **CSS**: CSS custom properties (for direct CSS usage)
+   - **Developer JSON**: Clean, W3C-compliant format (recommended for most developers)
 
 3. **Export tokens:**
    - Click "Export Design Tokens"
@@ -153,7 +156,65 @@ figma-token-export/
 
 ### Export Formats
 
-#### JSON Format
+#### Developer JSON Format (W3C Compliant) ⭐ **Recommended**
+
+Clean, production-ready format following the [W3C Design Tokens Community Group](https://design-tokens.github.io/community-group/format/) specification. Perfect for integration into codebases.
+
+**Features:**
+- ✅ No Figma-specific metadata
+- ✅ Hierarchical organization by category
+- ✅ Simple `$type`, `$value`, `$description` structure
+- ✅ Compatible with Style Dictionary, Theo, and other token tools
+- ✅ Easy to consume in any programming language
+
+```json
+{
+  "colors": {
+    "primary": {
+      "$type": "color",
+      "$value": "#0095ff",
+      "$description": "Primary brand color"
+    },
+    "text": {
+      "primary": {
+        "$type": "color",
+        "$value": "#111827"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#6b7280"
+      }
+    }
+  },
+  "spacing": {
+    "xs": {
+      "$type": "number",
+      "$value": 4
+    },
+    "sm": {
+      "$type": "number",
+      "$value": 8
+    },
+    "md": {
+      "$type": "number",
+      "$value": 16
+    }
+  }
+}
+```
+
+**Automatic categorization:**
+- `colors` - Color tokens
+- `spacing` - Spacing/sizing tokens
+- `typography` - Font families, sizes, weights
+- `borderRadius` - Border radius values
+- `shadows` - Shadow definitions
+- And more...
+
+#### JSON Format (Complete)
+
+Full export with all Figma metadata, modes, and collection information. Use this when you need complete data or are building advanced tooling.
+
 ```json
 {
   "metadata": {
@@ -176,6 +237,9 @@ figma-token-export/
 ```
 
 #### CSS Format
+
+Ready-to-use CSS custom properties with automatic theme support.
+
 ```css
 :root {
   /* Mode: Default */
@@ -188,6 +252,7 @@ figma-token-export/
   --colors-primary: #0A84FF;
 }
 ```
+
 
 ## Contributing
 
