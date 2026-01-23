@@ -5,7 +5,9 @@ import {
   UIMessage,
   PluginMessage,
   DeveloperExportData,
+  GitHubSettings,
 } from './types';
+import { pushToGitHub, parseRepoUrl } from './github';
 
 console.log('UI script starting to execute...');
 
@@ -22,6 +24,23 @@ let previewSection: HTMLDivElement;
 let previewContent: HTMLPreElement;
 let previewTitle: HTMLDivElement;
 
+// GitHub DOM elements
+let githubSection: HTMLDivElement;
+let githubToggle: HTMLDivElement;
+let githubSettings: HTMLDivElement;
+let githubToggleIcon: HTMLSpanElement;
+let githubRepoInput: HTMLInputElement;
+let githubBranchInput: HTMLInputElement;
+let githubFilePathInput: HTMLInputElement;
+let githubTokenInput: HTMLInputElement;
+let githubCommitMessageInput: HTMLInputElement;
+let saveGithubSettingsBtn: HTMLButtonElement;
+let pushToGithubBtn: HTMLButtonElement;
+let githubStatus: HTMLDivElement;
+
+// GitHub state
+let githubSettingsCollapsed = false;
+
 // Initialize plugin after DOM is ready
 function initializePlugin(): void {
   console.log('initializePlugin called');
@@ -36,6 +55,20 @@ function initializePlugin(): void {
   previewContent = getElementById('previewContent') as HTMLPreElement;
   previewTitle = getElementById('previewTitle') as HTMLDivElement;
 
+  // Get GitHub DOM elements
+  githubSection = getElementById('githubSection') as HTMLDivElement;
+  githubToggle = getElementById('githubToggle') as HTMLDivElement;
+  githubSettings = getElementById('githubSettings') as HTMLDivElement;
+  githubToggleIcon = getElementById('githubToggleIcon') as HTMLSpanElement;
+  githubRepoInput = getElementById('githubRepo') as HTMLInputElement;
+  githubBranchInput = getElementById('githubBranch') as HTMLInputElement;
+  githubFilePathInput = getElementById('githubFilePath') as HTMLInputElement;
+  githubTokenInput = getElementById('githubToken') as HTMLInputElement;
+  githubCommitMessageInput = getElementById('githubCommitMessage') as HTMLInputElement;
+  saveGithubSettingsBtn = getElementById('saveGithubSettings') as HTMLButtonElement;
+  pushToGithubBtn = getElementById('pushToGithub') as HTMLButtonElement;
+  githubStatus = getElementById('githubStatus') as HTMLDivElement;
+
   console.log('All DOM elements found, setting up event listeners...');
 
   // Event listeners
@@ -43,6 +76,14 @@ function initializePlugin(): void {
   downloadBtn.addEventListener('click', handleDownload);
   copyBtn.addEventListener('click', handleCopy);
   closeBtn.addEventListener('click', handleClose);
+
+  // GitHub event listeners
+  githubToggle.addEventListener('click', toggleGithubSettings);
+  saveGithubSettingsBtn.addEventListener('click', saveGithubSettings);
+  pushToGithubBtn.addEventListener('click', handlePushToGithub);
+
+  // Load saved GitHub settings
+  loadGithubSettings();
 
   // Set initial button text
   updateDownloadButtonText();
@@ -70,7 +111,7 @@ function initializePlugin(): void {
     switch (type) {
       case 'tokens-extracted':
         if (data) {
-          handleTokensExtracted(data);
+          handleTokensExtractedWithGithub(data);
         }
         break;
 
@@ -658,6 +699,230 @@ function createJSONPreview(data: ExportData): any {
       })
     ),
   };
+}
+
+/**
+ * Toggle GitHub settings panel
+ */
+function toggleGithubSettings(): void {
+  githubSettingsCollapsed = !githubSettingsCollapsed;
+
+  if (githubSettingsCollapsed) {
+    githubSettings.style.display = 'none';
+    githubToggleIcon.textContent = '▶';
+  } else {
+    githubSettings.style.display = 'block';
+    githubToggleIcon.textContent = '▼';
+  }
+}
+
+/**
+ * Load GitHub settings from storage
+ */
+async function loadGithubSettings(): Promise<void> {
+  const savedSettings = localStorage.getItem('githubSettings');
+  if (savedSettings) {
+    try {
+      const settings: GitHubSettings = JSON.parse(savedSettings);
+      githubRepoInput.value = settings.repoUrl || '';
+      githubBranchInput.value = settings.branch || 'main';
+      githubFilePathInput.value = settings.filePath || 'tokens/design-tokens.json';
+      if (settings.token) {
+        githubTokenInput.value = settings.token;
+      }
+    } catch (error) {
+      console.error('Failed to load GitHub settings:', error);
+    }
+  }
+}
+
+/**
+ * Save GitHub settings to storage
+ */
+async function saveGithubSettings(): Promise<void> {
+  const repoUrl = githubRepoInput.value.trim();
+  const branch = githubBranchInput.value.trim();
+  const filePath = githubFilePathInput.value.trim();
+  const token = githubTokenInput.value.trim();
+
+  if (!repoUrl || !branch || !filePath) {
+    showGithubStatus('error', 'Please fill in all required fields');
+    return;
+  }
+
+  // Parse repository URL
+  const parsed = parseRepoUrl(repoUrl);
+  if (!parsed) {
+    showGithubStatus('error', 'Invalid repository URL format');
+    return;
+  }
+
+  // Save to local storage
+  const settings: GitHubSettings = {
+    repoUrl,
+    branch,
+    filePath,
+  };
+
+  // Only add token if provided
+  if (token) {
+    settings.token = token;
+  }
+
+  try {
+    localStorage.setItem('githubSettings', JSON.stringify(settings));
+    showGithubStatus('success', 'Settings saved successfully!');
+
+    // Enable push button if we have data
+    if (exportedData) {
+      pushToGithubBtn.disabled = false;
+    }
+  } catch (error) {
+    console.error('Failed to save settings:', error);
+    showGithubStatus('error', 'Failed to save settings');
+  }
+}
+
+/**
+ * Handle push to GitHub
+ */
+async function handlePushToGithub(): Promise<void> {
+  if (!exportedData) {
+    showGithubStatus('error', 'Please export tokens first');
+    return;
+  }
+
+  const repoUrl = githubRepoInput.value.trim();
+  const branch = githubBranchInput.value.trim();
+  const filePath = githubFilePathInput.value.trim();
+  const token = githubTokenInput.value.trim();
+  const commitMessage = githubCommitMessageInput.value.trim();
+
+  if (!repoUrl || !branch || !filePath || !token) {
+    showGithubStatus('error', 'Please fill in all fields including token');
+    return;
+  }
+
+  // Parse repository URL
+  const parsed = parseRepoUrl(repoUrl);
+  if (!parsed) {
+    showGithubStatus('error', 'Invalid repository URL format');
+    return;
+  }
+
+  // Get the content based on selected format
+  const format = getSelectedFormat();
+  let content: string;
+
+  try {
+    if (format === 'json') {
+      content = JSON.stringify(exportedData, null, 2);
+    } else if (format === 'css') {
+      content = convertToCSS(exportedData);
+    } else if (format === 'developer') {
+      content = JSON.stringify(convertToDeveloperFormat(exportedData), null, 2);
+    } else {
+      throw new Error('Unknown format');
+    }
+  } catch (error) {
+    console.error('Failed to generate content:', error);
+    showGithubStatus('error', 'Failed to generate export content');
+    return;
+  }
+
+  // Show loading state
+  showGithubStatus('loading', 'Pushing to GitHub...');
+  pushToGithubBtn.disabled = true;
+  pushToGithubBtn.textContent = 'Pushing...';
+
+  try {
+    const result = await pushToGitHub({
+      config: {
+        token,
+        owner: parsed.owner,
+        repo: parsed.repo,
+        branch,
+        filePath,
+      },
+      content,
+      commitMessage: commitMessage || 'Update design tokens from Figma',
+    });
+
+    if (result.success) {
+      showGithubStatus('success', result.message);
+      if (result.commitUrl) {
+        // Add link to commit
+        githubStatus.innerHTML = `
+          ✅ ${result.message} 
+          <a href="${result.commitUrl}" target="_blank" style="color: #18a0fb; text-decoration: none;">
+            View commit →
+          </a>
+        `;
+      }
+    } else {
+      showGithubStatus('error', result.message);
+    }
+  } catch (error) {
+    console.error('Push error:', error);
+    showGithubStatus(
+      'error',
+      error instanceof Error ? error.message : 'Failed to push to GitHub'
+    );
+  } finally {
+    pushToGithubBtn.disabled = false;
+    pushToGithubBtn.textContent = '🚀 Push to GitHub';
+  }
+}
+
+/**
+ * Show GitHub status message
+ */
+function showGithubStatus(
+  type: 'success' | 'error' | 'loading',
+  message: string
+): void {
+  if (!githubStatus) return;
+
+  githubStatus.className = `status ${type}`;
+  githubStatus.textContent = message;
+  githubStatus.style.display = 'block';
+
+  if (type === 'success') {
+    setTimeout(() => {
+      githubStatus.style.display = 'none';
+    }, 5000);
+  }
+}
+
+/**
+ * Update preview and show GitHub section when tokens are extracted
+ */
+function handleTokensExtractedWithGithub(data: ExportData): void {
+  handleTokensExtracted(data);
+
+  // Show GitHub section after successful export
+  githubSection.style.display = 'block';
+
+  // Load saved settings
+  const savedSettings = localStorage.getItem('githubSettings');
+  if (savedSettings) {
+    try {
+      const settings: GitHubSettings = JSON.parse(savedSettings);
+      githubRepoInput.value = settings.repoUrl || '';
+      githubBranchInput.value = settings.branch || 'main';
+      githubFilePathInput.value = settings.filePath || 'tokens/design-tokens.json';
+      if (settings.token) {
+        githubTokenInput.value = settings.token;
+      }
+
+      // Enable push button if all fields are filled
+      if (settings.repoUrl && settings.branch && settings.filePath) {
+        pushToGithubBtn.disabled = false;
+      }
+    } catch (error) {
+      console.error('Failed to parse saved settings:', error);
+    }
+  }
 }
 
 // Initialize when DOM is ready

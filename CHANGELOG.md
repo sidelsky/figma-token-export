@@ -5,6 +5,46 @@ All notable changes to the Figma Design Token Export plugin will be documented i
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-01-23
+
+### Added
+- **GitHub Integration**: Push design tokens directly to GitHub repositories
+  - One-click push to any GitHub repository
+  - Support for all export formats (JSON, CSS, Developer JSON)
+  - Automatic file creation and updates via GitHub API
+  - Settings persistence in browser localStorage
+  - Secure GitHub Personal Access Token authentication
+  - Direct links to commits after successful push
+  - Repository URL parsing (supports multiple formats)
+  - Comprehensive error handling and user feedback
+  - Collapsible GitHub settings panel in UI
+
+### Changed
+- Updated `manifest.json` to allow network access to `api.github.com`
+- Enhanced UI with GitHub configuration section
+- Added GitHub settings form with repository, branch, file path, and token inputs
+- Updated build process to include UI bundling with esbuild
+
+### Technical Details
+- Added `src/github.ts` module with GitHub API integration
+  - `pushToGitHub()` - Push content to repository
+  - `validateGitHubConfig()` - Validate repository access
+  - `parseRepoUrl()` - Parse various repository URL formats
+- Extended TypeScript types for GitHub settings and messages
+- Implemented settings persistence using localStorage
+- Added commit message customization
+- Base64 encoding for file content
+- SHA retrieval for file updates
+
+### Documentation
+- Added comprehensive `GITHUB_INTEGRATION.md` guide
+  - Setup instructions
+  - Security best practices
+  - Troubleshooting guide
+  - Workflow examples
+- Updated README with GitHub integration section
+- Added quick start guide for GitHub push feature
+
 ## [1.2.0] - 2026-01-23
 
 ### Added

@@ -12,7 +12,7 @@
   "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": [
-      "none"
+      "https://api.github.com"
     ]
   },
   "menu": [

@@ -5,4787 +5,1007 @@
   <meta charset="utf-8">
   <title>Design Token Export</title>
   <style>
-    /* Shadcn-inspired Design System */
-    :root {
-      --background: 0 0% 100%;
-      --foreground: 222.2 84% 4.9%;
-      --card: 0 0% 100%;
-      --card-foreground: 222.2 84% 4.9%;
-      --popover: 0 0% 100%;
-      --popover-foreground: 222.2 84% 4.9%;
-      --primary: 0 0% 0%;
-      --primary-foreground: 0 0% 100%;
-      --secondary: 210 40% 96%;
-      --secondary-foreground: 222.2 84% 4.9%;
-      --muted: 210 40% 96%;
-      --muted-foreground: 215.4 16.3% 46.9%;
-      --accent: 210 40% 96%;
-      --accent-foreground: 222.2 84% 4.9%;
-      --destructive: 0 84.2% 60.2%;
-      --destructive-foreground: 210 40% 98%;
-      --border: 214.3 31.8% 91.4%;
-      --input: 214.3 31.8% 91.4%;
-      --ring: 0 0% 0%;
-      --radius: 0.5rem;
-    }
-
     * {
       box-sizing: border-box;
     }
 
     body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      background-color: hsl(var(--background));
-      color: hsl(var(--foreground));
-    }
-
-    /* Layout */
-    .container {
-      max-width: 768px;
-      min-width: 440px;
-      margin: 0 auto;
       padding: 20px;
+      background: #ffffff;
+      color: #333;
+      line-height: 1.5;
     }
 
-    /* Typography */
-    .text-2xl {
-      font-size: 1.5rem;
-      line-height: 2rem;
+    .container {
+      max-width: 100%;
     }
 
-    .text-lg {
-      font-size: 1.125rem;
-      line-height: 1.75rem;
-    }
-
-    .text-sm {
-      font-size: 0.875rem;
-      line-height: 1.25rem;
-    }
-
-    .text-xs {
-      font-size: 0.75rem;
-      line-height: 1rem;
-    }
-
-    .font-semibold {
+    h1 {
+      font-size: 18px;
       font-weight: 600;
+      margin: 0 0 16px 0;
+      color: #1a1a1a;
     }
 
-    .font-medium {
+    .description {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+
+    .export-section {
+      border: 1px solid #e1e5e9;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .export-title {
+      font-size: 14px;
       font-weight: 500;
+      margin-bottom: 8px;
+      color: #1a1a1a;
     }
 
-    .font-bold {
-      font-weight: 700;
-    }
-
-    .font-mono {
-      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
-    }
-
-    .tracking-tight {
-      letter-spacing: -0.025em;
-    }
-
-    .leading-relaxed {
-      line-height: 1.625;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
-    /* Colors */
-    .text-foreground {
-      color: hsl(var(--foreground));
-    }
-
-    .text-muted-foreground {
-      color: hsl(var(--muted-foreground));
-    }
-
-    .text-primary {
-      color: hsl(var(--primary));
-    }
-
-    .text-primary-foreground {
-      color: hsl(var(--primary-foreground));
-    }
-
-    .text-card-foreground {
-      color: hsl(var(--card-foreground));
-    }
-
-    .bg-background {
-      background-color: hsl(var(--background));
-    }
-
-    .bg-card {
-      background-color: hsl(var(--card));
-    }
-
-    .bg-muted {
-      background-color: hsl(var(--muted));
-    }
-
-    .bg-primary {
-      background-color: hsl(var(--primary));
-    }
-
-    .bg-primary-foreground {
-      background-color: hsl(var(--primary-foreground));
-    }
-
-    .bg-input {
-      background-color: hsl(var(--input));
-    }
-
-    /* Spacing */
-    .mb-2 {
-      margin-bottom: 0.5rem;
-    }
-
-    .mb-4 {
-      margin-bottom: 1rem;
-    }
-
-    .mb-6 {
-      margin-bottom: 1.5rem;
-    }
-
-    .mt-1 {
-      margin-top: 0.25rem;
-    }
-
-    .mt-4 {
-      margin-top: 1rem;
-    }
-
-    .mt-6 {
-      margin-top: 1.5rem;
-    }
-
-    .mr-2 {
-      margin-right: 0.5rem;
-    }
-
-    .mr-3 {
-      margin-right: 0.75rem;
-    }
-
-    .ml-2 {
-      margin-left: 0.5rem;
-    }
-
-    .p-3 {
-      padding: 0.75rem;
-    }
-
-    .p-4 {
-      padding: 1rem;
-    }
-
-    .p-5 {
-      padding: 1.25rem;
-    }
-
-    .p-6 {
-      padding: 1.5rem;
-    }
-
-    .p-8 {
-      padding: 2rem;
-    }
-
-    .px-2 {
-      padding-left: 0.5rem;
-      padding-right: 0.5rem;
-    }
-
-    .px-4 {
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
-
-    .px-6 {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-
-    .py-1 {
-      padding-top: 0.25rem;
-      padding-bottom: 0.25rem;
-    }
-
-    .py-2 {
-      padding-top: 0.5rem;
-      padding-bottom: 0.5rem;
-    }
-
-    /* Borders */
-    .border {
-      border: 1px solid hsl(var(--border));
-    }
-
-    .border-b {
-      border-bottom: 1px solid hsl(var(--border));
-    }
-
-    .border-input {
-      border: 1px solid hsl(var(--input));
-    }
-
-    .border-border {
-      border: 1px solid hsl(var(--border));
-    }
-
-    .rounded-md {
-      border-radius: calc(var(--radius) - 2px);
-    }
-
-    .rounded-lg {
-      border-radius: var(--radius);
-    }
-
-    .rounded {
-      border-radius: 0.25rem;
-    }
-
-    .rounded-full {
-      border-radius: 9999px;
-    }
-
-    /* Shadows */
-    .shadow-sm {
-      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    }
-
-    /* Layout */
-    .flex {
-      display: flex;
-    }
-
-    .grid {
-      display: grid;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .inline-flex {
-      display: inline-flex;
-    }
-
-    .items-center {
-      align-items: center;
-    }
-
-    .justify-center {
-      justify-content: center;
-    }
-
-    .justify-between {
-      justify-content: space-between;
-    }
-
-    .flex-1 {
-      flex: 1 1 0%;
-    }
-
-    .space-x-2>*+* {
-      margin-left: 0.5rem;
-    }
-
-    .space-x-3>*+* {
-      margin-left: 0.75rem;
-    }
-
-    .space-x-8>*+* {
-      margin-left: 2rem;
-    }
-
-    .space-y-2>*+* {
-      margin-top: 0.5rem;
-    }
-
-    .space-y-3>*+* {
-      margin-top: 0.75rem;
-    }
-
-    .grid-cols-1 {
-      grid-template-columns: repeat(1, minmax(0, 1fr));
-    }
-
-    .grid-cols-2 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .grid-rows-1 {
-      grid-template-rows: repeat(1, minmax(0, 1fr));
-    }
-
-    .grid-cols-3-always {
-      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1rem;
-    }
-
-    .gap-3 {
-      gap: 0.75rem;
-    }
-
-    .gap-4 {
-      gap: 1rem;
-    }
-
-    /* Sizing */
-    .w-4 {
-      width: 1rem;
-    }
-
-    .h-4 {
-      height: 1rem;
-    }
-
-    .w-12 {
-      width: 3rem;
-    }
-
-    .h-12 {
-      height: 3rem;
-    }
-
-    .h-10 {
-      height: 2.5rem;
-    }
-
-    .max-h-48 {
-      max-height: 12rem;
-    }
-
-    .mx-auto {
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Positioning */
-    .relative {
-      position: relative;
-    }
-
-    /* Overflow */
-    .overflow-auto {
-      overflow: auto;
-    }
-
-    .overflow-hidden {
-      overflow: hidden;
-    }
-
-    /* Transitions */
-    .transition-colors {
-      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-      transition-duration: 150ms;
-    }
-
-    .transition-all {
-      transition-property: all;
-      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-      transition-duration: 150ms;
-    }
-
-    .transition-transform {
-      transition-property: transform;
-      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-      transition-duration: 150ms;
-    }
-
-    .duration-200 {
-      transition-duration: 200ms;
-    }
-
-    /* Opacity */
-    .opacity-50 {
-      opacity: 0.5;
-    }
-
-    /* Cursor */
-    .cursor-pointer {
-      cursor: pointer;
-    }
-
-    /* Text wrapping */
-    .whitespace-pre-wrap {
-      white-space: pre-wrap;
-    }
-
-    .break-words {
-      word-wrap: break-word;
-    }
-
-    /* Button Component */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: calc(var(--radius) - 2px);
-      font-size: 0.875rem;
-      font-weight: 500;
-      transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
-      border: none;
-      outline: none;
-      height: 2.5rem;
-      padding: 0 1rem;
-      width: 100%;
-    }
-
-    .btn:focus-visible {
-      outline: 2px solid hsl(var(--ring));
-      outline-offset: 2px;
-    }
-
-    .btn:disabled {
-      pointer-events: none;
-      opacity: 0.5;
-    }
-
-    .btn-primary {
-      background-color: hsl(var(--primary));
-      color: hsl(var(--primary-foreground));
-    }
-
-    .btn-primary:hover {
-      background-color: hsl(var(--primary) / 0.9);
-    }
-
-    .btn-secondary {
-      background-color: hsl(var(--background));
-      color: hsl(var(--foreground));
-      border: 1px solid hsl(var(--input));
-    }
-
-    .btn-secondary:hover {
-      background-color: hsl(var(--accent));
-      color: hsl(var(--accent-foreground));
-    }
-
-    .btn-sm {
-      height: auto;
-      padding: 0.5rem 1.5rem;
-      width: auto;
-    }
-
-    /* Card Component */
-    .card {
-      border-radius: var(--radius);
-      border: 1px solid hsl(var(--border));
-      background-color: hsl(var(--card));
-      color: hsl(var(--card-foreground));
-      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06);
-    }
-
-    /* Tab Navigation */
-    .tab-nav {
-      border-bottom: 1px solid hsl(var(--border));
-      margin-bottom: 1.5rem;
-    }
-
-    .tab-nav nav {
-      display: flex;
-      gap: 2rem;
-    }
-
-    .tab-button {
-      border-bottom: 2px solid transparent;
-      padding: 0.5rem 0.25rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: hsl(var(--muted-foreground));
-      background: none;
-      border-left: none;
-      border-right: none;
-      border-top: none;
-      cursor: pointer;
-      transition: all 200ms;
-    }
-
-    .tab-button:hover {
-      color: hsl(var(--foreground));
-      border-bottom-color: hsl(var(--border));
-    }
-
-    .tab-button[data-state="active"] {
-      color: hsl(var(--foreground));
-      border-bottom-color: hsl(var(--primary));
-    }
-
-    /* Form Elements */
-    .form-input {
-      width: 1rem;
-      height: 1rem;
-      color: hsl(var(--primary));
-      border: 1px solid hsl(var(--input));
-      border-radius: 0.25rem;
-    }
-
-    .form-input:focus {
-      outline: none;
-    }
-
-    /* Radio buttons - remove outline completely */
-    input[type="radio"].form-input {
-      accent-color: hsl(var(--primary));
-    }
-
-    input[type="radio"].form-input:focus {
-      outline: none;
-      box-shadow: none;
-    }
-
-    /* ShadCN Select/Dropdown Component */
-    .select {
-      position: relative;
-      width: 100%;
-    }
-
-    .select-trigger {
-      display: flex;
-      height: 2.5rem;
-      width: 100%;
-      align-items: center;
-      justify-content: space-between;
-      border-radius: calc(var(--radius) - 2px);
-      border: 1px solid hsl(var(--input));
-      background-color: hsl(var(--background));
-      padding: 0 0.75rem;
-      font-size: 0.875rem;
-      line-height: 1.25rem;
-      color: hsl(var(--foreground));
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .select-trigger:hover {
-      background-color: hsl(var(--accent));
-    }
-
-    .select-trigger:focus {
-      outline: none;
-      border-color: hsl(var(--ring));
-      box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
-    }
-
-    .select-trigger[data-disabled] {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .select-content {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      z-index: 50;
-      min-width: 8rem;
-      overflow: hidden;
-      border-radius: calc(var(--radius) - 2px);
-      border: 1px solid hsl(var(--border));
-      background-color: hsl(var(--popover));
-      color: hsl(var(--popover-foreground));
-      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-      margin-top: 0.25rem;
-      display: none;
-    }
-
-    .select-content.show {
-      display: block;
-    }
-
-    .select-viewport {
-      padding: 0.25rem;
-    }
-
-    .select-item {
-      position: relative;
-      display: flex;
-      cursor: pointer;
-      user-select: none;
-      align-items: center;
-      border-radius: calc(var(--radius) - 2px);
-      padding: 0.5rem 0.75rem;
-      font-size: 0.875rem;
-      line-height: 1.25rem;
-      color: hsl(var(--popover-foreground));
-      transition: all 0.2s ease;
-    }
-
-    .select-item:hover {
-      background-color: hsl(var(--accent));
-      color: hsl(var(--accent-foreground));
-    }
-
-    .select-item[data-highlighted] {
-      background-color: hsl(var(--accent));
-      color: hsl(var(--accent-foreground));
-    }
-
-    .select-item[data-disabled] {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .select-item[data-state="checked"] {
-      background-color: hsl(var(--accent));
-      color: hsl(var(--accent-foreground));
-    }
-
-    .select-separator {
-      height: 1px;
-      background-color: hsl(var(--border));
-      margin: 0.25rem 0;
-    }
-
-    .select-arrow {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 1rem;
-      height: 1rem;
-      color: hsl(var(--muted-foreground));
-      transition: transform 0.2s ease;
-    }
-
-    .select-trigger[data-state="open"] .select-arrow {
-      transform: rotate(180deg);
-    }
-
-    .form-label {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      cursor: pointer;
-    }
-
-    /* STANDARDIZED TOGGLE COMPONENTS */
-
-    /* Toggle Switch - for on/off states like "Select All" */
-    .toggle-switch {
-      position: relative;
-      width: 44px;
-      height: 24px;
-      background-color: hsl(var(--input));
-      border-radius: 12px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      border: 2px solid transparent;
-    }
-
-    .toggle-switch:focus-within {
-      outline: 2px solid hsl(var(--ring));
-      outline-offset: 2px;
-    }
-
-    .toggle-switch.active {
-      background-color: hsl(var(--primary));
-    }
-
-    .toggle-slider {
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 16px;
-      height: 16px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.2s ease;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .toggle-switch.active .toggle-slider {
-      transform: translateX(20px);
-    }
-
-    /* Small Switch - for checkboxes replacement */
-    .small-switch {
-      position: relative;
-      width: 32px;
-      height: 18px;
-      background-color: hsl(var(--input));
-      border-radius: 9px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      border: 2px solid transparent;
-      display: inline-block;
-    }
-
-    .small-switch:focus-within {
-      outline: 2px solid hsl(var(--ring));
-      outline-offset: 2px;
-    }
-
-    .small-switch.active {
-      background-color: hsl(var(--primary));
-    }
-
-    .small-switch-slider {
-      position: absolute;
-      top: 1px;
-      left: 1px;
-      width: 12px;
-      height: 12px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.2s ease;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .small-switch.active .small-switch-slider {
-      transform: translateX(14px);
-    }
-
-    /* Hidden input for accessibility */
-    .switch-input {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    /* Toggle Button - for expand/collapse functionality */
-    .toggle-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 2rem;
-      height: 2rem;
-      border: none;
-      background: none;
-      border-radius: calc(var(--radius) - 2px);
-      color: hsl(var(--muted-foreground));
-      cursor: pointer;
-      transition: all 150ms ease;
-    }
-
-    .toggle-btn:hover {
-      background-color: hsl(var(--muted));
-      color: hsl(var(--foreground));
-    }
-
-    .toggle-btn:focus-visible {
-      outline: 2px solid hsl(var(--ring));
-      outline-offset: 2px;
-    }
-
-    .toggle-btn .icon {
-      transition: transform 150ms ease;
-    }
-
-    .toggle-btn.expanded .icon {
-      transform: rotate(90deg);
-    }
-
-    /* Collapsible Section Headers */
-    .collapsible-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: .75rem;
-      border-bottom: 1px solid hsl(var(--border));
-      cursor: pointer;
-      transition: background-color 150ms ease;
-    }
-
-    .collapsible-header:hover {
-      background-color: hsl(var(--muted) / 0.5);
-    }
-
-    .collapsible-header h3 {
-      margin: 0;
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    /* Collection Item Headers */
-    .collection-header {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem;
-      background-color: hsl(var(--muted) / 0.3);
-      border-bottom: 1px solid hsl(var(--border));
-      cursor: pointer;
-      transition: background-color 150ms ease;
-    }
-
-    .collection-header:hover {
-      background-color: hsl(var(--muted) / 0.5);
-    }
-
-    .collection-header .toggle-btn {
-      margin-left: auto;
-    }
-
-    /* Stat Cards */
-    .stat-card {
-      padding: 1rem;
-      text-align: center;
-    }
-
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: hsl(var(--primary));
-      line-height: 2rem;
-    }
-
-    .stat-label {
-      font-size: 0.875rem;
-      color: hsl(var(--muted-foreground));
-    }
-
-    /* Token Badge */
-    .token-badge {
-      display: inline-flex;
-      align-items: center;
-      border-radius: 9999px;
-      background-color: hsl(var(--primary) / 0.1);
-      padding: 0.25rem 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: hsl(var(--primary));
-    }
-
-    /* Copy Button */
-    .copy-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 1.5rem;
-      height: 1.5rem;
-      border: none;
-      background: none;
-      border-radius: calc(var(--radius) - 4px);
-      color: hsl(var(--muted-foreground));
-      cursor: pointer;
-      transition: all 150ms ease;
-      opacity: 0;
-    }
-
-    .copy-btn:hover {
-      background-color: hsl(var(--muted));
-      color: hsl(var(--foreground));
-    }
-
-    .copy-btn:focus-visible {
-      outline: 2px solid hsl(var(--ring));
-      outline-offset: 2px;
-    }
-
-    .copy-btn.copied {
-      color: hsl(var(--primary));
-      background-color: hsl(var(--primary) / 0.1);
-    }
-
-    /* Sample Item - show copy button on hover */
-    .sample-item {
-      position: relative;
-      transition: all 150ms ease;
-    }
-
-    .sample-item:hover .copy-btn {
-      opacity: 1;
-    }
-
-    .sample-item .copy-btn {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-    }
-
-    /* Copy feedback tooltip */
-    .copy-tooltip {
-      position: absolute;
-      top: -2rem;
-      right: 0;
-      background: hsl(var(--foreground));
-      color: hsl(var(--background));
-      padding: 0.25rem 0.5rem;
-      border-radius: calc(var(--radius) - 4px);
-      font-size: 0.75rem;
-      white-space: nowrap;
-      opacity: 0;
-      transform: translateY(4px);
-      transition: all 150ms ease;
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    .copy-tooltip.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Accessibility Analysis Styles */
-    .accessibility-score {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 1rem;
-      border-radius: calc(var(--radius) - 2px);
-      margin-bottom: 1rem;
-    }
-
-    .accessibility-score-large {
-      font-size: 2rem;
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .accessibility-excellent {
-      background-color: rgb(240 253 244);
-      color: rgb(22 101 52);
-      border: 1px solid rgb(187 247 208);
-    }
-
-    .accessibility-good {
-      background-color: rgb(254 249 195);
-      color: rgb(133 77 14);
-      border: 1px solid rgb(251 191 36);
-    }
-
-    .accessibility-warning {
-      background-color: rgb(255 247 237);
-      color: rgb(154 52 18);
-      border: 1px solid rgb(251 146 60);
-    }
-
-    .accessibility-poor {
-      background-color: rgb(254 242 242);
-      color: rgb(153 27 27);
-      border: 1px solid rgb(252 165 165);
-    }
-
-    .accessibility-progress-bar {
-      width: 100%;
-      height: 8px;
-      background-color: hsl(var(--muted));
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .accessibility-progress-fill {
-      height: 100%;
-      transition: width 0.3s ease;
-      border-radius: 4px;
-    }
-
-    .accessibility-section {
-      margin-bottom: 1.5rem;
-    }
-
-    .accessibility-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem;
-      margin-bottom: 0.5rem;
-      border-radius: calc(var(--radius) - 2px);
-      border: 1px solid hsl(var(--border));
-    }
-
-    .accessibility-token {
-      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
-      font-size: 0.75rem;
-      background-color: hsl(var(--muted));
-      padding: 0.25rem 0.5rem;
-      border-radius: calc(var(--radius) - 4px);
-    }
-
-    .accessibility-message {
-      font-size: 0.875rem;
-      flex: 1;
-      margin-right: 1rem;
-    }
-
-    .accessibility-suggestion {
-      font-size: 0.75rem;
-      color: hsl(var(--muted-foreground));
-      margin-top: 0.25rem;
-    }
-
-    .contrast-demo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem;
-      border-radius: calc(var(--radius) - 2px);
-      font-size: 0.875rem;
-      margin-top: 0.5rem;
-    }
-
-    .contrast-ratio {
-      font-weight: 600;
-      font-size: 0.75rem;
-    }
-
-    .wcag-badge {
-      padding: 0.125rem 0.375rem;
-      border-radius: calc(var(--radius) - 4px);
-      font-size: 0.625rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .wcag-pass {
-      background-color: rgb(240 253 244);
-      color: rgb(22 101 52);
-    }
-
-    .wcag-fail {
-      background-color: rgb(254 242 242);
-      color: rgb(153 27 27);
-    }
-
-    /* Code Block */
-    .code-block {
-      background-color: hsl(var(--muted));
-      padding: 1rem;
-      border-radius: calc(var(--radius) - 2px);
-      margin-bottom: 1rem;
-    }
-
-    .code-preview {
-      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
-      font-size: 0.75rem;
-      overflow: auto;
-      max-height: 12rem;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-
-    /* Status Messages */
-    .status-success {
-      background-color: rgb(240 253 244);
-      color: rgb(22 101 52);
-      border: 1px solid rgb(187 247 208);
-    }
-
-    .status-error {
-      background-color: rgb(254 242 242);
-      color: rgb(153 27 27);
-      border: 1px solid rgb(252 165 165);
-    }
-
-    .status-loading {
-      background-color: rgb(239 246 255);
-      color: rgb(29 78 216);
-      border: 1px solid rgb(147 197 253);
-    }
-
-    /* Charts */
-    .chart-container {
-      height: 150px;
-      position: relative;
-      margin-bottom: 0px;
-      padding: 0;
-      overflow-x: visible;
-    }
-
-    .area-chart-container {
-      position: relative;
-      margin-bottom: 1rem;
-      padding: 1rem 1rem 0.25rem 1rem;
-      background: hsl(var(--card));
-      border-radius: var(--radius);
-      border: 1px solid hsl(var(--border));
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: flex-start;
-
-    }
-
-    .area-chart {
-      width: 100%;
-      height: 150px;
-      position: relative;
-      overflow: hidden;
-
-    }
-
-    .area-chart svg {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .area-chart-gradient {
-      stop-color: hsl(var(--primary));
-    }
-
-    .area-chart-gradient-stop-0 {
-      stop-color: hsl(var(--primary));
-      stop-opacity: 0.8;
-    }
-
-    .area-chart-gradient-stop-100 {
-      stop-color: hsl(var(--primary));
-      stop-opacity: 0.1;
-    }
-
-    .area-chart-line {
-      fill: none;
-      stroke: hsl(var(--primary));
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .area-chart-area {
-      fill: url(#areaGradient);
-      opacity: 0.3;
-    }
-
-    .area-chart-grid {
-      stroke: hsl(var(--border));
-      stroke-width: 1;
-      opacity: 0.2;
-    }
-
-    .area-chart-axis {
-      stroke: hsl(var(--border));
-      stroke-width: 1;
-    }
-
-    .area-chart-label {
-      fill: hsl(var(--muted-foreground));
+    .export-info {
       font-size: 12px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #666;
+      margin-bottom: 16px;
     }
 
-    .area-chart-tooltip {
-      position: absolute;
-      background: hsl(var(--popover));
-      border: 1px solid hsl(var(--border));
-      border-radius: calc(var(--radius) - 2px);
-      padding: 0.5rem;
-      font-size: 0.75rem;
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      z-index: 10;
-    }
-
-    .area-chart-tooltip.show {
-      opacity: 1;
-    }
-
-    .area-chart-tooltip-label {
-      font-weight: 600;
-      color: hsl(var(--foreground));
-      margin-bottom: 0.25rem;
-    }
-
-    .area-chart-tooltip-value {
-      color: hsl(var(--muted-foreground));
-    }
-
-    .area-chart-trend {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-      font-size: 0.75rem;
-      color: hsl(var(--muted-foreground));
-      width: 120px;
-    }
-
-    /* Time Period Selector */
-    .time-period-selector {
-      display: flex;
-      gap: 0.25rem;
-      background: hsl(var(--muted));
-      border-radius: calc(var(--radius) - 2px);
-      padding: 0.25rem;
-      margin-bottom: 1rem;
-    }
-
-    .time-period-btn {
-      padding: 0.375rem 0.75rem;
-      font-size: 0.75rem;
-      font-weight: 500;
+    .button {
+      background: #18a0fb;
+      color: white;
       border: none;
-      background: transparent;
-      color: hsl(var(--muted-foreground));
-      border-radius: calc(var(--radius) - 4px);
-      cursor: pointer;
-      transition: all 150ms ease;
-    }
-
-    .time-period-btn:hover {
-      color: hsl(var(--foreground));
-    }
-
-    .time-period-btn.active {
-      background: hsl(var(--background));
-      color: hsl(var(--foreground));
-      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    }
-
-    .area-chart-trend-up {
-      color: #10b981;
-    }
-
-    .area-chart-trend-down {
-      color: #ef4444;
-    }
-
-    .area-chart-legend {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 1rem;
-      font-size: 0.75rem;
-    }
-
-    .area-chart-legend-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .area-chart-legend-color {
-      width: 12px;
-      height: 12px;
-      border-radius: 2px;
-    }
-
-    /* Analytics Sub-tabs */
-    .analytics-sub-nav {
-      border-bottom: 1px solid hsl(var(--border));
-      margin-bottom: 1.5rem;
-    }
-
-    .analytics-sub-nav nav {
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    .analytics-sub-tab {
-      border-bottom: 2px solid transparent;
-      padding: 0.5rem 0.25rem;
-      font-size: 0.875rem;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 14px;
       font-weight: 500;
-      color: hsl(var(--muted-foreground));
-      background: none;
-      border-left: none;
-      border-right: none;
-      border-top: none;
       cursor: pointer;
-      transition: all 200ms;
+      width: 100%;
+      transition: background-color 0.2s ease;
     }
 
-    .analytics-sub-tab:hover {
-      color: hsl(var(--foreground));
-      border-bottom-color: hsl(var(--border));
+    .button:hover {
+      background: #1592e6;
     }
 
-    .analytics-sub-tab.active {
-      color: hsl(var(--foreground));
-      border-bottom-color: hsl(var(--primary));
+    .button:disabled {
+      background: #b3d9ff;
+      cursor: not-allowed;
     }
 
-    /* Insertion Charts Container */
-    .insertion-charts {
-      margin-bottom: 0;
-      padding-bottom: 0;
+    .button.secondary {
+      background: #ffffff;
+      color: #666;
+      border: 1px solid #e1e5e9;
     }
 
-    .insertion-chart-content {
-      margin-bottom: 0;
+    .button.secondary:hover {
+      background: #f8f9fa;
     }
 
-    .bar-chart {
+    .status {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      display: none;
+    }
+
+    .status.success {
+      background: #e8f5e8;
+      color: #2d6a2d;
+      border: 1px solid #c3e6c3;
+    }
+
+    .status.error {
+      background: #ffeaea;
+      color: #c53030;
+      border: 1px solid #feb2b2;
+    }
+
+    .status.loading {
+      background: #e6f3ff;
+      color: #1a73e8;
+      border: 1px solid #b3d9ff;
+    }
+
+    .preview-section {
+      margin-top: 16px;
+      display: none;
+    }
+
+    .preview-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #1a1a1a;
+    }
+
+    .preview-content {
+      background: #f8f9fa;
+      border: 1px solid #e1e5e9;
+      border-radius: 6px;
+      padding: 12px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 11px;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .actions {
       display: flex;
-      align-items: end;
-      height: calc(100% - 40px);
-      gap: 12px;
-      margin: 20px 0;
-      overflow-x: visible;
-      justify-content: flex-start;
+      gap: 8px;
+      margin-top: 16px;
     }
 
-    .bar {
-      background: hsl(var(--primary));
-      border-radius: 3px 3px 0 0;
-      min-width: 24px;
+    .actions .button {
       flex: 1;
-      position: relative;
-      transition: opacity 0.2s ease;
-    }
-
-    .bar:hover {
-      opacity: 0.8;
-    }
-
-    .bar-label {
-      position: absolute;
-      bottom: -25px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 10px;
-      color: hsl(var(--muted-foreground));
-      white-space: nowrap;
-      max-width: 80px;
-      text-align: center;
-      line-height: 1.2;
-    }
-
-    .bar-value {
-      position: absolute;
-      top: -18px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 10px;
-      color: hsl(var(--foreground));
-      font-weight: 500;
-      background: hsl(var(--background) / 0.9);
-      padding: 1px 3px;
-      border-radius: 2px;
-    }
-
-    /* Animations */
-    .fade-in {
-      animation: fadeIn 0.2s ease-in;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-4px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* SVG Icons */
-    .icon {
-      width: 1rem;
-      height: 1rem;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    /* Responsive */
-    @media (max-width: 640px) {
-      .container {
-        padding: 16px;
-      }
-
-      .grid-cols-2 {
-        grid-template-columns: 1fr;
-      }
-
-      /* Keep stats always side by side */
-      .stats-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <!-- Header -->
-    <div class="mb-6">
-      <h1 class="text-2xl font-semibold tracking-tight text-foreground" style="margin-top: 0px;">Design Token Export
-      </h1>
-      <p class="text-md text-muted-foreground leading-relaxed pt-0">
-        Export your Figma variables and design tokens into a JSON format that developers can easily use in their
-        projects.
-      </p>
-    </div>
+    <h1>Design Token Export</h1>
+    <p class="description">
+      Export your Figma variables and design tokens into a JSON format that developers can easily use in their projects.
+    </p>
 
-    <!-- Tab Navigation -->
-    <div class="tab-nav">
-      <nav>
-        <button class="tab-button" data-tab="export" data-state="active" role="tab" aria-selected="true">
-          Export
-        </button>
-        <button class="tab-button" data-tab="analytics" data-state="inactive" role="tab" aria-selected="false">
-          Analytics
-        </button>
-        <button class="tab-button" data-tab="accessibility" data-state="inactive" role="tab" aria-selected="false">
-          Accessibility
-        </button>
-      </nav>
-    </div>
-
-    <!-- Export Tab Content -->
-    <div id="exportTab" class="tab-content" role="tabpanel">
-      <!-- Export Options Card -->
-      <div class="card p-4 ">
-        <div class="mb-4">
-          <h3 class="text-lg font-semibold" style="margin-top: 0; margin-bottom: 0;">Export Options</h3>
-          <p class="text-sm text-muted-foreground mt-1">
-            Generate your design tokens from Figma, then select which ones to export.
-          </p>
-        </div>
-
-        <!-- Token Selection Section -->
-        <div id="tokenSelection" class="card p-4 mb-6 hidden" style="background-color: hsl(var(--muted) / 0.5);">
-          <div class="flex items-center justify-between mb-4">
-            <h4 class="text-sm font-bold">Select Tokens to Export</h4>
-            <div class="flex items-center space-x-2">
-              <label class="text-xs text-muted-foreground">Select All</label>
-              <div class="toggle-switch active" id="selectAllToggle" role="switch" aria-checked="true">
-                <div class="toggle-slider"></div>
-              </div>
-            </div>
-          </div>
-          <div id="tokenCollections" class="space-y-3"></div>
-        </div>
-
-        <!-- Format Options -->
-        <div class="mb-6">
-          <label class="text-sm font-bold mb-2" style="display: block;">Export Format</label>
-          <div class="select">
-            <button type="button" class="select-trigger" id="exportFormatTrigger" aria-haspopup="listbox"
-              aria-expanded="false">
-              <span id="exportFormatValue">Developer JSON (W3C Format)</span>
-              <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </button>
-            <div class="select-content" id="exportFormatContent">
-              <div class="select-viewport">
-                <div class="select-item" data-value="developer" data-state="checked">Developer JSON (W3C Format)</div>
-                <div class="select-item" data-value="json">JSON (Figma export)</div>
-                <div class="select-item" data-value="css">CSS Custom Properties</div>
-                <div class="select-item" data-value="scss">SCSS/Sass (variables & mixins)</div>
-                <div class="select-item" data-value="tailwind">Tailwind CSS (config.js)</div>
-                <div class="select-item" data-value="react-native">React Native (StyleSheet)</div>
-                <div class="select-item" data-value="flutter">Flutter/Dart (Color classes)</div>
-                <div class="select-item" data-value="ios">iOS Swift (UIColor extensions)</div>
-                <div class="select-item" data-value="android">Android XML (colors.xml)</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Export Button -->
-        <button id="exportBtn" class="btn btn-primary">
-          <svg class="icon mr-2" viewBox="0 0 24 24">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-          </svg>
-          Generate Design Tokens
-        </button>
-
-        <!-- Status Message -->
-        <div id="status" class="mt-4 hidden p-3 rounded-md text-sm border"></div>
+    <div class="export-section">
+      <div class="export-title">Export Options</div>
+      <div class="export-info">
+        This will export all local variable collections including colors, typography, spacing, and other design tokens.
       </div>
 
-      <!-- Preview Section -->
-      <div id="previewSection" class="card p-6 hidden">
-        <h3 id="previewTitle" class="text-lg font-semibold mb-4">Export Preview</h3>
-        <div class="code-block">
-          <pre id="previewContent" class="code-preview"></pre>
-        </div>
+      <div class="format-options" style="margin-bottom: 16px;">
+        <div style="font-size: 12px; font-weight: 500; margin-bottom: 8px; color: #1a1a1a;">Export Format:</div>
+        <select id="exportFormat"
+          style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px; background: #ffffff; color: #333;">
+          <option value="json">JSON (for JavaScript/build tools)</option>
+          <option value="css">CSS Custom Properties</option>
+          <option value="developer">Developer JSON (W3C Format)</option>
+        </select>
+      </div>
 
-        <button id="downloadBtn" class="btn btn-primary">
-          Download
-        </button>
+      <button id="exportBtn" class="button">
+        Export Design Tokens
+      </button>
+
+      <div id="status" class="status"></div>
+    </div>
+
+    <div id="previewSection" class="preview-section">
+      <div id="previewTitle" class="preview-title">Export Preview</div>
+      <div id="previewContent" class="preview-content"></div>
+
+      <div class="actions">
+        <button id="downloadBtn" class="button">Download</button>
+        <button id="copyBtn" class="button secondary">Copy to Clipboard</button>
       </div>
     </div>
 
-    <!-- Analytics Tab Content -->
-    <div id="analyticsTab" class="tab-content hidden" role="tabpanel">
-      <div id="analyticsContent">
-        <div class="card p-8 text-center">
-          <div class="text-muted-foreground">
-            <svg class="icon mx-auto w-12 h-12 mb-4" viewBox="0 0 24 24">
-              <path
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-            <h3 class="text-lg font-semibold text-foreground mb-2">No Data Available</h3>
-            <p class="text-sm">Generate your design tokens first to see analytics and statistics.</p>
-          </div>
-        </div>
+    <!-- GitHub Integration Section -->
+    <div id="githubSection" class="export-section" style="display: none;">
+      <div class="export-title"
+        style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" id="githubToggle">
+        <span>🔗 Push to GitHub</span>
+        <span id="githubToggleIcon">▼</span>
       </div>
 
-      <!-- Analytics Export Button -->
-      <div id="analyticsExport" class="mt-4 text-center hidden">
-        <button id="exportAnalyticsBtn" class="btn btn-primary">
-          <svg class="icon mr-2" viewBox="0 0 24 24">
-            <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-          </svg>
-          Export Analytics to CSV
-        </button>
+      <div id="githubSettings" style="margin-top: 16px;">
+        <div class="export-info">
+          Configure your GitHub repository to automatically push design tokens.
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
+            Repository URL or owner/repo
+          </label>
+          <input id="githubRepo" type="text" placeholder="username/repo or https://github.com/username/repo"
+            style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
+          <div style="font-size: 11px; color: #666; margin-top: 4px;">
+            Example: myorg/design-tokens
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+          <div style="flex: 1;">
+            <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
+              Branch
+            </label>
+            <input id="githubBranch" type="text" value="main" placeholder="main"
+              style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
+          </div>
+          <div style="flex: 2;">
+            <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
+              File Path
+            </label>
+            <input id="githubFilePath" type="text" value="tokens/design-tokens.json"
+              placeholder="tokens/design-tokens.json"
+              style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
+            GitHub Personal Access Token
+          </label>
+          <input id="githubToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+            style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
+          <div style="font-size: 11px; color: #666; margin-top: 4px;">
+            <a href="https://github.com/settings/tokens/new?scopes=repo&description=Figma%20Token%20Export"
+              target="_blank" style="color: #18a0fb; text-decoration: none;">
+              Create a token
+            </a> with 'repo' scope
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
+            Commit Message
+          </label>
+          <input id="githubCommitMessage" type="text" value="Update design tokens from Figma"
+            placeholder="Update design tokens"
+            style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <button id="saveGithubSettings" class="button secondary" style="flex: 1;">
+            💾 Save Settings
+          </button>
+          <button id="pushToGithub" class="button" style="flex: 2;" disabled>
+            🚀 Push to GitHub
+          </button>
+        </div>
+
+        <div id="githubStatus" class="status" style="margin-top: 12px;"></div>
       </div>
     </div>
 
-    <!-- Accessibility Tab Content -->
-    <div id="accessibilityTab" class="tab-content hidden" role="tabpanel">
-      <div id="accessibilityContent">
-        <div class="card p-8 text-center">
-          <div class="text-muted-foreground">
-            <svg class="icon mx-auto w-12 h-12 mb-4" viewBox="0 0 24 24">
-              <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
-              <path d="M12 6a2 2 0 1 1-2 2 2 2 0 0 1 2-2zm-2 7h4v5h-4z"></path>
-            </svg>
-            <h3 class="text-lg font-semibold text-foreground mb-2">No Accessibility Data Available</h3>
-            <p class="text-sm">Generate your design tokens first to see WCAG compliance analysis.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Accessibility Export Button -->
-      <div id="accessibilityExport" class="mt-4 text-center hidden">
-        <button id="exportAccessibilityReportBtn" class="btn btn-primary">
-          <svg class="icon mr-2" viewBox="0 0 24 24">
-            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
-            <path d="M12 6a2 2 0 1 1-2 2 2 2 0 0 1 2-2zm-2 7h4v5h-4z"></path>
-          </svg>
-          Export WCAG Compliance Report
-        </button>
-      </div>
+    <div class="actions">
+      <button id="closeBtn" class="button secondary">Close</button>
     </div>
   </div>
 
   <script>
-    console.log('UI script starting to execute...');
-
-    // Global state - Start with all sections closed
-    let exportedData = null;
-    let rawTokenData = null;
-    let selectedTokens = {};
-    let currentTab = 'export';
-    let sectionStates = {
-      'types': false,
-      'colors': false,
-      'numbers': false,
-      'collections': false
-    };
-
-    let analyticsStats = null;
-    let accessibilityAnalysis = null;
-    let currentTimePeriods = {
-      'styles': '30days',
-      'components': '30days',
-      'variables': '30days'
-    };
-    // DOM elements
-    let exportBtn, downloadBtn, status, previewSection, previewContent, previewTitle;
-    let tokenSelection, tokenCollections, selectAllToggle;
-
-    // Initialize plugin after DOM is ready
-    function initializePlugin() {
-      console.log('initializePlugin called');
-
-      // DOM elements
-      exportBtn = document.getElementById('exportBtn');
-      downloadBtn = document.getElementById('downloadBtn');
-      status = document.getElementById('status');
-      previewSection = document.getElementById('previewSection');
-      previewContent = document.getElementById('previewContent');
-      previewTitle = document.getElementById('previewTitle');
-      tokenSelection = document.getElementById('tokenSelection');
-      tokenCollections = document.getElementById('tokenCollections');
-      selectAllToggle = document.getElementById('selectAllToggle');
-
-      console.log('All DOM elements found, setting up event listeners...');
-
-      // Event listeners
-      exportBtn.addEventListener('click', handleExport);
-      downloadBtn.addEventListener('click', handleDownload);
-
-      // Token selection event listeners
-      if (selectAllToggle) {
-        selectAllToggle.addEventListener('click', toggleAllTokens);
-      }
-
-      // Tab navigation
-      const tabButtons = document.querySelectorAll('.tab-button');
-      for (let i = 0; i < tabButtons.length; i++) {
-        const button = tabButtons[i];
-        button.addEventListener('click', function () {
-          switchTab(button.getAttribute('data-tab'));
-        });
-      }
-
-      // Set initial button text
-      updateDownloadButtonText();
-
-      // Add event listeners for ShadCN dropdown
-      const formatTrigger = document.getElementById('exportFormatTrigger');
-      const formatContent = document.getElementById('exportFormatContent');
-      const formatValue = document.getElementById('exportFormatValue');
-      const formatItems = document.querySelectorAll('.select-item');
-
-      if (formatTrigger && formatContent) {
-        // Toggle dropdown
-        formatTrigger.addEventListener('click', function () {
-          const isOpen = formatContent.classList.contains('show');
-          if (isOpen) {
-            formatContent.classList.remove('show');
-            formatTrigger.setAttribute('aria-expanded', 'false');
-            formatTrigger.setAttribute('data-state', 'closed');
-          } else {
-            formatContent.classList.add('show');
-            formatTrigger.setAttribute('aria-expanded', 'true');
-            formatTrigger.setAttribute('data-state', 'open');
-          }
-        });
-
-        // Handle item selection
-        formatItems.forEach(item => {
-          item.addEventListener('click', function () {
-            const value = this.getAttribute('data-value');
-            const text = this.textContent;
-
-            // Update display
-            formatValue.textContent = text;
-
-            // Update selected state
-            formatItems.forEach(i => i.setAttribute('data-state', ''));
-            this.setAttribute('data-state', 'checked');
-
-            // Close dropdown
-            formatContent.classList.remove('show');
-            formatTrigger.setAttribute('aria-expanded', 'false');
-            formatTrigger.setAttribute('data-state', 'closed');
-
-            console.log('Export format changed to:', value);
-            updateDownloadButtonText();
-            if (exportedData) {
-              updatePreviewContent();
-            }
-          });
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function (event) {
-          if (!formatTrigger.contains(event.target) && !formatContent.contains(event.target)) {
-            formatContent.classList.remove('show');
-            formatTrigger.setAttribute('aria-expanded', 'false');
-            formatTrigger.setAttribute('data-state', 'closed');
-          }
-        });
-      }
-
-      // Listen for messages from plugin code
-      window.onmessage = function (event) {
-        console.log('Received message:', event.data);
-        if (!event.data.pluginMessage) return;
-
-        const pluginMessage = event.data.pluginMessage;
-        const type = pluginMessage.type;
-        const data = pluginMessage.data;
-        const message = pluginMessage.message;
-
-        if (type === 'tokens-extracted') {
-          // Populate token selection interface
-          populateTokenSelection(data);
-
-          // Only enable final export after selection is made
-          exportedData = null; // Clear until user makes selection
-          updateDownloadButtonText();
-          showStatus('success', 'Successfully extracted ' + Object.keys(data.collections).length + ' collection(s)! Select tokens to export.');
-          updateAnalytics(data);
-          updateAccessibility(data);
-        } else if (type === 'error') {
-          exportBtn.disabled = false;
-          exportBtn.innerHTML = '<svg class="icon mr-2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>Generate Design Tokens';
-          showStatus('error', 'Error: ' + message);
+"use strict";
+(() => {
+  // src/github.ts
+  async function pushToGitHub(options) {
+    const { config, content, commitMessage } = options;
+    const { token, owner, repo, branch, filePath } = config;
+    try {
+      const sha = await getFileSHA(config);
+      const response = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/vnd.github.v3+json"
+          },
+          body: JSON.stringify({
+            message: commitMessage,
+            content: btoa(unescape(encodeURIComponent(content))),
+            // Base64 encode
+            branch,
+            ...sha ? { sha } : {}
+            // Include SHA if file exists
+          })
         }
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+          error.message || `GitHub API error: ${response.statusText}`
+        );
+      }
+      const result = await response.json();
+      return {
+        success: true,
+        message: "Successfully pushed to GitHub!",
+        commitUrl: result.commit?.html_url
       };
-
-
-      // Analytics export button
-      const exportAnalyticsBtn = document.getElementById('exportAnalyticsBtn');
-      if (exportAnalyticsBtn) {
-        exportAnalyticsBtn.addEventListener('click', handleAnalyticsExport);
-      }
-
-      // Accessibility export button (in accessibility tab)
-      const exportAccessibilityReportBtn = document.getElementById('exportAccessibilityReportBtn');
-      if (exportAccessibilityReportBtn) {
-        exportAccessibilityReportBtn.addEventListener('click', handleAccessibilityExport);
-      }
-
-      // Initialize with sample data for Analytics and Accessibility
-      initializeSampleData();
-
-      console.log('✅ Plugin UI initialized successfully!');
-    }
-
-    // Tab switching with improved styling
-    function switchTab(tabName) {
-      console.log('Switching to tab:', tabName);
-      currentTab = tabName;
-
-      // Update tab buttons
-      const tabButtons = document.querySelectorAll('.tab-button');
-      for (let i = 0; i < tabButtons.length; i++) {
-        const button = tabButtons[i];
-        if (button.getAttribute('data-tab') === tabName) {
-          button.setAttribute('data-state', 'active');
-          button.setAttribute('aria-selected', 'true');
-        } else {
-          button.setAttribute('data-state', 'inactive');
-          button.setAttribute('aria-selected', 'false');
-        }
-      }
-
-      // Update tab content
-      const exportTab = document.getElementById('exportTab');
-      const analyticsTab = document.getElementById('analyticsTab');
-      const accessibilityTab = document.getElementById('accessibilityTab');
-
-      if (tabName === 'export') {
-        exportTab.classList.remove('hidden');
-        analyticsTab.classList.add('hidden');
-        accessibilityTab.classList.add('hidden');
-      } else if (tabName === 'analytics') {
-        exportTab.classList.add('hidden');
-        analyticsTab.classList.remove('hidden');
-        accessibilityTab.classList.add('hidden');
-      } else if (tabName === 'accessibility') {
-        exportTab.classList.add('hidden');
-        analyticsTab.classList.add('hidden');
-        accessibilityTab.classList.remove('hidden');
-      }
-    }
-
-    // Switch insertion analytics sub-tabs
-    function switchInsertionTab(tabName) {
-      console.log('Switching to insertion tab:', tabName);
-
-      // Update tab buttons
-      const tabButtons = document.querySelectorAll('.analytics-sub-tab');
-      for (let i = 0; i < tabButtons.length; i++) {
-        const button = tabButtons[i];
-        if (button.getAttribute('data-insertion-tab') === tabName) {
-          button.classList.add('active');
-        } else {
-          button.classList.remove('active');
-        }
-      }
-
-      // Update chart content
-      const chartContents = document.querySelectorAll('.insertion-chart-content');
-      for (let i = 0; i < chartContents.length; i++) {
-        const content = chartContents[i];
-        if (content.getAttribute('data-insertion-content') === tabName) {
-          content.classList.remove('hidden');
-          content.classList.add('fade-in');
-        } else {
-          content.classList.add('hidden');
-          content.classList.remove('fade-in');
-        }
-      }
-
-      // Initialize tooltips for the newly shown chart
-      setTimeout(function () {
-        initializeAreaChartTooltips(tabName + '-area-chart');
-      }, 100);
-    }
-
-    // Change time period for a specific chart type
-    function changeTimePeriod(chartType, period) {
-      console.log('Changing time period for', chartType, 'to', period);
-
-      // Update the current time period
-      currentTimePeriods[chartType] = period;
-
-      // Generate new data for this period
-      const newData = generateInsertionData(period);
-
-      // Update the specific chart container
-      const chartContainer = document.getElementById(chartType + '-chart');
-      if (chartContainer) {
-        const newChartHTML = createAreaChart(newData[chartType], chartType, chartType + '-area-chart', period);
-        chartContainer.innerHTML = newChartHTML;
-
-        // Initialize tooltips for the updated chart
-        setTimeout(function () {
-          initializeAreaChartTooltips(chartType + '-area-chart');
-        }, 100);
-      }
-    }
-
-    // Show status message with improved styling
-    function showStatus(type, message) {
-      if (!status) return;
-
-      status.className = 'mt-4 p-3 rounded-md text-sm border';
-
-      if (type === 'success') {
-        status.className += ' status-success';
-      } else if (type === 'error') {
-        status.className += ' status-error';
-      } else if (type === 'loading') {
-        status.className += ' status-loading';
-      }
-
-      status.textContent = message;
-      status.classList.remove('hidden');
-      status.classList.add('fade-in');
-
-      if (type === 'success') {
-        setTimeout(function () {
-          status.classList.add('hidden');
-        }, 3000);
-      }
-    }
-
-    // Toggle section visibility with standardized toggle button
-    function toggleSection(sectionId) {
-      console.log('Toggling section:', sectionId);
-
-      sectionStates[sectionId] = !sectionStates[sectionId];
-      const isExpanded = sectionStates[sectionId];
-
-      const content = document.getElementById(sectionId + 'Content');
-      const toggleBtn = document.getElementById(sectionId + 'Toggle');
-
-      if (content && toggleBtn) {
-        if (isExpanded) {
-          content.classList.remove('hidden');
-          content.classList.add('fade-in');
-          toggleBtn.classList.add('expanded');
-        } else {
-          content.classList.add('hidden');
-          content.classList.remove('fade-in');
-          toggleBtn.classList.remove('expanded');
-        }
-      }
-    }
-
-    // Handle token selection functions
-    function populateTokenSelection(data) {
-      if (!tokenCollections) return;
-
-      rawTokenData = data;
-      selectedTokens = {};
-
-      let html = '';
-
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-        const variableCount = Object.keys(collection.variables).length;
-
-        if (variableCount === 0) continue; // Skip empty collections
-
-        // Initialize collection as selected
-        selectedTokens[collectionName] = {
-          selected: true,
-          tokens: {}
-        };
-
-        html += '<div class="card overflow-hidden">';
-        html += '<div class="collection-header" onclick="toggleCollection(\'' + collectionName + '\');">';
-        html += '<div class="flex items-center mr-3">';
-        html += '<input type="checkbox" class="switch-input" id="col-' + collectionName + '" ';
-        html += 'checked onchange="toggleCollectionSelection(\'' + collectionName + '\');">';
-        html += '<div class="small-switch active" id="switch-col-' + collectionName + '" onclick="toggleCollectionSwitch(\'' + collectionName + '\', event)">';
-        html += '<div class="small-switch-slider"></div>';
-        html += '</div>';
-        html += '</div>';
-        html += '<span class="font-medium text-sm flex-1">' + escapeHtml(collection.name) + '</span>';
-        html += '<span class="token-badge mr-2">' + variableCount + ' tokens</span>';
-        html += '<button class="toggle-btn" id="toggle-' + collectionName + '">';
-        html += '<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>';
-        html += '</button>';
-        html += '</div>';
-
-        html += '<div class="hidden p-3 space-y-2 max-h-48 overflow-auto" id="tokens-' + collectionName + '" style="border-top: 1px solid hsl(var(--border));">';
-
-        for (const varName in collection.variables) {
-          const variable = collection.variables[varName];
-
-          // Initialize token as selected
-          selectedTokens[collectionName].tokens[varName] = true;
-
-          html += '<div class="flex items-center space-x-3 py-1">';
-          html += '<div class="flex items-center">';
-          html += '<input type="checkbox" class="switch-input" ';
-          html += 'id="token-' + collectionName + '-' + varName + '" checked ';
-          html += 'onchange="toggleTokenSelection(\'' + collectionName + '\', \'' + varName + '\');">';
-          html += '<div class="small-switch active" id="switch-token-' + collectionName + '-' + varName + '" onclick="toggleTokenSwitch(\'' + collectionName + '\', \'' + varName + '\', event)">';
-          html += '<div class="small-switch-slider"></div>';
-          html += '</div>';
-          html += '</div>';
-          html += '<span class="text-sm flex-1">' + escapeHtml(varName) + '</span>';
-
-          // Show value preview
-          for (const modeName in variable.values) {
-            const value = variable.values[modeName];
-            html += '<code class="text-xs bg-muted px-2 py-1 rounded font-mono">' + escapeHtml(value) + '</code>';
-
-            // Add color preview for color tokens
-            if (variable.type === 'COLOR' && (value.startsWith('#') || value.startsWith('rgb'))) {
-              html += '<div class="w-4 h-4 rounded border-border ml-2" style="background-color: ' + value + '; border: 1px solid hsl(var(--border));"></div>';
-            }
-            break; // Show first mode only
-          }
-
-          html += '</div>';
-        }
-
-        html += '</div>';
-        html += '</div>';
-      }
-
-      tokenCollections.innerHTML = html;
-      tokenSelection.classList.remove('hidden');
-      tokenSelection.classList.add('fade-in');
-
-      // Update export button
-      const iconSvg = '<svg class="icon mr-2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>';
-      exportBtn.innerHTML = iconSvg + 'Export Selected Tokens';
-
-      // Update button state since all tokens are selected by default
-      updateToggleState();
-      updateExportButton();
-    }
-
-    function toggleCollection(collectionName) {
-      const tokensList = document.getElementById('tokens-' + collectionName);
-      const toggleBtn = document.getElementById('toggle-' + collectionName);
-
-      if (tokensList.classList.contains('hidden')) {
-        tokensList.classList.remove('hidden');
-        tokensList.classList.add('fade-in');
-        toggleBtn.classList.add('expanded');
-      } else {
-        tokensList.classList.add('hidden');
-        tokensList.classList.remove('fade-in');
-        toggleBtn.classList.remove('expanded');
-      }
-    }
-
-    function toggleCollectionSelection(collectionName) {
-      const collectionCheckbox = document.getElementById('col-' + collectionName);
-      const isSelected = collectionCheckbox.checked;
-
-      selectedTokens[collectionName].selected = isSelected;
-
-      // Update visual switch state
-      const switchElement = document.getElementById('switch-col-' + collectionName);
-      if (switchElement) {
-        if (isSelected) {
-          switchElement.classList.add('active');
-        } else {
-          switchElement.classList.remove('active');
-        }
-      }
-
-      // Update all token checkboxes in this collection
-      for (const varName in selectedTokens[collectionName].tokens) {
-        const tokenCheckbox = document.getElementById('token-' + collectionName + '-' + varName);
-        const tokenSwitch = document.getElementById('switch-token-' + collectionName + '-' + varName);
-        if (tokenCheckbox) {
-          tokenCheckbox.checked = isSelected;
-          selectedTokens[collectionName].tokens[varName] = isSelected;
-
-          // Update token switch visual state
-          if (tokenSwitch) {
-            if (isSelected) {
-              tokenSwitch.classList.add('active');
-            } else {
-              tokenSwitch.classList.remove('active');
-            }
-          }
-        }
-      }
-
-      updateToggleState();
-      updateExportButton();
-    }
-
-    // Handle collection switch clicks
-    function toggleCollectionSwitch(collectionName, event) {
-      event.stopPropagation(); // Prevent triggering collection toggle
-      const collectionCheckbox = document.getElementById('col-' + collectionName);
-      const switchElement = document.getElementById('switch-col-' + collectionName);
-
-      // Toggle the checkbox
-      collectionCheckbox.checked = !collectionCheckbox.checked;
-
-      // Update switch visual state
-      if (collectionCheckbox.checked) {
-        switchElement.classList.add('active');
-      } else {
-        switchElement.classList.remove('active');
-      }
-
-      // Trigger the change event
-      collectionCheckbox.dispatchEvent(new Event('change'));
-    }
-
-    function toggleTokenSelection(collectionName, varName) {
-      const tokenCheckbox = document.getElementById('token-' + collectionName + '-' + varName);
-      selectedTokens[collectionName].tokens[varName] = tokenCheckbox.checked;
-
-      // Update visual switch state
-      const tokenSwitch = document.getElementById('switch-token-' + collectionName + '-' + varName);
-      if (tokenSwitch) {
-        if (tokenCheckbox.checked) {
-          tokenSwitch.classList.add('active');
-        } else {
-          tokenSwitch.classList.remove('active');
-        }
-      }
-
-      // Update collection checkbox based on token selections
-      const tokenCheckboxes = Object.keys(selectedTokens[collectionName].tokens);
-      const selectedCount = tokenCheckboxes.filter(name =>
-        selectedTokens[collectionName].tokens[name]
-      ).length;
-
-      const collectionCheckbox = document.getElementById('col-' + collectionName);
-      const collectionSwitch = document.getElementById('switch-col-' + collectionName);
-
-      if (selectedCount === 0) {
-        collectionCheckbox.checked = false;
-        collectionCheckbox.indeterminate = false;
-        selectedTokens[collectionName].selected = false;
-        if (collectionSwitch) collectionSwitch.classList.remove('active');
-      } else if (selectedCount === tokenCheckboxes.length) {
-        collectionCheckbox.checked = true;
-        collectionCheckbox.indeterminate = false;
-        selectedTokens[collectionName].selected = true;
-        if (collectionSwitch) collectionSwitch.classList.add('active');
-      } else {
-        collectionCheckbox.checked = false;
-        collectionCheckbox.indeterminate = true;
-        selectedTokens[collectionName].selected = true;
-        if (collectionSwitch) collectionSwitch.classList.add('active'); // Show as active when partially selected
-      }
-
-      updateToggleState();
-      updateExportButton();
-    }
-
-    // Handle token switch clicks
-    function toggleTokenSwitch(collectionName, varName, event) {
-      event.stopPropagation(); // Prevent any parent click handlers
-      const tokenCheckbox = document.getElementById('token-' + collectionName + '-' + varName);
-      const switchElement = document.getElementById('switch-token-' + collectionName + '-' + varName);
-
-      // Toggle the checkbox
-      tokenCheckbox.checked = !tokenCheckbox.checked;
-
-      // Update switch visual state
-      if (tokenCheckbox.checked) {
-        switchElement.classList.add('active');
-      } else {
-        switchElement.classList.remove('active');
-      }
-
-      // Trigger the change event
-      tokenCheckbox.dispatchEvent(new Event('change'));
-    }
-
-    function toggleAllTokens() {
-      // Determine if we should select all or deselect all based on current state
-      let totalTokens = 0;
-      let selectedCount = 0;
-
-      for (const collectionName in selectedTokens) {
-        for (const varName in selectedTokens[collectionName].tokens) {
-          totalTokens++;
-          if (selectedTokens[collectionName].tokens[varName]) {
-            selectedCount++;
-          }
-        }
-      }
-
-      // If more than half are selected, deselect all. Otherwise, select all.
-      const shouldSelectAll = selectedCount < (totalTokens / 2);
-
-      for (const collectionName in selectedTokens) {
-        selectedTokens[collectionName].selected = shouldSelectAll;
-        const collectionCheckbox = document.getElementById('col-' + collectionName);
-        const collectionSwitch = document.getElementById('switch-col-' + collectionName);
-        if (collectionCheckbox) {
-          collectionCheckbox.checked = shouldSelectAll;
-          collectionCheckbox.indeterminate = false;
-        }
-        if (collectionSwitch) {
-          if (shouldSelectAll) {
-            collectionSwitch.classList.add('active');
-          } else {
-            collectionSwitch.classList.remove('active');
-          }
-        }
-
-        for (const varName in selectedTokens[collectionName].tokens) {
-          selectedTokens[collectionName].tokens[varName] = shouldSelectAll;
-          const tokenCheckbox = document.getElementById('token-' + collectionName + '-' + varName);
-          const tokenSwitch = document.getElementById('switch-token-' + collectionName + '-' + varName);
-          if (tokenCheckbox) {
-            tokenCheckbox.checked = shouldSelectAll;
-          }
-          if (tokenSwitch) {
-            if (shouldSelectAll) {
-              tokenSwitch.classList.add('active');
-            } else {
-              tokenSwitch.classList.remove('active');
-            }
-          }
-        }
-      }
-
-      updateToggleState();
-      updateExportButton();
-    }
-
-    function updateToggleState() {
-      if (!selectAllToggle) return;
-
-      let totalTokens = 0;
-      let selectedCount = 0;
-
-      for (const collectionName in selectedTokens) {
-        for (const varName in selectedTokens[collectionName].tokens) {
-          totalTokens++;
-          if (selectedTokens[collectionName].tokens[varName]) {
-            selectedCount++;
-          }
-        }
-      }
-
-      if (selectedCount === 0) {
-        selectAllToggle.classList.remove('active');
-        selectAllToggle.setAttribute('aria-checked', 'false');
-      } else if (selectedCount === totalTokens) {
-        selectAllToggle.classList.add('active');
-        selectAllToggle.setAttribute('aria-checked', 'true');
-      } else {
-        selectAllToggle.classList.add('active');
-        selectAllToggle.setAttribute('aria-checked', 'mixed');
-      }
-    }
-
-    function updateExportButton() {
-      let totalSelected = 0;
-      for (const collectionName in selectedTokens) {
-        if (selectedTokens[collectionName].selected) {
-          for (const varName in selectedTokens[collectionName].tokens) {
-            if (selectedTokens[collectionName].tokens[varName]) {
-              totalSelected++;
-            }
-          }
-        }
-      }
-
-      const iconSvg = '<svg class="icon mr-2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>';
-
-      if (totalSelected === 0) {
-        exportBtn.innerHTML = iconSvg + 'Select Tokens to Export';
-        exportBtn.disabled = true;
-      } else {
-        exportBtn.innerHTML = iconSvg + 'Export Selected Tokens (' + totalSelected + ')';
-        exportBtn.disabled = false;
-      }
-    }
-
-    function getSelectedTokenData() {
-      if (!rawTokenData) return null;
-
-      const filteredData = {
-        metadata: rawTokenData.metadata,
-        collections: {}
+    } catch (error) {
+      console.error("GitHub push error:", error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to push to GitHub. Please check your settings."
       };
-
-      for (const collectionName in selectedTokens) {
-        if (!selectedTokens[collectionName].selected) continue;
-
-        const originalCollection = rawTokenData.collections[collectionName];
-        const filteredCollection = {
-          ...originalCollection,
-          variables: {}
-        };
-
-        for (const varName in selectedTokens[collectionName].tokens) {
-          if (selectedTokens[collectionName].tokens[varName]) {
-            filteredCollection.variables[varName] = originalCollection.variables[varName];
+    }
+  }
+  async function getFileSHA(config) {
+    const { token, owner, repo, branch, filePath } = config;
+    try {
+      const response = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}?ref=${branch}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.github.v3+json"
           }
         }
-
-        // Only include collections that have selected tokens
-        if (Object.keys(filteredCollection.variables).length > 0) {
-          filteredData.collections[collectionName] = filteredCollection;
-        }
+      );
+      if (response.status === 404) {
+        return null;
       }
-
-      return filteredData;
-    }
-
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    // Handle export button click
-    function handleExport() {
-      console.log('Starting export process...');
-
-      if (!rawTokenData) {
-        // First time - extract all tokens
-        showStatus('loading', 'Extracting design tokens...');
-        exportBtn.disabled = true;
-        exportBtn.innerHTML = '<svg class="icon mr-2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>Extracting...';
-
-        // Send message to plugin code to start extraction
-        console.log('Sending message to plugin code...');
-        parent.postMessage({ pluginMessage: { type: 'export-tokens' } }, '*');
-      } else {
-        // Generate export from selected tokens
-        const selectedData = getSelectedTokenData();
-        if (!selectedData || Object.keys(selectedData.collections).length === 0) {
-          showStatus('error', 'No tokens selected for export');
-          return;
-        }
-
-        exportedData = selectedData;
-        showPreview(selectedData);
-        showStatus('success', 'Selected tokens ready for export!');
+      if (!response.ok) {
+        throw new Error(`Failed to get file info: ${response.statusText}`);
       }
-    }
-
-    // Get the currently selected export format
-    function getSelectedFormat() {
-      const selectedItem = document.querySelector('.select-item[data-state="checked"]');
-
-      if (selectedItem) {
-        return selectedItem.getAttribute('data-value');
-      }
-
-      return 'json'; // default fallback
-    }
-
-    // Handle download button click
-    function handleDownload() {
-      if (!exportedData) return;
-
-      const format = getSelectedFormat();
-      const dateStr = new Date().toISOString().split('T')[0];
-
-      try {
-        if (format === 'json') {
-          const content = JSON.stringify(exportedData, null, 2);
-          downloadFile(content, 'application/json', 'design-tokens-' + dateStr + '.json');
-          showStatus('success', 'JSON file downloaded successfully!');
-        } else if (format === 'developer') {
-          const content = JSON.stringify(convertToDeveloperFormat(exportedData), null, 2);
-          downloadFile(content, 'application/json', 'design-tokens-developer-' + dateStr + '.json');
-          showStatus('success', 'Developer JSON file downloaded successfully!');
-        } else if (format === 'css') {
-          const content = convertToCSS(exportedData);
-          downloadFile(content, 'text/css', 'design-tokens-' + dateStr + '.css');
-          showStatus('success', 'CSS file downloaded successfully!');
-        } else if (format === 'scss') {
-          const content = convertToSCSS(exportedData);
-          downloadFile(content, 'text/css', 'design-tokens-' + dateStr + '.scss');
-          showStatus('success', 'SCSS file downloaded successfully!');
-        } else if (format === 'tailwind') {
-          const content = convertToTailwind(exportedData);
-          downloadFile(content, 'application/javascript', 'tailwind.config-' + dateStr + '.js');
-          showStatus('success', 'Tailwind config downloaded successfully!');
-        } else if (format === 'react-native') {
-          const content = convertToReactNative(exportedData);
-          downloadFile(content, 'text/javascript', 'tokens-' + dateStr + '.js');
-          showStatus('success', 'React Native StyleSheet downloaded successfully!');
-        } else if (format === 'flutter') {
-          const content = convertToFlutter(exportedData);
-          downloadFile(content, 'text/plain', 'design_tokens-' + dateStr + '.dart');
-          showStatus('success', 'Flutter/Dart file downloaded successfully!');
-        } else if (format === 'ios') {
-          const content = convertToiOS(exportedData);
-          downloadFile(content, 'text/plain', 'DesignTokens+UIColor-' + dateStr + '.swift');
-          showStatus('success', 'iOS Swift file downloaded successfully!');
-        } else if (format === 'android') {
-          const content = convertToAndroid(exportedData);
-          downloadFile(content, 'text/xml', 'colors-' + dateStr + '.xml');
-          showStatus('success', 'Android XML file downloaded successfully!');
-        }
-      } catch (error) {
-        console.error('Download error:', error);
-        showStatus('error', 'Failed to download file');
-      }
-    }
-
-    // Download file helper
-    function downloadFile(content, mimeType, filename) {
-      const blob = new Blob([content], { type: mimeType });
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      URL.revokeObjectURL(url);
-    }
-
-    // Update download button text based on selected format
-    function updateDownloadButtonText() {
-      if (!downloadBtn) return;
-
-      const format = getSelectedFormat();
-
-      if (format === 'json') {
-        downloadBtn.textContent = 'Download JSON';
-      } else if (format === 'developer') {
-        downloadBtn.textContent = 'Download Developer JSON';
-      } else if (format === 'css') {
-        downloadBtn.textContent = 'Download CSS';
-      } else if (format === 'scss') {
-        downloadBtn.textContent = 'Download SCSS';
-      } else if (format === 'tailwind') {
-        downloadBtn.textContent = 'Download Tailwind';
-      } else if (format === 'react-native') {
-        downloadBtn.textContent = 'Download React Native';
-      } else if (format === 'flutter') {
-        downloadBtn.textContent = 'Download Flutter';
-      } else if (format === 'ios') {
-        downloadBtn.textContent = 'Download Swift';
-      } else if (format === 'android') {
-        downloadBtn.textContent = 'Download XML';
-      } else {
-        downloadBtn.textContent = 'Download';
-      }
-    }
-
-    // Handle close button click
-    function handleClose() {
-      console.log('Closing plugin...');
-      parent.postMessage({ pluginMessage: { type: 'close-plugin' } }, '*');
-    }
-
-    // Show preview of exported data
-    function showPreview(data) {
-      exportedData = data;
-      updatePreviewContent();
-
-      if (previewSection) {
-        previewSection.classList.remove('hidden');
-        previewSection.classList.add('fade-in');
-      }
-    }
-
-    // Update preview content based on selected format
-    function updatePreviewContent() {
-      if (!exportedData || !previewContent) return;
-
-      const format = getSelectedFormat();
-
-      if (format === 'developer') {
-        const developerContent = convertToDeveloperFormat(exportedData);
-        previewContent.textContent = JSON.stringify(developerContent, null, 2);
-        if (previewTitle) previewTitle.textContent = 'Developer JSON Preview (W3C Format)';
-      } else if (format === 'css') {
-        const cssContent = convertToCSS(exportedData);
-        previewContent.textContent = cssContent;
-        if (previewTitle) previewTitle.textContent = 'CSS Preview';
-      } else if (format === 'scss') {
-        const scssContent = convertToSCSS(exportedData);
-        previewContent.textContent = scssContent;
-        if (previewTitle) previewTitle.textContent = 'SCSS Preview';
-      } else if (format === 'tailwind') {
-        const tailwindContent = convertToTailwind(exportedData);
-        previewContent.textContent = tailwindContent;
-        if (previewTitle) previewTitle.textContent = 'Tailwind Config Preview';
-      } else if (format === 'react-native') {
-        const reactNativeContent = convertToReactNative(exportedData);
-        previewContent.textContent = reactNativeContent;
-        if (previewTitle) previewTitle.textContent = 'React Native Preview';
-      } else if (format === 'flutter') {
-        const flutterContent = convertToFlutter(exportedData);
-        previewContent.textContent = flutterContent;
-        if (previewTitle) previewTitle.textContent = 'Flutter Preview';
-      } else if (format === 'ios') {
-        const iosContent = convertToiOS(exportedData);
-        previewContent.textContent = iosContent;
-        if (previewTitle) previewTitle.textContent = 'iOS Swift Preview';
-      } else if (format === 'android') {
-        const androidContent = convertToAndroid(exportedData);
-        previewContent.textContent = androidContent;
-        if (previewTitle) previewTitle.textContent = 'Android XML Preview';
-      } else {
-        const preview = createJSONPreview(exportedData);
-        previewContent.textContent = JSON.stringify(preview, null, 2);
-        if (previewTitle) previewTitle.textContent = 'JSON Preview';
-      }
-    }
-
-    // Create a condensed JSON preview
-    function createJSONPreview(data) {
-      const preview = {
-        metadata: data.metadata,
-        collections: {}
-      };
-
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-        const variableNames = Object.keys(collection.variables);
-        const previewVariables = {};
-
-        // Show first 3 variables
-        for (let i = 0; i < Math.min(3, variableNames.length); i++) {
-          const varName = variableNames[i];
-          previewVariables[varName] = collection.variables[varName];
-        }
-
-        if (variableNames.length > 3) {
-          previewVariables['...'] = 'and ' + (variableNames.length - 3) + ' more variables';
-        }
-
-        preview.collections[collectionName] = {
-          name: collection.name,
-          modes: collection.modes,
-          variableCount: variableNames.length,
-          variables: previewVariables
-        };
-      }
-
-      return preview;
-    }
-
-    // Convert JSON data to CSS custom properties
-    function convertToCSS(data) {
-      let css = '/* Design Tokens exported from Figma */\n';
-      css += '/* Exported at: ' + data.metadata.exportedAt + ' */\n';
-      css += '/* File: ' + (data.metadata.figmaFileKey || 'Unknown') + ' */\n';
-      css += '/* Collections: ' + Object.keys(data.collections).join(', ') + ' */\n\n';
-
-      css += '/* Semantic Usage Examples:\n';
-      css += ' * .button-primary { background: var(--colors-primary); }\n';
-      css += ' * .button-secondary { background: var(--colors-secondary); }\n';
-      css += ' * .text-error { color: var(--colors-error); }\n';
-      css += ' * .text-success { color: var(--colors-success); }\n';
-      css += ' * .heading-large { font-size: var(--typography-heading-large); }\n';
-      css += ' * .component { gap: var(--spacing-component-gap); }\n';
-      css += ' *\n';
-      css += ' * Semantic Token Naming Best Practices:\n';
-      css += ' * Colors: primary, secondary, error, warning, success, info\n';
-      css += ' * Typography: heading-xl, heading-lg, body-lg, body-sm, caption\n';
-      css += ' * Spacing: xs, sm, md, lg, xl, component-gap, section-gap\n';
-      css += ' * Shadows: elevation-low, elevation-mid, elevation-high\n';
-      css += ' */\n\n';
-
-      // Add semantic naming guidance in the CSS output
-      if (Object.keys(data.collections).length > 0) {
-        css += '  /* ================================== */\n';
-        css += '  /* SEMANTIC DESIGN TOKENS            */\n';
-        css += '  /* Generated from Figma Variables    */\n';
-        css += '  /* ================================== */\n\n';
-      }
-
-      css += ':root {\n';
-
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-
-        for (const varName in collection.variables) {
-          const variable = collection.variables[varName];
-
-          // Use first available value
-          for (const modeName in variable.values) {
-            const value = variable.values[modeName];
-            const cssVarName = '--' + collectionName.toLowerCase() + '-' + varName.toLowerCase();
-            const cleanName = cssVarName.replace(/[^a-z0-9-]/g, '-');
-            const comment = variable.description ? ' /* ' + variable.description + ' */' : '';
-
-            css += '  ' + cleanName + ': ' + value + ';' + comment + '\n';
-            break; // Use first mode only for simplicity
-          }
-        }
-      }
-
-      css += '}\n';
-
-      return css;
-    }
-
-    // Convert JSON data to iOS Swift UIColor extensions
-    function convertToiOS(data) {
-      let swift = '// Design Tokens exported from Figma\n';
-      swift += '// Exported at: ' + data.metadata.exportedAt + '\n';
-      swift += '// File: ' + (data.metadata.figmaFileKey || 'Unknown') + '\n';
-      swift += '// Collections: ' + Object.keys(data.collections).join(', ') + '\n\n';
-
-      swift += 'import UIKit\n\n';
-      swift += '// MARK: - Design Tokens\n';
-      swift += 'extension UIColor {\n\n';
-
-      // Add usage examples
-      swift += '    /* Usage Examples:\n';
-      swift += '     * myView.backgroundColor = .primaryColor\n';
-      swift += '     * myLabel.textColor = .secondaryColor\n';
-      swift += '     * myButton.tintColor = .accentColor\n';
-      swift += '     */\n\n';
-
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-
-        swift += '    // MARK: - ' + collection.name + '\n';
-
-        for (const varName in collection.variables) {
-          const variable = collection.variables[varName];
-
-          // Only process color tokens for iOS
-          if (variable.type === 'COLOR') {
-            for (const modeName in variable.values) {
-              const value = variable.values[modeName];
-              const swiftVarName = toCamelCase(collectionName + '-' + varName);
-              const comment = variable.description ? ' // ' + variable.description : '';
-
-              // Convert hex to UIColor
-              if (value.startsWith('#')) {
-                const hex = value.replace('#', '');
-                const r = parseInt(hex.substr(0, 2), 16) / 255.0;
-                const g = parseInt(hex.substr(2, 2), 16) / 255.0;
-                const b = parseInt(hex.substr(4, 2), 16) / 255.0;
-                const alpha = hex.length === 8 ? parseInt(hex.substr(6, 2), 16) / 255.0 : 1.0;
-
-                swift += '    static let ' + swiftVarName + ' = UIColor(red: ' + r.toFixed(3) + ', green: ' + g.toFixed(3) + ', blue: ' + b.toFixed(3) + ', alpha: ' + alpha.toFixed(3) + ')' + comment + '\n';
-              } else if (value.startsWith('rgb')) {
-                // Handle rgb() values
-                const rgbMatch = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-                if (rgbMatch) {
-                  const r = parseInt(rgbMatch[1]) / 255.0;
-                  const g = parseInt(rgbMatch[2]) / 255.0;
-                  const b = parseInt(rgbMatch[3]) / 255.0;
-                  swift += '    static let ' + swiftVarName + ' = UIColor(red: ' + r.toFixed(3) + ', green: ' + g.toFixed(3) + ', blue: ' + b.toFixed(3) + ', alpha: 1.0)' + comment + '\n';
-                }
-              }
-              break; // Use first mode only
-            }
-          }
-        }
-        swift += '\n';
-      }
-
-      swift += '}\n';
-
-      return swift;
-    }
-
-    // Convert JSON data to Android XML colors
-    function convertToAndroid(data) {
-      let xml = '<?xml version="1.0" encoding="utf-8"?>\n';
-      xml += '<!-- Design Tokens exported from Figma -->\n';
-      xml += '<!-- Exported at: ' + data.metadata.exportedAt + ' -->\n';
-      xml += '<!-- File: ' + (data.metadata.figmaFileKey || 'Unknown') + ' -->\n';
-      xml += '<!-- Collections: ' + Object.keys(data.collections).join(', ') + ' -->\n\n';
-
-      xml += '<resources>\n\n';
-
-      // Add usage examples
-      xml += '    <!-- Usage Examples:\n';
-      xml += '         android:background="@color/primary_color"\n';
-      xml += '         android:textColor="@color/secondary_color"\n';
-      xml += '         app:tint="@color/accent_color" -->\n\n';
-
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-
-        xml += '    <!-- ' + collection.name + ' -->\n';
-
-        for (const varName in collection.variables) {
-          const variable = collection.variables[varName];
-
-          // Only process color tokens for Android
-          if (variable.type === 'COLOR') {
-            for (const modeName in variable.values) {
-              const value = variable.values[modeName];
-              const androidVarName = toSnakeCase(collectionName + '_' + varName);
-              const comment = variable.description ? ' <!-- ' + variable.description + ' -->' : '';
-
-              // Convert to Android color format
-              let androidColor = value;
-              if (value.startsWith('rgb')) {
-                // Convert rgb to hex
-                const rgbMatch = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-                if (rgbMatch) {
-                  const r = parseInt(rgbMatch[1]).toString(16).padStart(2, '0');
-                  const g = parseInt(rgbMatch[2]).toString(16).padStart(2, '0');
-                  const b = parseInt(rgbMatch[3]).toString(16).padStart(2, '0');
-                  androidColor = '#' + r + g + b;
-                }
-              }
-
-              xml += '    <color name="' + androidVarName + '">' + androidColor.toUpperCase() + '</color>' + comment + '\n';
-              break; // Use first mode only
-            }
-          }
-        }
-        xml += '\n';
-      }
-
-      xml += '</resources>\n';
-
-      return xml;
-    }
-
-    // Helper function to convert to camelCase
-    function toCamelCase(str) {
-      return str.replace(/[-_\s]+(.)?/g, function (match, char) {
-        return char ? char.toUpperCase() : '';
-      }).replace(/^./, function (char) {
-        return char.toLowerCase();
-      });
-    }
-
-    // Helper function to convert to snake_case
-    function toSnakeCase(str) {
-      return str.replace(/[-\s]+/g, '_').replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
-    }
-
-    // Convert JSON data to SCSS/Sass variables and mixins
-    function convertToSCSS(data) {
-      let scss = '// Design Tokens exported from Figma\n';
-      scss += '// Exported at: ' + data.metadata.exportedAt + '\n';
-      scss += '// File: ' + (data.metadata.figmaFileKey || 'Unknown') + '\n';
-      scss += '// Collections: ' + Object.keys(data.collections).join(', ') + '\n\n';
-
-      scss += '// ============================================\n';
-      scss += '// DESIGN TOKENS - SCSS Variables & Mixins\n';
-      scss += '// ============================================\n\n';
-
-      // Define variables
-      scss += '// Variables\n';
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-
-        scss += '// ' + collection.name + '\n';
-
-        for (const varName in collection.variables) {
-          const variable = collection.variables[varName];
-
-          for (const modeName in variable.values) {
-            const value = variable.values[modeName];
-            const scssVarName = '$' + collectionName.toLowerCase() + '-' + varName.toLowerCase();
-            const cleanName = scssVarName.replace(/[^a-z0-9-$]/g, '-');
-            const comment = variable.description ? ' // ' + variable.description : '';
-
-            scss += cleanName + ': ' + value + ';' + comment + '\n';
-            break; // Use first mode only
-          }
-        }
-        scss += '\n';
-      }
-
-      // Add helpful mixins
-      scss += '// ============================================\n';
-      scss += '// UTILITY MIXINS\n';
-      scss += '// ============================================\n\n';
-
-      // Color mixins
-      scss += '// Color Utility Mixins\n';
-      scss += '@mixin text-color($color) {\n';
-      scss += '  color: $color;\n';
-      scss += '}\n\n';
-
-      scss += '@mixin background-color($color) {\n';
-      scss += '  background-color: $color;\n';
-      scss += '}\n\n';
-
-      // Spacing mixins
-      scss += '// Spacing Utility Mixins\n';
-      scss += '@mixin margin($value) {\n';
-      scss += '  margin: $value;\n';
-      scss += '}\n\n';
-
-      scss += '@mixin padding($value) {\n';
-      scss += '  padding: $value;\n';
-      scss += '}\n\n';
-
-      // Usage examples
-      scss += '// ============================================\n';
-      scss += '// USAGE EXAMPLES\n';
-      scss += '// ============================================\n\n';
-      scss += '// .button-primary {\n';
-      scss += '//   @include background-color($colors-primary);\n';
-      scss += '//   @include text-color($colors-white);\n';
-      scss += '//   @include padding($spacing-medium);\n';
-      scss += '// }\n\n';
-      scss += '// .card {\n';
-      scss += '//   @include background-color($colors-surface);\n';
-      scss += '//   @include margin($spacing-large);\n';
-      scss += '// }\n';
-
-      return scss;
-    }
-
-    // Convert to W3C Design Tokens Community Group format
-    function convertToDeveloperFormat(data) {
-      const result = {};
-
-      // Process each collection
-      Object.entries(data.collections).forEach(([collectionName, collection]) => {
-        // Determine category based on collection name
-        const category = categorizeCollection(collectionName);
-
-        // Initialize category if it doesn't exist
-        if (!result[category]) {
-          result[category] = {};
-        }
-
-        // Process each variable in the collection
-        Object.entries(collection.variables).forEach(([varName, variable]) => {
-          // Get the primary value (prefer Default mode, or first available mode)
-          const primaryMode = collection.modes.find(m => m.name === 'Default' || m.name === 'Light') || collection.modes[0];
-
-          if (!primaryMode) return; // Skip if no modes available
-
-          const primaryModeName = primaryMode.name;
-
-          let value = variable.values[primaryModeName];
-
-          // If no direct value, check for alias
-          if (value === undefined && variable.aliases[primaryModeName]) {
-            value = '{' + variable.aliases[primaryModeName].name + '}';
-          }
-
-          // Skip if still no value
-          if (value === undefined) return;
-
-          // Create the token object
-          const token = {
-            $type: mapFigmaTypeToW3C(variable.type),
-            $value: value
-          };
-
-          // Add description if available
-          if (variable.description) {
-            token.$description = variable.description;
-          }
-
-          // Parse variable name to create nested structure
-          const tokenPath = parseTokenName(varName);
-          setNestedValue(result[category], tokenPath, token);
-        });
-      });
-
-      return result;
-    }
-
-    // Categorize a collection into a standard category
-    function categorizeCollection(collectionName) {
-      const name = collectionName.toLowerCase();
-
-      // Map common collection names to standard categories
-      if (name.includes('color') || name.includes('colour')) return 'colors';
-      if (name.includes('spacing') || name.includes('space')) return 'spacing';
-      if (name.includes('typography') || name.includes('font') || name.includes('text')) return 'typography';
-      if (name.includes('radius') || name.includes('border')) return 'borderRadius';
-      if (name.includes('shadow')) return 'shadows';
-      if (name.includes('size') || name.includes('sizing')) return 'sizing';
-      if (name.includes('opacity') || name.includes('alpha')) return 'opacity';
-      if (name.includes('duration') || name.includes('timing')) return 'animation';
-
-      // Default: use the collection name as-is (lowercase, no spaces)
-      return collectionName.toLowerCase().replace(/\s+/g, '-');
-    }
-
-    // Map Figma variable types to W3C Design Token types
-    function mapFigmaTypeToW3C(figmaType) {
-      switch (figmaType) {
-        case 'COLOR':
-          return 'color';
-        case 'FLOAT':
-          return 'number';
-        case 'STRING':
-          return 'string';
-        case 'BOOLEAN':
-          return 'boolean';
-        default:
-          return figmaType.toLowerCase();
-      }
-    }
-
-    // Parse a token name into a path array
-    function parseTokenName(name) {
-      let parts = [];
-
-      // First, split by / (most explicit separator)
-      if (name.includes('/')) {
-        parts = name.split('/');
-      } else if (name.includes('-')) {
-        // Split by dash
-        parts = name.split('-');
-      } else if (name.includes('_')) {
-        // Split by underscore
-        parts = name.split('_');
-      } else {
-        // Try to split camelCase
-        parts = name.split(/(?=[A-Z])/).map(p => p.toLowerCase());
-
-        // If no camelCase detected, use the whole name
-        if (parts.length === 1) {
-          parts = [name];
-        }
-      }
-
-      // Clean up parts
-      return parts
-        .map(p => p.trim().toLowerCase())
-        .filter(p => p.length > 0);
-    }
-
-    // Set a value in a nested object using a path array
-    function setNestedValue(obj, path, value) {
-      if (path.length === 0) return;
-
-      const key = path[0];
-      if (!key) return; // Type guard for undefined
-
-      if (path.length === 1) {
-        obj[key] = value;
-        return;
-      }
-
-      const first = path[0];
-      const rest = path.slice(1);
-      if (!first) return; // Type guard for undefined
-
-      if (!obj[first]) {
-        obj[first] = {};
-      }
-
-      setNestedValue(obj[first], rest, value);
-    }
-
-    // Convert JSON data to Tailwind CSS config
-    function convertToTailwind(data) {
-      let config = '// Design Tokens exported from Figma\n';
-      config += '// Exported at: ' + data.metadata.exportedAt + '\n';
-      config += '// File: ' + (data.metadata.figmaFileKey || 'Unknown') + '\n';
-      config += '// Collections: ' + Object.keys(data.collections).join(', ') + '\n\n';
-
-      config += 'module.exports = {\n';
-      config += '  theme: {\n';
-      config += '    extend: {\n';
-
-      // Organize tokens by type
-      const colorTokens = {};
-      const spacingTokens = {};
-      const fontSizeTokens = {};
-      const otherTokens = {};
-
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-
-        for (const varName in collection.variables) {
-          const variable = collection.variables[varName];
-
-          for (const modeName in variable.values) {
-            const value = variable.values[modeName];
-            const tokenName = collectionName.toLowerCase() + '-' + varName.toLowerCase();
-            const cleanName = tokenName.replace(/[^a-z0-9-]/g, '-');
-
-            if (variable.type === 'COLOR') {
-              colorTokens[cleanName] = value;
-            } else if (variable.type === 'FLOAT') {
-              if (varName.toLowerCase().includes('spacing') || varName.toLowerCase().includes('gap') || varName.toLowerCase().includes('margin') || varName.toLowerCase().includes('padding')) {
-                spacingTokens[cleanName] = value + 'px';
-              } else if (varName.toLowerCase().includes('font') || varName.toLowerCase().includes('text') || varName.toLowerCase().includes('size')) {
-                fontSizeTokens[cleanName] = value + 'px';
-              } else {
-                spacingTokens[cleanName] = value + 'px'; // Default to spacing
-              }
-            } else {
-              otherTokens[cleanName] = value;
-            }
-            break; // Use first mode only
-          }
-        }
-      }
-
-      // Add colors
-      if (Object.keys(colorTokens).length > 0) {
-        config += '      colors: {\n';
-        for (const name in colorTokens) {
-          config += '        \'' + name + '\': \'' + colorTokens[name] + '\',\n';
-        }
-        config += '      },\n';
-      }
-
-      // Add spacing
-      if (Object.keys(spacingTokens).length > 0) {
-        config += '      spacing: {\n';
-        for (const name in spacingTokens) {
-          config += '        \'' + name + '\': \'' + spacingTokens[name] + '\',\n';
-        }
-        config += '      },\n';
-      }
-
-      // Add font sizes
-      if (Object.keys(fontSizeTokens).length > 0) {
-        config += '      fontSize: {\n';
-        for (const name in fontSizeTokens) {
-          config += '        \'' + name + '\': \'' + fontSizeTokens[name] + '\',\n';
-        }
-        config += '      },\n';
-      }
-
-      config += '    },\n';
-      config += '  },\n';
-      config += '  plugins: [],\n';
-      config += '}\n\n';
-
-      // Add usage examples
-      config += '// Usage Examples:\n';
-      config += '// <div className="bg-colors-primary text-colors-white p-spacing-medium">\n';
-      config += '//   <h1 className="text-typography-heading-large">Hello World</h1>\n';
-      config += '// </div>\n';
-
-      return config;
-    }
-
-    // Convert JSON data to React Native StyleSheet
-    function convertToReactNative(data) {
-      let rn = '// Design Tokens exported from Figma\n';
-      rn += '// Exported at: ' + data.metadata.exportedAt + '\n';
-      rn += '// File: ' + (data.metadata.figmaFileKey || 'Unknown') + '\n';
-      rn += '// Collections: ' + Object.keys(data.collections).join(', ') + '\n\n';
-
-      rn += 'import { StyleSheet } from \'react-native\';\n\n';
-
-      rn += '// Design Tokens\n';
-      rn += 'export const tokens = {\n';
-
-      // Organize by collection
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-
-        rn += '  // ' + collection.name + '\n';
-        rn += '  ' + toCamelCase(collectionName) + ': {\n';
-
-        for (const varName in collection.variables) {
-          const variable = collection.variables[varName];
-
-          for (const modeName in variable.values) {
-            const value = variable.values[modeName];
-            const tokenName = toCamelCase(varName);
-            const comment = variable.description ? ' // ' + variable.description : '';
-
-            // Format value for React Native
-            let rnValue = value;
-            if (variable.type === 'FLOAT') {
-              rnValue = parseFloat(value);
-            } else if (typeof value === 'string') {
-              rnValue = '\'' + value + '\'';
-            }
-
-            rn += '    ' + tokenName + ': ' + rnValue + ',' + comment + '\n';
-            break; // Use first mode only
-          }
-        }
-
-        rn += '  },\n\n';
-      }
-
-      rn += '};\n\n';
-
-      // Create StyleSheet styles
-      rn += '// Utility Styles\n';
-      rn += 'export const styles = StyleSheet.create({\n';
-
-      // Add some common utility styles
-      rn += '  // Typography Styles\n';
-      rn += '  text: {\n';
-      rn += '    fontFamily: \'System\',\n';
-      rn += '  },\n\n';
-
-      rn += '  // Layout Styles\n';
-      rn += '  container: {\n';
-      rn += '    flex: 1,\n';
-      rn += '  },\n\n';
-
-      rn += '  // Add your custom styles here using tokens\n';
-      rn += '  // Example:\n';
-      rn += '  // primaryButton: {\n';
-      rn += '  //   backgroundColor: tokens.colors.primary,\n';
-      rn += '  //   paddingHorizontal: tokens.spacing.medium,\n';
-      rn += '  //   paddingVertical: tokens.spacing.small,\n';
-      rn += '  // },\n';
-
-      rn += '});\n\n';
-
-      // Usage examples
-      rn += '// Usage Examples:\n';
-      rn += '// import { tokens, styles } from \'./tokens\';\n\n';
-      rn += '// <View style={[styles.container, { backgroundColor: tokens.colors.background }]}>\n';
-      rn += '//   <Text style={[styles.text, { color: tokens.colors.primary }]}>Hello World</Text>\n';
-      rn += '// </View>\n';
-
-      return rn;
-    }
-
-    // Convert JSON data to Flutter/Dart Color classes
-    function convertToFlutter(data) {
-      let dart = '// Design Tokens exported from Figma\n';
-      dart += '// Exported at: ' + data.metadata.exportedAt + '\n';
-      dart += '// File: ' + (data.metadata.figmaFileKey || 'Unknown') + '\n';
-      dart += '// Collections: ' + Object.keys(data.collections).join(', ') + '\n\n';
-
-      dart += 'import \'package:flutter/material.dart\';\n\n';
-
-      dart += '/// Design Tokens generated from Figma\n';
-      dart += 'class DesignTokens {\n';
-
-      // Generate color constants
-      dart += '  // Colors\n';
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-
-        for (const varName in collection.variables) {
-          const variable = collection.variables[varName];
-
-          if (variable.type === 'COLOR') {
-            for (const modeName in variable.values) {
-              const value = variable.values[modeName];
-              const dartVarName = toCamelCase(collectionName + '-' + varName);
-              const comment = variable.description ? ' // ' + variable.description : '';
-
-              // Convert to Flutter Color
-              let flutterColor = 'Color(0xFF000000)'; // Default black
-              if (value.startsWith('#')) {
-                const hex = value.replace('#', '');
-                if (hex.length === 6) {
-                  flutterColor = 'Color(0xFF' + hex.toUpperCase() + ')';
-                } else if (hex.length === 8) {
-                  flutterColor = 'Color(0x' + hex.toUpperCase() + ')';
-                }
-              } else if (value.startsWith('rgb')) {
-                const rgbMatch = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-                if (rgbMatch) {
-                  const r = parseInt(rgbMatch[1]).toString(16).padStart(2, '0');
-                  const g = parseInt(rgbMatch[2]).toString(16).padStart(2, '0');
-                  const b = parseInt(rgbMatch[3]).toString(16).padStart(2, '0');
-                  flutterColor = 'Color(0xFF' + r.toUpperCase() + g.toUpperCase() + b.toUpperCase() + ')';
-                }
-              }
-
-              dart += '  static const Color ' + dartVarName + ' = ' + flutterColor + ';' + comment + '\n';
-              break; // Use first mode only
-            }
-          }
-        }
-      }
-
-      dart += '\n';
-
-      // Generate spacing constants
-      dart += '  // Spacing\n';
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-
-        for (const varName in collection.variables) {
-          const variable = collection.variables[varName];
-
-          if (variable.type === 'FLOAT') {
-            for (const modeName in variable.values) {
-              const value = variable.values[modeName];
-              const dartVarName = toCamelCase(collectionName + '-' + varName);
-              const comment = variable.description ? ' // ' + variable.description : '';
-
-              dart += '  static const double ' + dartVarName + ' = ' + value + ';' + comment + '\n';
-              break; // Use first mode only
-            }
-          }
-        }
-      }
-
-      dart += '\n';
-
-      // Add utility methods
-      dart += '  // Utility Methods\n';
-      dart += '  static TextStyle textStyle({\n';
-      dart += '    Color? color,\n';
-      dart += '    double? fontSize,\n';
-      dart += '    FontWeight? fontWeight,\n';
-      dart += '  }) {\n';
-      dart += '    return TextStyle(\n';
-      dart += '      color: color,\n';
-      dart += '      fontSize: fontSize,\n';
-      dart += '      fontWeight: fontWeight,\n';
-      dart += '    );\n';
-      dart += '  }\n\n';
-
-      dart += '  static EdgeInsets padding(double value) {\n';
-      dart += '    return EdgeInsets.all(value);\n';
-      dart += '  }\n\n';
-
-      dart += '  static EdgeInsets margin(double value) {\n';
-      dart += '    return EdgeInsets.all(value);\n';
-      dart += '  }\n';
-
-      dart += '}\n\n';
-
-      // Usage examples
-      dart += '// Usage Examples:\n';
-      dart += '// Container(\n';
-      dart += '//   color: DesignTokens.primaryColor,\n';
-      dart += '//   padding: DesignTokens.padding(DesignTokens.spacingMedium),\n';
-      dart += '//   child: Text(\n';
-      dart += '//     "Hello World",\n';
-      dart += '//     style: DesignTokens.textStyle(\n';
-      dart += '//       color: DesignTokens.textPrimary,\n';
-      dart += '//       fontSize: DesignTokens.fontSizeLarge,\n';
-      dart += '//     ),\n';
-      dart += '//   ),\n';
-      dart += '// )\n';
-
-      return dart;
-    }
-
-    // ============================================
-    // ACCESSIBILITY ANALYSIS FUNCTIONS
-    // ============================================
-
-    // Main accessibility analysis function
-    function analyzeAccessibility(data) {
-      const analysis = {
-        overallScore: 0,
-        colorContrast: [],
-        typography: [],
-        spacing: [],
-        summary: {
-          totalIssues: 0,
-          criticalIssues: 0,
-          warnings: 0,
-          recommendations: []
-        }
-      };
-
-      // Analyze color accessibility
-      const colorAnalysis = analyzeColorContrast(data);
-      analysis.colorContrast = colorAnalysis.issues;
-      analysis.summary.totalIssues += colorAnalysis.issueCount;
-      analysis.summary.criticalIssues += colorAnalysis.criticalCount;
-
-      // Analyze typography accessibility
-      const typographyAnalysis = analyzeTypographyAccessibility(data);
-      analysis.typography = typographyAnalysis.issues;
-      analysis.summary.totalIssues += typographyAnalysis.issueCount;
-      analysis.summary.warnings += typographyAnalysis.warningCount;
-
-      // Analyze spacing accessibility
-      const spacingAnalysis = analyzeSpacingAccessibility(data);
-      analysis.spacing = spacingAnalysis.issues;
-      analysis.summary.totalIssues += spacingAnalysis.issueCount;
-      analysis.summary.warnings += spacingAnalysis.warningCount;
-
-      // Calculate overall accessibility score (0-100)
-      const totalTokens = getTotalTokenCount(data);
-      const maxPossibleIssues = totalTokens * 2; // Rough estimate
-      const scoreReduction = Math.min(analysis.summary.totalIssues * 10, 80);
-      analysis.overallScore = Math.max(100 - scoreReduction, 0);
-
-      // Generate recommendations
-      analysis.summary.recommendations = generateAccessibilityRecommendations(analysis);
-
-      return analysis;
-    }
-
-    // Analyze color contrast accessibility
-    function analyzeColorContrast(data) {
-      const issues = [];
-      let issueCount = 0;
-      let criticalCount = 0;
-      const colorTokens = [];
-
-      // Collect all color tokens
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-        for (const varName in collection.variables) {
-          const variable = collection.variables[varName];
-          if (variable.type === 'COLOR') {
-            for (const modeName in variable.values) {
-              colorTokens.push({
-                name: varName,
-                collection: collectionName,
-                value: variable.values[modeName],
-                description: variable.description || ''
-              });
-              break; // Use first mode only
-            }
-          }
-        }
-      }
-
-      // Analyze contrast between common color pairs
-      for (let i = 0; i < colorTokens.length; i++) {
-        for (let j = i + 1; j < colorTokens.length; j++) {
-          const color1 = colorTokens[i];
-          const color2 = colorTokens[j];
-
-          // Skip if same color
-          if (color1.value === color2.value) continue;
-
-          // Calculate contrast ratio
-          const contrastRatio = calculateContrastRatio(color1.value, color2.value);
-
-          // Check if this looks like a text/background combination
-          if (isLikelyTextBackgroundPair(color1.name, color2.name) ||
-            isLikelyTextBackgroundPair(color2.name, color1.name)) {
-
-            const wcagAA = contrastRatio >= 4.5;
-            const wcagAAA = contrastRatio >= 7.0;
-            const wcagAALarge = contrastRatio >= 3.0;
-
-            if (!wcagAA) {
-              const severity = contrastRatio < 3.0 ? 'critical' : 'warning';
-              issues.push({
-                type: 'contrast',
-                severity: severity,
-                message: `Low contrast between ${color1.name} and ${color2.name}`,
-                details: `Contrast ratio: ${contrastRatio.toFixed(2)}:1`,
-                colors: [color1, color2],
-                contrastRatio: contrastRatio,
-                wcagAA: wcagAA,
-                wcagAAA: wcagAAA,
-                wcagAALarge: wcagAALarge,
-                suggestion: contrastRatio < 3.0 ?
-                  'Critical: This combination fails all WCAG standards. Consider using high contrast alternatives.' :
-                  'Warning: This combination fails WCAG AA. Consider adjusting colors for better accessibility.'
-              });
-
-              issueCount++;
-              if (severity === 'critical') criticalCount++;
-            }
-          }
-        }
-      }
-
-      return { issues, issueCount, criticalCount };
-    }
-
-    // Analyze typography accessibility
-    function analyzeTypographyAccessibility(data) {
-      const issues = [];
-      let issueCount = 0;
-      let warningCount = 0;
-
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-        for (const varName in collection.variables) {
-          const variable = collection.variables[varName];
-
-          if (variable.type === 'FLOAT' && isTypographyToken(varName)) {
-            for (const modeName in variable.values) {
-              const value = parseFloat(variable.values[modeName]);
-
-              // Check minimum font sizes
-              if (varName.toLowerCase().includes('font') || varName.toLowerCase().includes('text')) {
-                if (value < 12) {
-                  issues.push({
-                    type: 'typography',
-                    severity: 'warning',
-                    message: `Font size "${varName}" may be too small`,
-                    details: `${value}px is below the recommended minimum of 12px`,
-                    token: varName,
-                    value: value,
-                    suggestion: 'Consider increasing font size to at least 12px for better readability.'
-                  });
-                  issueCount++;
-                  warningCount++;
-                } else if (value < 16 && (varName.toLowerCase().includes('body') || varName.toLowerCase().includes('paragraph'))) {
-                  issues.push({
-                    type: 'typography',
-                    severity: 'info',
-                    message: `Body text "${varName}" could be larger`,
-                    details: `${value}px is below the recommended 16px for body text`,
-                    token: varName,
-                    value: value,
-                    suggestion: 'Consider using 16px or larger for body text to improve readability.'
-                  });
-                  issueCount++;
-                }
-              }
-              break; // Use first mode only
-            }
-          }
-        }
-      }
-
-      return { issues, issueCount, warningCount };
-    }
-
-    // Analyze spacing accessibility
-    function analyzeSpacingAccessibility(data) {
-      const issues = [];
-      let issueCount = 0;
-      let warningCount = 0;
-
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-        for (const varName in collection.variables) {
-          const variable = collection.variables[varName];
-
-          if (variable.type === 'FLOAT' && isSpacingToken(varName)) {
-            for (const modeName in variable.values) {
-              const value = parseFloat(variable.values[modeName]);
-
-              // Check touch target sizes
-              if (varName.toLowerCase().includes('button') ||
-                varName.toLowerCase().includes('touch') ||
-                varName.toLowerCase().includes('tap')) {
-                if (value < 44) {
-                  issues.push({
-                    type: 'spacing',
-                    severity: 'warning',
-                    message: `Touch target "${varName}" may be too small`,
-                    details: `${value}px is below the recommended minimum of 44px`,
-                    token: varName,
-                    value: value,
-                    suggestion: 'Touch targets should be at least 44x44px for accessibility (iOS) or 48x48px (Material Design).'
-                  });
-                  issueCount++;
-                  warningCount++;
-                }
-              }
-
-              // Check minimum spacing for readability
-              if (varName.toLowerCase().includes('line') && varName.toLowerCase().includes('height')) {
-                if (value < 1.2) {
-                  issues.push({
-                    type: 'spacing',
-                    severity: 'info',
-                    message: `Line height "${varName}" may be too tight`,
-                    details: `${value} is below the recommended minimum of 1.2`,
-                    token: varName,
-                    value: value,
-                    suggestion: 'Line height should be at least 1.2 times the font size for good readability.'
-                  });
-                  issueCount++;
-                }
-              }
-              break; // Use first mode only
-            }
-          }
-        }
-      }
-
-      return { issues, issueCount, warningCount };
-    }
-
-    // Helper function to calculate contrast ratio between two colors
-    function calculateContrastRatio(color1, color2) {
-      const lum1 = getRelativeLuminance(color1);
-      const lum2 = getRelativeLuminance(color2);
-
-      const brightest = Math.max(lum1, lum2);
-      const darkest = Math.min(lum1, lum2);
-
-      return (brightest + 0.05) / (darkest + 0.05);
-    }
-
-    // Get relative luminance of a color (for contrast calculation)
-    function getRelativeLuminance(color) {
-      const rgb = hexToRgb(color);
-      if (!rgb) return 0;
-
-      const sRGB = [rgb.r, rgb.g, rgb.b].map(c => {
-        c = c / 255;
-        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-      });
-
-      return 0.2126 * sRGB[0] + 0.7152 * sRGB[1] + 0.0722 * sRGB[2];
-    }
-
-    // Convert hex color to RGB
-    function hexToRgb(color) {
-      if (color.startsWith('rgb')) {
-        const match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-        if (match) {
-          return {
-            r: parseInt(match[1]),
-            g: parseInt(match[2]),
-            b: parseInt(match[3])
-          };
-        }
-      }
-
-      if (color.startsWith('#')) {
-        const hex = color.replace('#', '');
-        if (hex.length === 6) {
-          return {
-            r: parseInt(hex.substr(0, 2), 16),
-            g: parseInt(hex.substr(2, 2), 16),
-            b: parseInt(hex.substr(4, 2), 16)
-          };
-        }
-      }
-
+      const data = await response.json();
+      return data.sha;
+    } catch (error) {
+      console.log("File does not exist yet, will create new file");
       return null;
     }
-
-    // Check if token names suggest a text/background relationship
-    function isLikelyTextBackgroundPair(name1, name2) {
-      const textKeywords = ['text', 'font', 'foreground', 'content'];
-      const backgroundKeywords = ['background', 'bg', 'surface', 'base'];
-
-      const name1Lower = name1.toLowerCase();
-      const name2Lower = name2.toLowerCase();
-
-      const isText1 = textKeywords.some(keyword => name1Lower.includes(keyword));
-      const isBg2 = backgroundKeywords.some(keyword => name2Lower.includes(keyword));
-
-      return isText1 && isBg2;
+  }
+  function parseRepoUrl(url) {
+    const cleaned = url.trim().replace(/\/$/, "").replace(/\.git$/, "");
+    const httpsMatch = cleaned.match(/github\.com\/([^/]+)\/([^/]+)/);
+    if (httpsMatch && httpsMatch[1] && httpsMatch[2]) {
+      return { owner: httpsMatch[1], repo: httpsMatch[2] };
     }
-
-    // Check if a token is related to typography
-    function isTypographyToken(name) {
-      const keywords = ['font', 'text', 'heading', 'title', 'body', 'caption', 'size'];
-      return keywords.some(keyword => name.toLowerCase().includes(keyword));
+    const sshMatch = cleaned.match(/git@github\.com:([^/]+)\/(.+)/);
+    if (sshMatch && sshMatch[1] && sshMatch[2]) {
+      return { owner: sshMatch[1], repo: sshMatch[2] };
     }
-
-    // Check if a token is related to spacing
-    function isSpacingToken(name) {
-      const keywords = ['spacing', 'margin', 'padding', 'gap', 'height', 'width', 'button', 'touch'];
-      return keywords.some(keyword => name.toLowerCase().includes(keyword));
+    const shortMatch = cleaned.match(/^([^/]+)\/([^/]+)$/);
+    if (shortMatch && shortMatch[1] && shortMatch[2]) {
+      return { owner: shortMatch[1], repo: shortMatch[2] };
     }
+    return null;
+  }
 
-    // Get total token count
-    function getTotalTokenCount(data) {
-      let total = 0;
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-        total += Object.keys(collection.variables).length;
+  // src/ui.ts
+  console.log("UI script starting to execute...");
+  var exportedData = null;
+  var exportBtn;
+  var downloadBtn;
+  var copyBtn;
+  var closeBtn;
+  var status;
+  var previewSection;
+  var previewContent;
+  var previewTitle;
+  var githubSection;
+  var githubToggle;
+  var githubSettings;
+  var githubToggleIcon;
+  var githubRepoInput;
+  var githubBranchInput;
+  var githubFilePathInput;
+  var githubTokenInput;
+  var githubCommitMessageInput;
+  var saveGithubSettingsBtn;
+  var pushToGithubBtn;
+  var githubStatus;
+  var githubSettingsCollapsed = false;
+  function initializePlugin() {
+    console.log("initializePlugin called");
+    exportBtn = getElementById("exportBtn");
+    downloadBtn = getElementById("downloadBtn");
+    copyBtn = getElementById("copyBtn");
+    closeBtn = getElementById("closeBtn");
+    status = getElementById("status");
+    previewSection = getElementById("previewSection");
+    previewContent = getElementById("previewContent");
+    previewTitle = getElementById("previewTitle");
+    githubSection = getElementById("githubSection");
+    githubToggle = getElementById("githubToggle");
+    githubSettings = getElementById("githubSettings");
+    githubToggleIcon = getElementById("githubToggleIcon");
+    githubRepoInput = getElementById("githubRepo");
+    githubBranchInput = getElementById("githubBranch");
+    githubFilePathInput = getElementById("githubFilePath");
+    githubTokenInput = getElementById("githubToken");
+    githubCommitMessageInput = getElementById("githubCommitMessage");
+    saveGithubSettingsBtn = getElementById("saveGithubSettings");
+    pushToGithubBtn = getElementById("pushToGithub");
+    githubStatus = getElementById("githubStatus");
+    console.log("All DOM elements found, setting up event listeners...");
+    exportBtn.addEventListener("click", handleExport);
+    downloadBtn.addEventListener("click", handleDownload);
+    copyBtn.addEventListener("click", handleCopy);
+    closeBtn.addEventListener("click", handleClose);
+    githubToggle.addEventListener("click", toggleGithubSettings);
+    saveGithubSettingsBtn.addEventListener("click", saveGithubSettings);
+    pushToGithubBtn.addEventListener("click", handlePushToGithub);
+    loadGithubSettings();
+    updateDownloadButtonText();
+    const formatSelect = getElementById("exportFormat");
+    formatSelect.addEventListener("change", () => {
+      console.log("Export format changed to:", formatSelect.value);
+      updateDownloadButtonText();
+      if (exportedData) {
+        updatePreviewContent();
       }
-      return total;
-    }
-
-    // Generate accessibility recommendations
-    function generateAccessibilityRecommendations(analysis) {
-      const recommendations = [];
-
-      if (analysis.summary.criticalIssues > 0) {
-        recommendations.push('🚨 Critical: Fix color contrast issues that fail WCAG standards');
-      }
-
-      if (analysis.colorContrast.length > 0) {
-        recommendations.push('🎨 Review color combinations for better contrast ratios');
-      }
-
-      if (analysis.typography.length > 0) {
-        recommendations.push('📝 Consider larger font sizes for improved readability');
-      }
-
-      if (analysis.spacing.length > 0) {
-        recommendations.push('📏 Ensure touch targets meet minimum size requirements');
-      }
-
-      if (analysis.summary.totalIssues === 0) {
-        recommendations.push('✅ Great! No accessibility issues detected');
-      }
-
-      return recommendations;
-    }
-
-    // Create accessibility analysis HTML
-    function createAccessibilityAnalysisHTML(analysis) {
-      let html = '';
-
-      // Overall score
-      const scoreClass = getAccessibilityScoreClass(analysis.overallScore);
-      html += '<div class="accessibility-score ' + scoreClass + '">';
-      html += '<div>';
-      html += '<div class="accessibility-score-large">' + Math.round(analysis.overallScore) + '%</div>';
-      html += '<div class="text-sm font-medium">Accessibility Score</div>';
-      html += '</div>';
-      html += '<div class="flex-1">';
-      html += '<div class="accessibility-progress-bar">';
-      html += '<div class="accessibility-progress-fill" style="width: ' + analysis.overallScore + '%; background-color: currentColor;"></div>';
-      html += '</div>';
-      html += '</div>';
-      html += '</div>';
-
-      // Summary
-      html += '<div class="accessibility-section">';
-      html += '<h4 class="text-sm font-bold mb-2">Summary</h4>';
-      html += '<div class="grid grid-cols-3-always grid-rows-1 gap-3 mb-3">';
-      html += '<div class="text-center p-2 card stat-card">';
-      html += '<div class="font-bold stat-value">' + analysis.summary.totalIssues + '</div>';
-      html += '<div class="text-sm font-bold mb-2 text-muted-foreground">Total Issues</div>';
-      html += '</div>';
-      html += '<div class="text-center p-2 card stat-card">';
-      html += '<div class="font-bold stat-value text-red-600">' + analysis.summary.criticalIssues + '</div>';
-      html += '<div class="text-sm font-bold mb-2 text-muted-foreground">Critical</div>';
-      html += '</div>';
-      html += '<div class="text-center p-2 card stat-card">';
-      html += '<div class="font-bold stat-value text-orange-600">' + analysis.summary.warnings + '</div>';
-      html += '<div class="text-sm font-bold mb-2 text-muted-foreground">Warnings</div>';
-      html += '</div>';
-      html += '</div>';
-
-      // Recommendations
-      if (analysis.summary.recommendations.length > 0) {
-        html += '<div class="mb-3">';
-        html += '<h5 class="text-sm font-bold mb-2 font-bold mb-2">Recommendations</h5>';
-        for (let i = 0; i < analysis.summary.recommendations.length; i++) {
-          html += '<div class="text-xs text-muted-foreground mb-1">' + analysis.summary.recommendations[i] + '</div>';
-        }
-        html += '</div>';
-      }
-      html += '</div>';
-
-      // Color contrast issues
-      if (analysis.colorContrast.length > 0) {
-        html += '<div class="accessibility-section">';
-        html += '<h4 class="text-sm font-bold mb-3">Color Contrast Issues</h4>';
-        for (let i = 0; i < Math.min(5, analysis.colorContrast.length); i++) {
-          const issue = analysis.colorContrast[i];
-          html += '<div class="accessibility-item">';
-          html += '<div class="accessibility-message">';
-          html += '<div class="font-medium">' + issue.message + '</div>';
-          html += '<div class="accessibility-suggestion">' + issue.suggestion + '</div>';
-
-          // Contrast demo
-          html += '<div class="contrast-demo" style="background-color: ' + issue.colors[1].value + '; color: ' + issue.colors[0].value + ';">';
-          html += '<span>Sample Text</span>';
-          html += '<span class="contrast-ratio">' + issue.contrastRatio.toFixed(2) + ':1</span>';
-          html += '<span class="wcag-badge ' + (issue.wcagAA ? 'wcag-pass' : 'wcag-fail') + '">WCAG AA</span>';
-          html += '</div>';
-          html += '</div>';
-          html += '</div>';
-        }
-        if (analysis.colorContrast.length > 5) {
-          html += '<div class="text-xs text-muted-foreground">+ ' + (analysis.colorContrast.length - 5) + ' more issues</div>';
-        }
-        html += '</div>';
-      }
-
-      // Typography issues
-      if (analysis.typography.length > 0) {
-        html += '<div class="accessibility-section">';
-        html += '<h4 class="text-sm font-bold mb-3">Typography Issues</h4>';
-        for (let i = 0; i < Math.min(3, analysis.typography.length); i++) {
-          const issue = analysis.typography[i];
-          html += '<div class="accessibility-item">';
-          html += '<div class="accessibility-message">';
-          html += '<div class="font-medium">' + issue.message + '</div>';
-          html += '<div class="accessibility-suggestion">' + issue.suggestion + '</div>';
-          html += '</div>';
-          html += '<div class="accessibility-token">' + issue.token + '</div>';
-          html += '</div>';
-        }
-        if (analysis.typography.length > 3) {
-          html += '<div class="text-xs text-muted-foreground">+ ' + (analysis.typography.length - 3) + ' more issues</div>';
-        }
-        html += '</div>';
-      }
-
-      // Spacing issues
-      if (analysis.spacing.length > 0) {
-        html += '<div class="accessibility-section">';
-        html += '<h4 class="text-sm font-bold mb-3">Spacing Issues</h4>';
-        for (let i = 0; i < Math.min(3, analysis.spacing.length); i++) {
-          const issue = analysis.spacing[i];
-          html += '<div class="accessibility-item">';
-          html += '<div class="accessibility-message">';
-          html += '<div class="font-medium">' + issue.message + '</div>';
-          html += '<div class="accessibility-suggestion">' + issue.suggestion + '</div>';
-          html += '</div>';
-          html += '<div class="accessibility-token">' + issue.token + '</div>';
-          html += '</div>';
-        }
-        if (analysis.spacing.length > 3) {
-          html += '<div class="text-xs text-muted-foreground">+ ' + (analysis.spacing.length - 3) + ' more issues</div>';
-        }
-        html += '</div>';
-      }
-
-      return html;
-    }
-
-    // Get CSS class for accessibility score
-    function getAccessibilityScoreClass(score) {
-      if (score >= 90) return 'accessibility-excellent';
-      if (score >= 75) return 'accessibility-good';
-      if (score >= 50) return 'accessibility-warning';
-      return 'accessibility-poor';
-    }
-
-    // Update analytics with exported data
-    function updateAnalytics(data) {
-      const analyticsContent = document.getElementById('analyticsContent');
-      if (!analyticsContent || !data) return;
-
-      console.log('Updating analytics with data:', data);
-
-      const stats = generateStatistics(data);
-      const analyticsHTML = createAnalyticsHTML(stats);
-      analyticsStats = stats;
-
-      // Show export button
-      const analyticsExport = document.getElementById('analyticsExport');
-      if (analyticsExport) {
-        analyticsExport.classList.remove('hidden');
-        analyticsExport.classList.add('fade-in');
-      }
-
-      analyticsContent.innerHTML = analyticsHTML;
-
-      // Add event listeners for toggle buttons and initialize tooltips after content is inserted
-      setTimeout(function () {
-        const toggleButtons = document.querySelectorAll('.toggle-btn[data-section]');
-        for (let i = 0; i < toggleButtons.length; i++) {
-          const button = toggleButtons[i];
-          button.addEventListener('click', function () {
-            const sectionId = button.getAttribute('data-section');
-            toggleSection(sectionId);
-          });
-        }
-
-        // Initialize tooltips for the default chart (styles)
-        initializeAreaChartTooltips('styles-area-chart');
-      }, 100);
-    }
-
-    // Update accessibility tab with exported data
-    function updateAccessibility(data) {
-      const accessibilityContent = document.getElementById('accessibilityContent');
-      if (!accessibilityContent || !data) return;
-
-      console.log('Updating accessibility with data:', data);
-
-      // Perform accessibility analysis
-      accessibilityAnalysis = analyzeAccessibility(data);
-
-      // Show export button
-      const accessibilityExport = document.getElementById('accessibilityExport');
-      if (accessibilityExport) {
-        accessibilityExport.classList.remove('hidden');
-        accessibilityExport.classList.add('fade-in');
-      }
-
-      // Create accessibility HTML content
-      const accessibilityHTML = createAccessibilityAnalysisHTML(accessibilityAnalysis);
-      accessibilityContent.innerHTML = accessibilityHTML;
-    }
-
-    // Generate statistics from exported data
-    function generateStatistics(data) {
-      let totalTokens = 0;
-      let totalCollections = 0;
-      let typeBreakdown = {};
-      let collectionBreakdown = {};
-      let colorSamples = [];
-      let numberSamples = [];
-
-      for (const collectionName in data.collections) {
-        const collection = data.collections[collectionName];
-        const variableCount = Object.keys(collection.variables).length;
-        totalTokens += variableCount;
-
-        // Only count collections that have variables
-        if (variableCount > 0) {
-          totalCollections++;
-        }
-
-        collectionBreakdown[collectionName] = {
-          name: collection.name,
-          count: variableCount,
-          modes: collection.modes
-        };
-
-        // Analyze token types and gather samples
-        for (const varName in collection.variables) {
-          const variable = collection.variables[varName];
-          const type = variable.type || 'UNKNOWN';
-
-          if (!typeBreakdown[type]) {
-            typeBreakdown[type] = 0;
+    });
+    window.onmessage = (event) => {
+      console.log("Received message:", event.data);
+      if (!event.data.pluginMessage) return;
+      const { type, data, message } = event.data.pluginMessage;
+      switch (type) {
+        case "tokens-extracted":
+          if (data) {
+            handleTokensExtractedWithGithub(data);
           }
-          typeBreakdown[type]++;
-
-          // Collect samples
-          if (type === 'COLOR' && colorSamples.length < 8) {
-            for (const modeName in variable.values) {
-              colorSamples.push({
-                name: varName,
-                value: variable.values[modeName]
-              });
-              break;
-            }
-          } else if (type === 'FLOAT' && numberSamples.length < 8) {
-            for (const modeName in variable.values) {
-              numberSamples.push({
-                name: varName,
-                value: variable.values[modeName]
-              });
-              break;
-            }
-          }
-        }
+          break;
+        case "error":
+          handleError(message || "Unknown error occurred");
+          break;
+        default:
+          console.warn("Unknown message type:", type);
       }
-
-      // Generate insertion analytics data for each time period
-      const insertionData = {
-        styles: generateInsertionData(currentTimePeriods.styles).styles,
-        components: generateInsertionData(currentTimePeriods.components).components,
-        variables: generateInsertionData(currentTimePeriods.variables).variables
-      };
-
-      // Perform accessibility analysis
-      const accessibilityAnalysis = analyzeAccessibility(data);
-
-      return {
-        totalTokens: totalTokens,
-        totalCollections: totalCollections,
-        typeBreakdown: typeBreakdown,
-        collectionBreakdown: collectionBreakdown,
-        colorSamples: colorSamples,
-        numberSamples: numberSamples,
-        insertionData: insertionData,
-        accessibilityAnalysis: accessibilityAnalysis,
-        exportedAt: data.metadata.exportedAt
-      };
+    };
+    console.log("\u2705 Plugin UI initialized successfully!");
+  }
+  function getElementById(id) {
+    const element = document.getElementById(id);
+    if (!element) {
+      throw new Error(`Element with id "${id}" not found`);
     }
-
-    // Initialize area chart tooltips
-    function initializeAreaChartTooltips(chartId) {
-      const chart = document.getElementById(chartId);
-      if (!chart) return;
-
-      const tooltip = document.getElementById('tooltip-' + chartId);
-      if (!tooltip) return;
-
-      const points = chart.querySelectorAll('.area-chart-point');
-
-      for (let i = 0; i < points.length; i++) {
-        const point = points[i];
-
-        point.addEventListener('mouseenter', function (e) {
-          const value = point.getAttribute('data-value');
-          const label = point.getAttribute('data-label');
-
-          tooltip.querySelector('.area-chart-tooltip-label').textContent = label;
-          tooltip.querySelector('.area-chart-tooltip-value').textContent = value + ' insertions';
-
-          // Position tooltip with bounds checking
-          const rect = point.getBoundingClientRect();
-          const chartRect = chart.getBoundingClientRect();
-          const containerRect = chart.parentElement.getBoundingClientRect();
-
-          let left = rect.left - chartRect.left - 40;
-          let top = rect.top - chartRect.top - 60;
-
-          // Keep tooltip within container bounds
-          if (left < 10) left = 10;
-          if (left + 80 > chartRect.width) left = chartRect.width - 90;
-          if (top < 10) top = rect.top - chartRect.top + 20;
-
-          tooltip.style.left = left + 'px';
-          tooltip.style.top = top + 'px';
-          tooltip.classList.add('show');
-        });
-
-        point.addEventListener('mouseleave', function () {
-          tooltip.classList.remove('show');
-        });
-      }
+    return element;
+  }
+  function handleTokensExtracted(data) {
+    exportBtn.disabled = false;
+    exportBtn.textContent = "Export Design Tokens";
+    updateDownloadButtonText();
+    const collectionCount = Object.keys(data.collections).length;
+    showStatus(
+      "success",
+      `Successfully extracted ${collectionCount} collection(s)!`
+    );
+    showPreview(data);
+  }
+  function handleError(message) {
+    exportBtn.disabled = false;
+    exportBtn.textContent = "Export Design Tokens";
+    showStatus("error", `Error: ${message}`);
+  }
+  function handleExport() {
+    console.log("Starting export process...");
+    showStatus("loading", "Extracting design tokens...");
+    exportBtn.disabled = true;
+    exportBtn.textContent = "Exporting...";
+    const message = { type: "export-tokens" };
+    parent.postMessage({ pluginMessage: message }, "*");
+  }
+  function getSelectedFormat() {
+    const formatSelect = document.getElementById(
+      "exportFormat"
+    );
+    if (formatSelect) {
+      return formatSelect.value;
     }
-
-    // Create analytics HTML with standardized toggle buttons
-    function createAnalyticsHTML(stats) {
-      let html = '';
-
-      // Overview stats
-      html += '<div class="stats-grid mb-6">';
-      html += '<div class="card stat-card">';
-      html += '<div class="stat-value">' + stats.totalTokens + '</div>';
-      html += '<div class="stat-label">Total Tokens</div>';
-      html += '</div>';
-      html += '<div class="card stat-card">';
-      html += '<div class="stat-value">' + stats.totalCollections + '</div>';
-      html += '<div class="stat-label">Collections</div>';
-      html += '</div>';
-      html += '</div>';
-
-      // Analytics Sub-tabs for insertion tracking
-      html += '<div class="analytics-sub-nav mb-6">';
-      html += '<nav>';
-      html += '<button class="analytics-sub-tab active" data-insertion-tab="styles" onclick="switchInsertionTab(\'styles\')">';
-      html += 'Style Insertions';
-      html += '</button>';
-      html += '<button class="analytics-sub-tab" data-insertion-tab="components" onclick="switchInsertionTab(\'components\')">';
-      html += 'Component Insertions';
-      html += '</button>';
-      html += '<button class="analytics-sub-tab" data-insertion-tab="variables" onclick="switchInsertionTab(\'variables\')">';
-      html += 'Variable Insertions';
-      html += '</button>';
-      html += '</nav>';
-      html += '</div>';
-
-      // Area charts for each insertion type
-      if (stats.insertionData) {
-        html += '<div class="insertion-charts">';
-
-        // Styles chart (shown by default)
-        html += '<div class="insertion-chart-content" id="styles-chart" data-insertion-content="styles">';
-        html += createAreaChart(stats.insertionData.styles, 'styles', 'styles-area-chart', currentTimePeriods.styles);
-        html += '</div>';
-
-        // Components chart (hidden by default)
-        html += '<div class="insertion-chart-content hidden" id="components-chart" data-insertion-content="components">';
-        html += createAreaChart(stats.insertionData.components, 'components', 'components-area-chart', currentTimePeriods.components);
-        html += '</div>';
-
-        // Variables chart (hidden by default)
-        html += '<div class="insertion-chart-content hidden" id="variables-chart" data-insertion-content="variables">';
-        html += createAreaChart(stats.insertionData.variables, 'variables', 'variables-area-chart', currentTimePeriods.variables);
-        html += '</div>';
-
-        html += '</div>';
-      }
-
-      // Token types chart - start collapsed
-      if (Object.keys(stats.typeBreakdown).length > 0) {
-        html += '<div class="card mb-4">';
-        html += '<div class="collapsible-header" onclick="toggleSection(\'types\')">';
-        html += '<h3>Token Types Distribution</h3>';
-        html += '<button class="toggle-btn" id="typesToggle" data-section="types">';
-        html += '<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>';
-        html += '</button>';
-        html += '</div>';
-        html += '<div id="typesContent" class="hidden p-4">';
-        html += '<div class="chart-container">';
-        html += createBarChart(stats.typeBreakdown);
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-      }
-
-      // Color samples - start collapsed
-      if (stats.colorSamples.length > 0) {
-        html += '<div class="card mb-4">';
-        html += '<div class="collapsible-header" onclick="toggleSection(\'colors\')">';
-        html += '<h3>Color Samples</h3>';
-        html += '<button class="toggle-btn" id="colorsToggle" data-section="colors">';
-        html += '<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>';
-        html += '</button>';
-        html += '</div>';
-        html += '<div id="colorsContent" class="hidden p-4">';
-        html += '<div class="grid grid-cols-2 gap-3">';
-        for (let i = 0; i < stats.colorSamples.length; i++) {
-          const sample = stats.colorSamples[i];
-          html += '<div class="card p-3 sample-item">';
-          html += '<div class="flex items-center space-x-2 mb-2">';
-          html += '<div class="w-4 h-4 rounded border-border" style="background-color: ' + sample.value + '; border: 1px solid hsl(var(--border));"></div>';
-          html += '<span class="text-sm font-medium">' + sample.name + '</span>';
-          html += '</div>';
-          html += '<code class="text-xs text-muted-foreground font-mono">' + sample.value + '</code>';
-          html += '<button class="copy-btn" onclick="copyToClipboard(\'' + escapeForAttribute(sample.value) + '\', this)" title="Copy value">';
-          html += '<svg class="icon" viewBox="0 0 24 24" style="width: 0.75rem; height: 0.75rem;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg>';
-          html += '</button>';
-          html += '<div class="copy-tooltip">Copied!</div>';
-          html += '</div>';
-        }
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-      }
-
-      // Number samples - start collapsed
-      if (stats.numberSamples.length > 0) {
-        html += '<div class="card mb-4">';
-        html += '<div class="collapsible-header" onclick="toggleSection(\'numbers\')">';
-        html += '<h3>Number/Spacing Samples</h3>';
-        html += '<button class="toggle-btn" id="numbersToggle" data-section="numbers">';
-        html += '<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>';
-        html += '</button>';
-        html += '</div>';
-        html += '<div id="numbersContent" class="hidden p-4">';
-        html += '<div class="grid grid-cols-2 gap-3">';
-        for (let i = 0; i < stats.numberSamples.length; i++) {
-          const sample = stats.numberSamples[i];
-          const valueWithUnit = sample.value + 'px';
-          html += '<div class="card p-3 sample-item">';
-          html += '<div class="text-sm font-medium mb-1">' + sample.name + '</div>';
-          html += '<code class="text-xs text-muted-foreground font-mono">' + valueWithUnit + '</code>';
-          html += '<button class="copy-btn" onclick="copyToClipboard(\'' + escapeForAttribute(valueWithUnit) + '\', this)" title="Copy value">';
-          html += '<svg class="icon" viewBox="0 0 24 24" style="width: 0.75rem; height: 0.75rem;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg>';
-          html += '</button>';
-          html += '<div class="copy-tooltip">Copied!</div>';
-          html += '</div>';
-        }
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-      }
-
-      // Collections breakdown - start collapsed
-      if (Object.keys(stats.collectionBreakdown).length > 0) {
-        html += '<div class="card mb-4">';
-        html += '<div class="collapsible-header" onclick="toggleSection(\'collections\')">';
-        html += '<h3>Collections Breakdown</h3>';
-        html += '<button class="toggle-btn" id="collectionsToggle" data-section="collections">';
-        html += '<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>';
-        html += '</button>';
-        html += '</div>';
-        html += '<div id="collectionsContent" class="hidden p-4 space-y-3">';
-
-        for (const collectionName in stats.collectionBreakdown) {
-          const collection = stats.collectionBreakdown[collectionName];
-          // Skip empty collections in the breakdown
-          if (collection.count === 0) continue;
-
-          html += '<div class="flex items-center justify-between p-3 card">';
-          html += '<span class="font-medium">' + collection.name + '</span>';
-          html += '<span class="token-badge">' + collection.count + ' tokens</span>';
-          html += '</div>';
-        }
-
-        html += '</div>';
-        html += '</div>';
-      }
-
-      return html;
-    }
-
-    // Helper function to escape values for HTML attributes
-    function escapeForAttribute(text) {
-      return text.replace(/'/g, "\\'").replace(/"/g, '\\"');
-    }
-
-    // Copy to clipboard functionality
-    function copyToClipboard(text, buttonElement) {
-      // Use modern Clipboard API if available
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(function () {
-          showCopyFeedback(buttonElement, true);
-        }).catch(function (err) {
-          console.error('Failed to copy text: ', err);
-          // Fallback to legacy method
-          copyToClipboardFallback(text, buttonElement);
-        });
-      } else {
-        // Fallback for older browsers or non-secure contexts
-        copyToClipboardFallback(text, buttonElement);
-      }
-    }
-
-    // Fallback copy method for older browsers
-    function copyToClipboardFallback(text, buttonElement) {
-      const textArea = document.createElement('textarea');
-      textArea.value = text;
-      textArea.style.position = 'fixed';
-      textArea.style.left = '-999999px';
-      textArea.style.top = '-999999px';
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-
-      try {
-        const successful = document.execCommand('copy');
-        showCopyFeedback(buttonElement, successful);
-      } catch (err) {
-        console.error('Fallback copy failed: ', err);
-        showCopyFeedback(buttonElement, false);
-      }
-
-      document.body.removeChild(textArea);
-    }
-
-    // Show visual feedback for copy operation
-    function showCopyFeedback(buttonElement, success) {
-      const tooltip = buttonElement.parentElement.querySelector('.copy-tooltip');
-
-      if (success) {
-        // Update button appearance
-        buttonElement.classList.add('copied');
-
-        // Show tooltip
-        if (tooltip) {
-          tooltip.textContent = 'Copied!';
-          tooltip.classList.add('show');
-        }
-
-        // Reset after delay
-        setTimeout(function () {
-          buttonElement.classList.remove('copied');
-          if (tooltip) {
-            tooltip.classList.remove('show');
-          }
-        }, 1500);
-      } else {
-        // Show error feedback
-        if (tooltip) {
-          tooltip.textContent = 'Failed to copy';
-          tooltip.classList.add('show');
-
-          setTimeout(function () {
-            tooltip.classList.remove('show');
-            tooltip.textContent = 'Copied!'; // Reset for next time
-          }, 2000);
-        }
-      }
-    }
-
-    // Create a simple bar chart
-    function createBarChart(data) {
-      const maxValue = Math.max.apply(Math, Object.values(data));
-      let html = '<div class="bar-chart">';
-
-      for (const type in data) {
-        const value = data[type];
-        const height = (value / maxValue) * 100;
-        const label = getTypeLabel(type);
-
-        html += '<div class="bar" style="height: ' + height + '%;">';
-        html += '<div class="bar-value">' + value + '</div>';
-        html += '<div class="bar-label">' + label + '</div>';
-        html += '</div>';
-      }
-
-      html += '</div>';
-      return html;
-    }
-
-    // Generate sample time-series data for insertion analytics
-    function generateInsertionData(period = '30days') {
-      const now = new Date();
-      const data = {
-        styles: [],
-        components: [],
-        variables: []
-      };
-
-      let dataPoints, timeUnit, labelFormatter;
-
-      if (period === '30days') {
-        // 30 days of data (daily)
-        dataPoints = 30;
-        timeUnit = 24 * 60 * 60 * 1000; // 1 day in milliseconds
-        labelFormatter = formatDateLabel;
-      } else if (period === '60days') {
-        // 60 days of data (every 2 days)
-        dataPoints = 30;
-        timeUnit = 2 * 24 * 60 * 60 * 1000; // 2 days in milliseconds
-        labelFormatter = formatDateLabel;
-      } else if (period === '90days') {
-        // 90 days of data (every 3 days)
-        dataPoints = 30;
-        timeUnit = 3 * 24 * 60 * 60 * 1000; // 3 days in milliseconds
-        labelFormatter = formatDateLabel;
-      } else if (period === '1year') {
-        // 12 months of data (monthly)
-        dataPoints = 12;
-        timeUnit = 30 * 24 * 60 * 60 * 1000; // ~1 month in milliseconds
-        labelFormatter = (date) => (date.getMonth() + 1) + '/' + date.getFullYear().toString().slice(-2);
-      }
-
-      // Generate data points
-      for (let i = dataPoints - 1; i >= 0; i--) {
-        const date = new Date(now.getTime() - (i * timeUnit));
-        const dateStr = date.toISOString().split('T')[0];
-
-        // Adjust base values based on period
-        let styleMultiplier = 1, componentMultiplier = 1, variableMultiplier = 1;
-
-        if (period === '60days') {
-          styleMultiplier = 2; // Slightly higher for 2-day intervals
-          componentMultiplier = 1.8;
-          variableMultiplier = 2.2;
-        } else if (period === '90days') {
-          styleMultiplier = 3; // Higher for 3-day intervals
-          componentMultiplier = 2.5;
-          variableMultiplier = 3.5;
-        } else if (period === '1year') {
-          styleMultiplier = 20; // Much higher monthly totals
-          componentMultiplier = 15;
-          variableMultiplier = 30;
-        }
-
-        // Generate realistic sample data with some variation
-        const baseStyle = (15 + Math.sin(i * 0.2) * 8 + Math.random() * 10) * styleMultiplier;
-        const baseComponent = (8 + Math.sin(i * 0.15) * 5 + Math.random() * 6) * componentMultiplier;
-        const baseVariable = (25 + Math.sin(i * 0.1) * 12 + Math.random() * 15) * variableMultiplier;
-
-        data.styles.push({
-          date: dateStr,
-          value: Math.max(0, Math.round(baseStyle)),
-          label: labelFormatter(date)
-        });
-
-        data.components.push({
-          date: dateStr,
-          value: Math.max(0, Math.round(baseComponent)),
-          label: labelFormatter(date)
-        });
-
-        data.variables.push({
-          date: dateStr,
-          value: Math.max(0, Math.round(baseVariable)),
-          label: labelFormatter(date)
-        });
-      }
-
-      return data;
-    }
-
-    // Format date for chart labels
-    function formatDateLabel(date) {
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-      return month + '/' + day;
-    }
-
-    // Create an area chart with line overlay
-    function createAreaChart(data, type, containerId, period = '30days') {
-      if (!data || data.length === 0) return '';
-
-      const width = 600;
-      const height = 220;
-      const margin = { top: 10, right: 20, bottom: 35, left: 35 };
-      const chartWidth = width - margin.left - margin.right;
-      const chartHeight = height - margin.top - margin.bottom;
-
-      // Calculate scales
-      const maxValue = Math.max.apply(Math, data.map(function (d) { return d.value; }));
-      const minValue = Math.min.apply(Math, data.map(function (d) { return d.value; }));
-      const valueRange = maxValue - minValue;
-
-      // Create SVG path for area and line
-      let areaPath = '';
-      let linePath = '';
-
-      for (let i = 0; i < data.length; i++) {
-        const d = data[i];
-        const x = margin.left + (i / (data.length - 1)) * chartWidth;
-        const y = margin.top + chartHeight - ((d.value - minValue) / valueRange) * chartHeight;
-
-        if (i === 0) {
-          areaPath += 'M' + x + ',' + (margin.top + chartHeight);
-          linePath += 'M' + x + ',' + y;
-        }
-
-        areaPath += 'L' + x + ',' + y;
-        linePath += 'L' + x + ',' + y;
-      }
-
-      // Close the area path
-      const lastX = margin.left + chartWidth;
-      areaPath += 'L' + lastX + ',' + (margin.top + chartHeight) + 'Z';
-
-      // Calculate trend
-      const firstValue = data[0].value;
-      const lastValue = data[data.length - 1].value;
-      const trendPercent = ((lastValue - firstValue) / firstValue * 100).toFixed(1);
-      const isPositive = trendPercent > 0;
-
-      // Get period-specific trend text
-      const periodText = {
-        '30days': 'last 30 days',
-        '60days': 'last 60 days',
-        '90days': 'last 90 days',
-        '1year': 'this year'
-      };
-
-      // Get type-specific colors and labels
-      const typeConfig = getInsertionTypeConfig(type);
-
-      let html = '<div class="area-chart-container">';
-      html += '<div class="flex flex-start justify-between mb-4 w-full" style="width: 100%;">';
-      html += '<div class="w-full">';
-      html += '<h4 class="text-lg font-semibold" style="margin-bottom: 0px; margin-top: 0px;">' + typeConfig.title + '</h4>';
-      html += '<p class="text-sm text-muted-foreground mt-1 mb-1">' + typeConfig.description + '</p>';
-      html += '</div>';
-      html += '<div class="area-chart-trend">';
-      html += '<span class="' + (isPositive ? 'area-chart-trend-up' : 'area-chart-trend-down') + '">';
-      html += isPositive ? '↗' : '↘';
-      html += ' ' + Math.abs(trendPercent) + '%';
-      html += '</span>';
-      html += '<span>' + periodText[period] + '</span>';
-      html += '</div>';
-      html += '</div>';
-
-      // Add time period selector
-      html += '<div class="time-period-selector">';
-      html += '<button class="time-period-btn ' + (period === '30days' ? 'active' : '') + '" onclick="changeTimePeriod(\'' + type + '\', \'30days\')">30 Days</button>';
-      html += '<button class="time-period-btn ' + (period === '60days' ? 'active' : '') + '" onclick="changeTimePeriod(\'' + type + '\', \'60days\')">60 Days</button>';
-      html += '<button class="time-period-btn ' + (period === '90days' ? 'active' : '') + '" onclick="changeTimePeriod(\'' + type + '\', \'90days\')">90 Days</button>';
-      html += '<button class="time-period-btn ' + (period === '1year' ? 'active' : '') + '" onclick="changeTimePeriod(\'' + type + '\', \'1year\')">1 Year</button>';
-      html += '</div>';
-
-      html += '<div class="area-chart" id="' + containerId + '">';
-      html += '<svg viewBox="0 0 ' + width + ' ' + height + '">';
-
-      // Add gradient definition
-      html += '<defs>';
-      html += '<linearGradient id="areaGradient' + type + '" x1="0%" y1="0%" x2="0%" y2="100%">';
-      html += '<stop offset="0%" class="area-chart-gradient-stop-0" style="stop-color: ' + typeConfig.color + '; stop-opacity: 0.8;" />';
-      html += '<stop offset="100%" class="area-chart-gradient-stop-100" style="stop-color: ' + typeConfig.color + '; stop-opacity: 0.1;" />';
-      html += '</linearGradient>';
-      html += '</defs>';
-
-      // Add grid lines
-      for (let i = 0; i <= 4; i++) {
-        const y = margin.top + (i / 4) * chartHeight;
-        html += '<line x1="' + margin.left + '" y1="' + y + '" x2="' + (margin.left + chartWidth) + '" y2="' + y + '" class="area-chart-grid" />';
-      }
-
-      // Add area
-      html += '<path d="' + areaPath + '" style="fill: url(#areaGradient' + type + '); opacity: 0.3;" />';
-
-      // Add line
-      html += '<path d="' + linePath + '" style="fill: none; stroke: ' + typeConfig.color + '; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;" />';
-
-      // Add data points
-      for (let i = 0; i < data.length; i++) {
-        const d = data[i];
-        const x = margin.left + (i / (data.length - 1)) * chartWidth;
-        const y = margin.top + chartHeight - ((d.value - minValue) / valueRange) * chartHeight;
-
-        html += '<circle cx="' + x + '" cy="' + y + '" r="3" fill="' + typeConfig.color + '" class="area-chart-point" ';
-        html += 'data-value="' + d.value + '" data-label="' + d.label + '" />';
-      }
-
-      // Add axes
-      html += '<line x1="' + margin.left + '" y1="' + (margin.top + chartHeight) + '" x2="' + (margin.left + chartWidth) + '" y2="' + (margin.top + chartHeight) + '" class="area-chart-axis" />';
-      html += '<line x1="' + margin.left + '" y1="' + margin.top + '" x2="' + margin.left + '" y2="' + (margin.top + chartHeight) + '" class="area-chart-axis" />';
-
-      // Add labels for key dates
-      const labelIndices = [0, Math.floor(data.length / 3), Math.floor(2 * data.length / 3), data.length - 1];
-      for (let i = 0; i < labelIndices.length; i++) {
-        const index = labelIndices[i];
-        const d = data[index];
-        const x = margin.left + (index / (data.length - 1)) * chartWidth;
-        const y = margin.top + chartHeight + 15;
-
-        html += '<text x="' + x + '" y="' + y + '" class="area-chart-label" text-anchor="middle">' + d.label + '</text>';
-      }
-
-      // Add value labels
-      for (let i = 0; i <= 4; i++) {
-        const value = Math.round(minValue + (i / 4) * valueRange);
-        const y = margin.top + chartHeight - (i / 4) * chartHeight + 4;
-        html += '<text x="' + (margin.left - 5) + '" y="' + y + '" class="area-chart-label" text-anchor="end">' + value + '</text>';
-      }
-
-      html += '</svg>';
-      html += '</div>';
-
-      // Add tooltip
-      html += '<div class="area-chart-tooltip" id="tooltip-' + containerId + '">';
-      html += '<div class="area-chart-tooltip-label"></div>';
-      html += '<div class="area-chart-tooltip-value"></div>';
-      html += '</div>';
-
-      html += '</div>';
-
-      return html;
-    }
-
-    // Get configuration for insertion type
-    function getInsertionTypeConfig(type) {
-      const configs = {
-        styles: {
-          title: 'Style Insertions',
-          description: 'Design system styles applied to components',
-          color: 'hsl(142 76% 36%)', // Green
-        },
-        components: {
-          title: 'Component Insertions',
-          description: 'New component instances created',
-          color: 'hsl(221 83% 53%)', // Blue
-        },
-        variables: {
-          title: 'Variable Insertions',
-          description: 'Design tokens and variables usage',
-          color: 'hsl(262 83% 58%)', // Purple
-        }
-      };
-
-      return configs[type] || configs.styles;
-    }
-
-    // Handle analytics export to Excel (CSV format)
-    function handleAnalyticsExport() {
-      if (!analyticsStats) return;
-
-      try {
-        const csvData = generateCSVData(analyticsStats);
-        const dateStr = new Date().toISOString().split('T')[0];
-        downloadFile(csvData, 'text/csv', 'design-tokens-analytics-' + dateStr + '.csv');
-        showStatus('success', 'Analytics exported to CSV successfully!');
-      } catch (error) {
-        console.error('CSV export error:', error);
-        showStatus('error', 'Failed to export analytics');
-      }
-    }
-
-    // Handle accessibility compliance export
-    function handleAccessibilityExport() {
-      const analysisData = accessibilityAnalysis || (analyticsStats && analyticsStats.accessibilityAnalysis);
-
-      if (!analysisData) {
-        showStatus('error', 'No accessibility data available to export');
-        return;
-      }
-
-      try {
-        const csvData = generateAccessibilityCSVData(analysisData);
-        const dateStr = new Date().toISOString().split('T')[0];
-        downloadFile(csvData, 'text/csv', 'accessibility-compliance-' + dateStr + '.csv');
-        showStatus('success', 'Accessibility compliance report exported successfully!');
-      } catch (error) {
-        console.error('Accessibility export error:', error);
-        showStatus('error', 'Failed to export accessibility report');
-      }
-    }
-
-    // Generate CSV data specifically for accessibility compliance
-    function generateAccessibilityCSVData(analysis) {
-      let csv = '';
-
-      // Header
-      csv += 'WCAG Accessibility Compliance Report\n';
-      csv += 'Generated on: ' + new Date().toISOString() + '\n';
-      csv += '\n';
-
-      // Executive Summary
-      csv += 'EXECUTIVE SUMMARY\n';
-      csv += 'Overall Accessibility Score,' + Math.round(analysis.overallScore) + '%\n';
-      csv += 'Total Issues Identified,' + analysis.summary.totalIssues + '\n';
-      csv += 'Critical Issues (WCAG Failures),' + analysis.summary.criticalIssues + '\n';
-      csv += 'Warnings & Recommendations,' + analysis.summary.warnings + '\n';
-      csv += '\n';
-
-      // Compliance Level
-      let complianceLevel = '';
-      if (analysis.overallScore >= 90) {
-        complianceLevel = 'Excellent - WCAG AAA Ready';
-      } else if (analysis.overallScore >= 75) {
-        complianceLevel = 'Good - WCAG AA Compliant';
-      } else if (analysis.overallScore >= 50) {
-        complianceLevel = 'Needs Improvement - Partial Compliance';
-      } else {
-        complianceLevel = 'Poor - Major Accessibility Issues';
-      }
-      csv += 'Compliance Assessment,' + escapeCSV(complianceLevel) + '\n';
-      csv += '\n';
-
-      // Detailed Issues
-      if (analysis.colorContrast.length > 0) {
-        csv += 'COLOR CONTRAST ISSUES (WCAG 1.4.3 & 1.4.6)\n';
-        csv += 'Severity,Issue Description,Token Pair,Contrast Ratio,WCAG AA Status,WCAG AAA Status,Recommendation\n';
-
-        for (let i = 0; i < analysis.colorContrast.length; i++) {
-          const issue = analysis.colorContrast[i];
-          csv += escapeCSV(issue.severity.toUpperCase()) + ',';
-          csv += escapeCSV(issue.message) + ',';
-          csv += escapeCSV(issue.colors[0].name + ' ↔ ' + issue.colors[1].name) + ',';
-          csv += issue.contrastRatio.toFixed(2) + ':1,';
-          csv += (issue.wcagAA ? 'PASS' : 'FAIL') + ',';
-          csv += (issue.wcagAAA ? 'PASS' : 'FAIL') + ',';
-          csv += escapeCSV(issue.suggestion) + '\n';
-        }
-        csv += '\n';
-      }
-
-      if (analysis.typography.length > 0) {
-        csv += 'TYPOGRAPHY ACCESSIBILITY ISSUES (WCAG 1.4.4 & 1.4.8)\n';
-        csv += 'Severity,Token Name,Current Value,Issue Description,WCAG Guideline,Recommendation\n';
-
-        for (let i = 0; i < analysis.typography.length; i++) {
-          const issue = analysis.typography[i];
-          csv += escapeCSV(issue.severity.toUpperCase()) + ',';
-          csv += escapeCSV(issue.token) + ',';
-          csv += issue.value + 'px,';
-          csv += escapeCSV(issue.message) + ',';
-          csv += escapeCSV('WCAG 1.4.4 (Resize text) / 1.4.8 (Visual presentation)') + ',';
-          csv += escapeCSV(issue.suggestion) + '\n';
-        }
-        csv += '\n';
-      }
-
-      if (analysis.spacing.length > 0) {
-        csv += 'SPACING & TOUCH TARGET ISSUES (WCAG 2.5.5)\n';
-        csv += 'Severity,Token Name,Current Value,Issue Description,WCAG Guideline,Recommendation\n';
-
-        for (let i = 0; i < analysis.spacing.length; i++) {
-          const issue = analysis.spacing[i];
-          csv += escapeCSV(issue.severity.toUpperCase()) + ',';
-          csv += escapeCSV(issue.token) + ',';
-          csv += issue.value + 'px,';
-          csv += escapeCSV(issue.message) + ',';
-          csv += escapeCSV('WCAG 2.5.5 (Target Size)') + ',';
-          csv += escapeCSV(issue.suggestion) + '\n';
-        }
-        csv += '\n';
-      }
-
-      // Action Items
-      csv += 'PRIORITY ACTION ITEMS\n';
-      csv += 'Priority,Action Item\n';
-
-      let priority = 1;
-      if (analysis.summary.criticalIssues > 0) {
-        csv += 'HIGH,' + escapeCSV('Fix ' + analysis.summary.criticalIssues + ' critical color contrast issues immediately') + '\n';
-        priority++;
-      }
-
-      for (let i = 0; i < analysis.summary.recommendations.length; i++) {
-        const level = i < 2 ? 'MEDIUM' : 'LOW';
-        csv += level + ',' + escapeCSV(analysis.summary.recommendations[i]) + '\n';
-      }
-      csv += '\n';
-
-      // WCAG Guidelines Reference
-      csv += 'WCAG 2.1 GUIDELINES REFERENCE\n';
-      csv += 'Guideline,Level,Description\n';
-      csv += '1.4.3 Contrast (Minimum),AA,' + escapeCSV('Text has contrast ratio of at least 4.5:1') + '\n';
-      csv += '1.4.6 Contrast (Enhanced),AAA,' + escapeCSV('Text has contrast ratio of at least 7:1') + '\n';
-      csv += '1.4.4 Resize text,AA,' + escapeCSV('Text can be resized up to 200% without loss of functionality') + '\n';
-      csv += '1.4.8 Visual Presentation,AAA,' + escapeCSV('Line height at least 1.5x font size') + '\n';
-      csv += '2.5.5 Target Size,AAA,' + escapeCSV('Touch targets are at least 44x44 CSS pixels') + '\n';
-      csv += '\n';
-
-      return csv;
-    }
-
-    // Generate CSV data from analytics
-    function generateCSVData(stats) {
-      let csv = '';
-
-      // Overview section
-      csv += 'Design Token Analytics Overview\n';
-      csv += '\n';
-      csv += 'Metric,Value\n';
-      csv += 'Total Tokens,' + stats.totalTokens + '\n';
-      csv += 'Total Collections,' + stats.totalCollections + '\n';
-      csv += 'Export Date,' + stats.exportedAt + '\n';
-      csv += '\n';
-
-      // Token Types section
-      if (Object.keys(stats.typeBreakdown).length > 0) {
-        csv += 'Token Types Distribution\n';
-        csv += 'Type,Count\n';
-
-        for (const type in stats.typeBreakdown) {
-          const count = stats.typeBreakdown[type];
-          const label = getTypeLabel(type);
-          csv += escapeCSV(label) + ',' + count + '\n';
-        }
-        csv += '\n';
-      }
-
-      // Collections section
-      if (Object.keys(stats.collectionBreakdown).length > 0) {
-        csv += 'Collections Breakdown\n';
-        csv += 'Collection Name,Token Count\n';
-
-        for (const collectionName in stats.collectionBreakdown) {
-          const collection = stats.collectionBreakdown[collectionName];
-          if (collection.count > 0) {
-            csv += escapeCSV(collection.name) + ',' + collection.count + '\n';
-          }
-        }
-        csv += '\n';
-      }
-
-      // Color Samples section
-      if (stats.colorSamples && stats.colorSamples.length > 0) {
-        csv += 'Color Token Samples\n';
-        csv += 'Token Name,Color Value\n';
-
-        for (let i = 0; i < stats.colorSamples.length; i++) {
-          const sample = stats.colorSamples[i];
-          csv += escapeCSV(sample.name) + ',' + escapeCSV(sample.value) + '\n';
-        }
-        csv += '\n';
-      }
-
-      // Number Samples section
-      if (stats.numberSamples && stats.numberSamples.length > 0) {
-        csv += 'Number/Spacing Token Samples\n';
-        csv += 'Token Name,Value (px)\n';
-
-        for (let i = 0; i < stats.numberSamples.length; i++) {
-          const sample = stats.numberSamples[i];
-          csv += escapeCSV(sample.name) + ',' + sample.value + '\n';
-        }
-        csv += '\n';
-      }
-
-      // Accessibility Analysis section
-      if (stats.accessibilityAnalysis) {
-        const analysis = stats.accessibilityAnalysis;
-
-        csv += 'Accessibility Compliance Summary\n';
-        csv += 'Metric,Value\n';
-        csv += 'Overall Score,' + Math.round(analysis.overallScore) + '%\n';
-        csv += 'Total Issues,' + analysis.summary.totalIssues + '\n';
-        csv += 'Critical Issues,' + analysis.summary.criticalIssues + '\n';
-        csv += 'Warnings,' + analysis.summary.warnings + '\n';
-        csv += '\n';
-
-        // Color contrast issues
-        if (analysis.colorContrast.length > 0) {
-          csv += 'Color Contrast Issues\n';
-          csv += 'Issue,Colors,Contrast Ratio,WCAG AA,Severity,Suggestion\n';
-
-          for (let i = 0; i < analysis.colorContrast.length; i++) {
-            const issue = analysis.colorContrast[i];
-            csv += escapeCSV(issue.message) + ',';
-            csv += escapeCSV(issue.colors[0].name + ' + ' + issue.colors[1].name) + ',';
-            csv += issue.contrastRatio.toFixed(2) + ':1,';
-            csv += (issue.wcagAA ? 'Pass' : 'Fail') + ',';
-            csv += escapeCSV(issue.severity) + ',';
-            csv += escapeCSV(issue.suggestion) + '\n';
-          }
-          csv += '\n';
-        }
-
-        // Typography issues
-        if (analysis.typography.length > 0) {
-          csv += 'Typography Issues\n';
-          csv += 'Token,Issue,Value,Severity,Suggestion\n';
-
-          for (let i = 0; i < analysis.typography.length; i++) {
-            const issue = analysis.typography[i];
-            csv += escapeCSV(issue.token) + ',';
-            csv += escapeCSV(issue.message) + ',';
-            csv += issue.value + 'px,';
-            csv += escapeCSV(issue.severity) + ',';
-            csv += escapeCSV(issue.suggestion) + '\n';
-          }
-          csv += '\n';
-        }
-
-        // Spacing issues
-        if (analysis.spacing.length > 0) {
-          csv += 'Spacing Issues\n';
-          csv += 'Token,Issue,Value,Severity,Suggestion\n';
-
-          for (let i = 0; i < analysis.spacing.length; i++) {
-            const issue = analysis.spacing[i];
-            csv += escapeCSV(issue.token) + ',';
-            csv += escapeCSV(issue.message) + ',';
-            csv += issue.value + 'px,';
-            csv += escapeCSV(issue.severity) + ',';
-            csv += escapeCSV(issue.suggestion) + '\n';
-          }
-          csv += '\n';
-        }
-
-        // Recommendations
-        if (analysis.summary.recommendations.length > 0) {
-          csv += 'Accessibility Recommendations\n';
-          csv += 'Recommendation\n';
-
-          for (let i = 0; i < analysis.summary.recommendations.length; i++) {
-            csv += escapeCSV(analysis.summary.recommendations[i]) + '\n';
-          }
-          csv += '\n';
-        }
-      }
-
-      return csv;
-    }
-
-    // Escape CSV special characters
-    function escapeCSV(text) {
-      if (typeof text !== 'string') return text;
-      if (text.includes(',') || text.includes('"') || text.includes('\n')) {
-        return '"' + text.replace(/"/g, '""') + '"';
-      }
-      return text;
-    }
-
-    // Get friendly label for token type
-    function getTypeLabel(type) {
-      const labels = {
-        'COLOR': 'Colors',
-        'FLOAT': 'Numbers',
-        'STRING': 'Text',
-        'BOOLEAN': 'Boolean',
-        'UNKNOWN': 'Other'
-      };
-      return labels[type] || type;
-    }
-
-    // Generate sample token data for demonstration
-    function generateSampleTokenData() {
-      const now = new Date();
-      return {
-        metadata: {
-          exportedAt: now.toISOString(),
-          figmaFileKey: 'sample-design-system',
-          version: '1.0.0'
-        },
-        collections: {
-          'colors': {
-            name: 'Color Tokens',
-            modes: ['Light', 'Dark'],
-            variables: {
-              'primary': {
-                type: 'COLOR',
-                description: 'Primary brand color',
-                values: { 'Light': '#3b82f6', 'Dark': '#60a5fa' }
-              },
-              'secondary': {
-                type: 'COLOR',
-                description: 'Secondary accent color',
-                values: { 'Light': '#8b5cf6', 'Dark': '#a78bfa' }
-              },
-              'background': {
-                type: 'COLOR',
-                description: 'Main background color',
-                values: { 'Light': '#ffffff', 'Dark': '#0f172a' }
-              },
-              'text': {
-                type: 'COLOR',
-                description: 'Primary text color',
-                values: { 'Light': '#1e293b', 'Dark': '#f1f5f9' }
-              },
-              'success': {
-                type: 'COLOR',
-                description: 'Success state color',
-                values: { 'Light': '#10b981', 'Dark': '#34d399' }
-              },
-              'warning': {
-                type: 'COLOR',
-                description: 'Warning state color',
-                values: { 'Light': '#f59e0b', 'Dark': '#fbbf24' }
-              },
-              'error': {
-                type: 'COLOR',
-                description: 'Error state color',
-                values: { 'Light': '#ef4444', 'Dark': '#f87171' }
-              }
-            }
-          },
-          'spacing': {
-            name: 'Spacing Tokens',
-            modes: ['Base'],
-            variables: {
-              'xs': {
-                type: 'FLOAT',
-                description: 'Extra small spacing',
-                values: { 'Base': '4' }
-              },
-              'sm': {
-                type: 'FLOAT',
-                description: 'Small spacing',
-                values: { 'Base': '8' }
-              },
-              'md': {
-                type: 'FLOAT',
-                description: 'Medium spacing',
-                values: { 'Base': '16' }
-              },
-              'lg': {
-                type: 'FLOAT',
-                description: 'Large spacing',
-                values: { 'Base': '24' }
-              },
-              'xl': {
-                type: 'FLOAT',
-                description: 'Extra large spacing',
-                values: { 'Base': '32' }
-              }
-            }
-          },
-          'typography': {
-            name: 'Typography Tokens',
-            modes: ['Base'],
-            variables: {
-              'heading-xl': {
-                type: 'FLOAT',
-                description: 'Extra large heading size',
-                values: { 'Base': '36' }
-              },
-              'heading-lg': {
-                type: 'FLOAT',
-                description: 'Large heading size',
-                values: { 'Base': '30' }
-              },
-              'heading-md': {
-                type: 'FLOAT',
-                description: 'Medium heading size',
-                values: { 'Base': '24' }
-              },
-              'body-lg': {
-                type: 'FLOAT',
-                description: 'Large body text size',
-                values: { 'Base': '18' }
-              },
-              'body-sm': {
-                type: 'FLOAT',
-                description: 'Small body text size',
-                values: { 'Base': '14' }
-              },
-              'caption': {
-                type: 'FLOAT',
-                description: 'Caption text size',
-                values: { 'Base': '12' }
-              }
-            }
-          }
-        }
-      };
-    }
-
-    // Initialize sample data for Analytics and Accessibility tabs
-    function initializeSampleData() {
-      console.log('Initializing sample data for Analytics and Accessibility...');
-
-      const sampleData = generateSampleTokenData();
-
-      // Update Analytics tab with sample data
-      updateAnalytics(sampleData);
-
-      // Update Accessibility tab with sample data  
-      updateAccessibility(sampleData);
-
-      console.log('Sample data initialized successfully');
-    }
-
-    // Initialize when DOM is ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initializePlugin);
+    return "json";
+  }
+  function convertToCSS(data) {
+    let css = "/* Design Tokens exported from Figma */\n";
+    css += `/* Exported at: ${data.metadata.exportedAt} */
+`;
+    css += `/* File: ${data.metadata.figmaFileKey || "Unknown"} */
+`;
+    css += `/* Collections: ${Object.keys(data.collections).join(", ")} */
+
+`;
+    const modeNames = [
+      ...new Set(
+        Object.values(data.collections).flatMap(
+          (collection) => Object.values(collection.variables).flatMap(
+            (variable) => Object.keys(variable.values)
+          )
+        )
+      )
+    ];
+    css += "/* Usage Examples:\n";
+    css += " * .button { background: var(--colors-primary); }\n";
+    css += " * .text { font-size: var(--typography-body-size); }\n";
+    if (modeNames.length > 1) {
+      const darkMode = modeNames.find((mode) => mode !== "Default" && mode !== "Light") || modeNames[1];
+      css += ` * Toggle themes: document.body.setAttribute("data-theme", "${darkMode}"); */
+
+`;
     } else {
-      initializePlugin();
+      css += " */\n\n";
     }
+    const modeGroups = {};
+    Object.entries(data.collections).forEach(([collectionName, collection]) => {
+      Object.entries(collection.variables).forEach(([varName, variable]) => {
+        Object.entries(variable.values).forEach(([modeName, value]) => {
+          if (!modeGroups[modeName]) {
+            modeGroups[modeName] = [];
+          }
+          const cssVarName = `--${collectionName.toLowerCase()}-${varName.toLowerCase()}`.replace(
+            /[^a-z0-9-]/g,
+            "-"
+          );
+          const cssValue = formatValueForCSS(value, variable.type);
+          const comment = variable.description ? ` /* ${variable.description} */` : "";
+          modeGroups[modeName].push(`  ${cssVarName}: ${cssValue};${comment}`);
+        });
+        Object.entries(variable.aliases).forEach(([modeName, alias]) => {
+          if (!modeGroups[modeName]) {
+            modeGroups[modeName] = [];
+          }
+          const cssVarName = `--${collectionName.toLowerCase()}-${varName.toLowerCase()}`.replace(
+            /[^a-z0-9-]/g,
+            "-"
+          );
+          const aliasName = alias.name.toLowerCase().replace(/[^a-z0-9-]/g, "-");
+          const comment = ` /* alias to ${alias.name} */`;
+          modeGroups[modeName].push(
+            `  ${cssVarName}: var(--${aliasName});${comment}`
+          );
+        });
+      });
+    });
+    Object.entries(modeGroups).forEach(([modeName, variables]) => {
+      if (modeName === "Default" || modeName === "Light" || Object.keys(modeGroups).length === 1) {
+        css += ":root {\n";
+        css += `  /* Mode: ${modeName} */
+`;
+      } else {
+        css += `[data-theme="${modeName}"] {
+`;
+        css += `  /* Mode: ${modeName} */
+`;
+      }
+      css += variables.join("\n") + "\n";
+      css += "}\n\n";
+    });
+    return css;
+  }
+  function formatValueForCSS(value, type) {
+    switch (type) {
+      case "COLOR":
+        return String(value);
+      case "FLOAT":
+        if (typeof value === "number" && value > 0 && value < 1e3 && Number.isInteger(value)) {
+          return `${value}px`;
+        }
+        return String(value);
+      case "STRING":
+        return `"${value}"`;
+      case "BOOLEAN":
+        return value ? "1" : "0";
+      default:
+        return String(value);
+    }
+  }
+  function convertToDeveloperFormat(data) {
+    const result = {};
+    Object.entries(data.collections).forEach(([collectionName, collection]) => {
+      const category = categorizeCollection(collectionName);
+      if (!result[category]) {
+        result[category] = {};
+      }
+      Object.entries(collection.variables).forEach(([varName, variable]) => {
+        const primaryMode = collection.modes.find(
+          (m) => m.name === "Default" || m.name === "Light"
+        ) || collection.modes[0];
+        if (!primaryMode) return;
+        const primaryModeName = primaryMode.name;
+        let value = variable.values[primaryModeName];
+        if (value === void 0 && variable.aliases[primaryModeName]) {
+          value = `{${variable.aliases[primaryModeName].name}}`;
+        }
+        if (value === void 0) return;
+        const token = {
+          $type: mapFigmaTypeToW3C(variable.type),
+          $value: value
+        };
+        if (variable.description) {
+          token.$description = variable.description;
+        }
+        const tokenPath = parseTokenName(varName);
+        setNestedValue(result[category], tokenPath, token);
+      });
+    });
+    return result;
+  }
+  function categorizeCollection(collectionName) {
+    const name = collectionName.toLowerCase();
+    if (name.includes("color") || name.includes("colour")) return "colors";
+    if (name.includes("spacing") || name.includes("space")) return "spacing";
+    if (name.includes("typography") || name.includes("font") || name.includes("text"))
+      return "typography";
+    if (name.includes("radius") || name.includes("border")) return "borderRadius";
+    if (name.includes("shadow")) return "shadows";
+    if (name.includes("size") || name.includes("sizing")) return "sizing";
+    if (name.includes("opacity") || name.includes("alpha")) return "opacity";
+    if (name.includes("duration") || name.includes("timing")) return "animation";
+    return collectionName.toLowerCase().replace(/\s+/g, "-");
+  }
+  function mapFigmaTypeToW3C(figmaType) {
+    switch (figmaType) {
+      case "COLOR":
+        return "color";
+      case "FLOAT":
+        return "number";
+      case "STRING":
+        return "string";
+      case "BOOLEAN":
+        return "boolean";
+      default:
+        return figmaType.toLowerCase();
+    }
+  }
+  function parseTokenName(name) {
+    let parts = [];
+    if (name.includes("/")) {
+      parts = name.split("/");
+    } else if (name.includes("-")) {
+      parts = name.split("-");
+    } else if (name.includes("_")) {
+      parts = name.split("_");
+    } else {
+      parts = name.split(/(?=[A-Z])/).map((p) => p.toLowerCase());
+      if (parts.length === 1) {
+        parts = [name];
+      }
+    }
+    return parts.map((p) => p.trim().toLowerCase()).filter((p) => p.length > 0);
+  }
+  function setNestedValue(obj, path, value) {
+    if (path.length === 0) return;
+    const key = path[0];
+    if (!key) return;
+    if (path.length === 1) {
+      obj[key] = value;
+      return;
+    }
+    const [first, ...rest] = path;
+    if (!first) return;
+    if (!obj[first]) {
+      obj[first] = {};
+    }
+    setNestedValue(obj[first], rest, value);
+  }
+  function handleDownload() {
+    if (!exportedData) return;
+    const format = getSelectedFormat();
+    const dateStr = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
+    try {
+      if (format === "json") {
+        const content = JSON.stringify(exportedData, null, 2);
+        downloadFile(
+          content,
+          "application/json",
+          `design-tokens-${dateStr}.json`
+        );
+        showStatus("success", "JSON file downloaded successfully!");
+      } else if (format === "css") {
+        const content = convertToCSS(exportedData);
+        downloadFile(content, "text/css", `design-tokens-${dateStr}.css`);
+        showStatus("success", "CSS file downloaded successfully!");
+      } else if (format === "developer") {
+        const content = JSON.stringify(
+          convertToDeveloperFormat(exportedData),
+          null,
+          2
+        );
+        downloadFile(
+          content,
+          "application/json",
+          `design-tokens-developer-${dateStr}.json`
+        );
+        showStatus("success", "Developer JSON file downloaded successfully!");
+      }
+    } catch (error) {
+      console.error("Download error:", error);
+      showStatus("error", "Failed to download file");
+    }
+  }
+  function downloadFile(content, mimeType, filename) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+  function updateDownloadButtonText() {
+    if (!downloadBtn || !copyBtn) return;
+    const format = getSelectedFormat();
+    switch (format) {
+      case "json":
+        downloadBtn.textContent = "Download JSON";
+        copyBtn.textContent = "Copy JSON";
+        break;
+      case "css":
+        downloadBtn.textContent = "Download CSS";
+        copyBtn.textContent = "Copy CSS";
+        break;
+      case "developer":
+        downloadBtn.textContent = "Download Developer JSON";
+        copyBtn.textContent = "Copy Developer JSON";
+        break;
+      default:
+        downloadBtn.textContent = "Download";
+        copyBtn.textContent = "Copy to Clipboard";
+    }
+  }
+  async function handleCopy() {
+    if (!exportedData) return;
+    try {
+      const format = getSelectedFormat();
+      let content;
+      let message;
+      if (format === "json") {
+        content = JSON.stringify(exportedData, null, 2);
+        message = "JSON copied to clipboard!";
+      } else if (format === "css") {
+        content = convertToCSS(exportedData);
+        message = "CSS copied to clipboard!";
+      } else if (format === "developer") {
+        content = JSON.stringify(convertToDeveloperFormat(exportedData), null, 2);
+        message = "Developer JSON copied to clipboard!";
+      } else {
+        throw new Error("Unknown format");
+      }
+      await navigator.clipboard.writeText(content);
+      showStatus("success", message);
+    } catch (error) {
+      console.error("Copy error:", error);
+      showStatus("error", "Failed to copy to clipboard");
+    }
+  }
+  function handleClose() {
+    console.log("Closing plugin...");
+    const message = { type: "close-plugin" };
+    parent.postMessage({ pluginMessage: message }, "*");
+  }
+  function showStatus(type, message) {
+    if (!status) return;
+    status.className = `status ${type}`;
+    status.textContent = message;
+    status.style.display = "block";
+    if (type === "success") {
+      setTimeout(() => {
+        status.style.display = "none";
+      }, 3e3);
+    }
+  }
+  function showPreview(data) {
+    exportedData = data;
+    updatePreviewContent();
+    if (previewSection) {
+      previewSection.style.display = "block";
+    }
+  }
+  function updatePreviewContent() {
+    if (!exportedData || !previewContent) return;
+    const format = getSelectedFormat();
+    if (format === "css") {
+      const cssContent = convertToCSS(exportedData);
+      previewContent.textContent = cssContent;
+      if (previewTitle) previewTitle.textContent = "CSS Preview";
+    } else if (format === "developer") {
+      const developerContent = convertToDeveloperFormat(exportedData);
+      previewContent.textContent = JSON.stringify(developerContent, null, 2);
+      if (previewTitle)
+        previewTitle.textContent = "Developer JSON Preview (W3C Format)";
+    } else {
+      const preview = createJSONPreview(exportedData);
+      previewContent.textContent = JSON.stringify(preview, null, 2);
+      if (previewTitle) previewTitle.textContent = "JSON Preview";
+    }
+  }
+  function createJSONPreview(data) {
+    return {
+      metadata: data.metadata,
+      collections: Object.fromEntries(
+        Object.entries(data.collections).map(([collectionName, collection]) => {
+          const variableNames = Object.keys(collection.variables);
+          const previewVariables = Object.fromEntries(
+            variableNames.slice(0, 3).map((name) => [name, collection.variables[name]])
+          );
+          if (variableNames.length > 3) {
+            previewVariables["..."] = `and ${variableNames.length - 3} more variables`;
+          }
+          return [
+            collectionName,
+            {
+              name: collection.name,
+              modes: collection.modes,
+              variableCount: variableNames.length,
+              variables: previewVariables
+            }
+          ];
+        })
+      )
+    };
+  }
+  function toggleGithubSettings() {
+    githubSettingsCollapsed = !githubSettingsCollapsed;
+    if (githubSettingsCollapsed) {
+      githubSettings.style.display = "none";
+      githubToggleIcon.textContent = "\u25B6";
+    } else {
+      githubSettings.style.display = "block";
+      githubToggleIcon.textContent = "\u25BC";
+    }
+  }
+  async function loadGithubSettings() {
+    const savedSettings = localStorage.getItem("githubSettings");
+    if (savedSettings) {
+      try {
+        const settings = JSON.parse(savedSettings);
+        githubRepoInput.value = settings.repoUrl || "";
+        githubBranchInput.value = settings.branch || "main";
+        githubFilePathInput.value = settings.filePath || "tokens/design-tokens.json";
+        if (settings.token) {
+          githubTokenInput.value = settings.token;
+        }
+      } catch (error) {
+        console.error("Failed to load GitHub settings:", error);
+      }
+    }
+  }
+  async function saveGithubSettings() {
+    const repoUrl = githubRepoInput.value.trim();
+    const branch = githubBranchInput.value.trim();
+    const filePath = githubFilePathInput.value.trim();
+    const token = githubTokenInput.value.trim();
+    if (!repoUrl || !branch || !filePath) {
+      showGithubStatus("error", "Please fill in all required fields");
+      return;
+    }
+    const parsed = parseRepoUrl(repoUrl);
+    if (!parsed) {
+      showGithubStatus("error", "Invalid repository URL format");
+      return;
+    }
+    const settings = {
+      repoUrl,
+      branch,
+      filePath
+    };
+    if (token) {
+      settings.token = token;
+    }
+    try {
+      localStorage.setItem("githubSettings", JSON.stringify(settings));
+      showGithubStatus("success", "Settings saved successfully!");
+      if (exportedData) {
+        pushToGithubBtn.disabled = false;
+      }
+    } catch (error) {
+      console.error("Failed to save settings:", error);
+      showGithubStatus("error", "Failed to save settings");
+    }
+  }
+  async function handlePushToGithub() {
+    if (!exportedData) {
+      showGithubStatus("error", "Please export tokens first");
+      return;
+    }
+    const repoUrl = githubRepoInput.value.trim();
+    const branch = githubBranchInput.value.trim();
+    const filePath = githubFilePathInput.value.trim();
+    const token = githubTokenInput.value.trim();
+    const commitMessage = githubCommitMessageInput.value.trim();
+    if (!repoUrl || !branch || !filePath || !token) {
+      showGithubStatus("error", "Please fill in all fields including token");
+      return;
+    }
+    const parsed = parseRepoUrl(repoUrl);
+    if (!parsed) {
+      showGithubStatus("error", "Invalid repository URL format");
+      return;
+    }
+    const format = getSelectedFormat();
+    let content;
+    try {
+      if (format === "json") {
+        content = JSON.stringify(exportedData, null, 2);
+      } else if (format === "css") {
+        content = convertToCSS(exportedData);
+      } else if (format === "developer") {
+        content = JSON.stringify(convertToDeveloperFormat(exportedData), null, 2);
+      } else {
+        throw new Error("Unknown format");
+      }
+    } catch (error) {
+      console.error("Failed to generate content:", error);
+      showGithubStatus("error", "Failed to generate export content");
+      return;
+    }
+    showGithubStatus("loading", "Pushing to GitHub...");
+    pushToGithubBtn.disabled = true;
+    pushToGithubBtn.textContent = "Pushing...";
+    try {
+      const result = await pushToGitHub({
+        config: {
+          token,
+          owner: parsed.owner,
+          repo: parsed.repo,
+          branch,
+          filePath
+        },
+        content,
+        commitMessage: commitMessage || "Update design tokens from Figma"
+      });
+      if (result.success) {
+        showGithubStatus("success", result.message);
+        if (result.commitUrl) {
+          githubStatus.innerHTML = `
+          \u2705 ${result.message} 
+          <a href="${result.commitUrl}" target="_blank" style="color: #18a0fb; text-decoration: none;">
+            View commit \u2192
+          </a>
+        `;
+        }
+      } else {
+        showGithubStatus("error", result.message);
+      }
+    } catch (error) {
+      console.error("Push error:", error);
+      showGithubStatus(
+        "error",
+        error instanceof Error ? error.message : "Failed to push to GitHub"
+      );
+    } finally {
+      pushToGithubBtn.disabled = false;
+      pushToGithubBtn.textContent = "\u{1F680} Push to GitHub";
+    }
+  }
+  function showGithubStatus(type, message) {
+    if (!githubStatus) return;
+    githubStatus.className = `status ${type}`;
+    githubStatus.textContent = message;
+    githubStatus.style.display = "block";
+    if (type === "success") {
+      setTimeout(() => {
+        githubStatus.style.display = "none";
+      }, 5e3);
+    }
+  }
+  function handleTokensExtractedWithGithub(data) {
+    handleTokensExtracted(data);
+    githubSection.style.display = "block";
+    const savedSettings = localStorage.getItem("githubSettings");
+    if (savedSettings) {
+      try {
+        const settings = JSON.parse(savedSettings);
+        githubRepoInput.value = settings.repoUrl || "";
+        githubBranchInput.value = settings.branch || "main";
+        githubFilePathInput.value = settings.filePath || "tokens/design-tokens.json";
+        if (settings.token) {
+          githubTokenInput.value = settings.token;
+        }
+        if (settings.repoUrl && settings.branch && settings.filePath) {
+          pushToGithubBtn.disabled = false;
+        }
+      } catch (error) {
+        console.error("Failed to parse saved settings:", error);
+      }
+    }
+  }
+  console.log("Document ready state:", document.readyState);
+  if (document.readyState === "loading") {
+    console.log("DOM still loading, waiting for DOMContentLoaded...");
+    document.addEventListener("DOMContentLoaded", () => {
+      console.log("DOM loaded via event, initializing plugin UI...");
+      initializePlugin();
+    });
+  } else {
+    console.log("DOM already loaded, initializing immediately...");
+    initializePlugin();
+  }
+})();
+
   </script>
 </body>
 

@@ -8,6 +8,7 @@ A production-ready Figma plugin that exports design variables and tokens into de
 - 📄 **Multiple Formats**: Export as W3C Developer JSON, complete JSON, or CSS custom properties
 - ⭐ **W3C Compliant**: Clean, production-ready format following industry standards
 - 🔄 **Mode Support**: Handle multiple modes (light/dark themes)
+- 🔗 **GitHub Integration**: Push tokens directly to GitHub repositories ✨ NEW
 - 🎯 **Type Safety**: Built with TypeScript for reliability
 - 📱 **Modern UI**: Clean, responsive interface
 - 🚀 **Production Ready**: Optimized build system with webpack
@@ -253,6 +254,35 @@ Ready-to-use CSS custom properties with automatic theme support.
 }
 ```
 
+
+## GitHub Integration 🔗
+
+Push your design tokens directly to a GitHub repository without leaving Figma!
+
+### Quick Start
+
+1. **Get a GitHub Token**:
+   - Create a [Personal Access Token](https://github.com/settings/tokens/new?scopes=repo&description=Figma%20Token%20Export) with `repo` scope
+   
+2. **Configure in Plugin**:
+   - Export your tokens
+   - Fill in repository details (e.g., `username/repo`)
+   - Enter your GitHub token
+   - Click "💾 Save Settings"
+
+3. **Push to GitHub**:
+   - Click "🚀 Push to GitHub"
+   - View your commit on GitHub!
+
+### Features
+
+- ✅ One-click push to any GitHub repository
+- ✅ Automatic file creation/updates
+- ✅ Works with all export formats (JSON, CSS, Developer JSON)
+- ✅ Settings persistence for quick re-use
+- ✅ Direct links to commits
+
+📖 **[Complete GitHub Integration Guide →](GITHUB_INTEGRATION.md)**
 
 ## Contributing
 

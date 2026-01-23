@@ -39,15 +39,34 @@ export interface AliasData {
 
 export type ExportFormat = 'json' | 'css' | 'developer';
 
+// GitHub settings stored in clientStorage
+export interface GitHubSettings {
+  repoUrl: string;
+  branch: string;
+  filePath: string;
+  token?: string; // Optional: may be entered each time for security
+}
+
 export interface UIMessage {
-  type: 'export-tokens' | 'close-plugin';
+  type: 'export-tokens' | 'close-plugin' | 'push-to-github';
   format?: ExportFormat;
+  githubConfig?: {
+    token: string;
+    owner: string;
+    repo: string;
+    branch: string;
+    filePath: string;
+    commitMessage: string;
+  };
+  content?: string;
 }
 
 export interface PluginMessage {
-  type: 'tokens-extracted' | 'error';
+  type: 'tokens-extracted' | 'error' | 'github-push-result';
   data?: ExportData;
   message?: string;
+  success?: boolean;
+  commitUrl?: string;
 }
 
 // Color value interface for better type safety

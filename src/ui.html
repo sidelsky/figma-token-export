@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>Design Token Export</title>
@@ -7,7 +8,7 @@
     * {
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       margin: 0;
@@ -16,45 +17,45 @@
       color: #333;
       line-height: 1.5;
     }
-    
+
     .container {
       max-width: 100%;
     }
-    
+
     h1 {
       font-size: 18px;
       font-weight: 600;
       margin: 0 0 16px 0;
       color: #1a1a1a;
     }
-    
+
     .description {
       font-size: 14px;
       color: #666;
       margin-bottom: 24px;
       line-height: 1.4;
     }
-    
+
     .export-section {
       border: 1px solid #e1e5e9;
       border-radius: 8px;
       padding: 16px;
       margin-bottom: 16px;
     }
-    
+
     .export-title {
       font-size: 14px;
       font-weight: 500;
       margin-bottom: 8px;
       color: #1a1a1a;
     }
-    
+
     .export-info {
       font-size: 12px;
       color: #666;
       margin-bottom: 16px;
     }
-    
+
     .button {
       background: #18a0fb;
       color: white;
@@ -67,26 +68,26 @@
       width: 100%;
       transition: background-color 0.2s ease;
     }
-    
+
     .button:hover {
       background: #1592e6;
     }
-    
+
     .button:disabled {
       background: #b3d9ff;
       cursor: not-allowed;
     }
-    
+
     .button.secondary {
       background: #ffffff;
       color: #666;
       border: 1px solid #e1e5e9;
     }
-    
+
     .button.secondary:hover {
       background: #f8f9fa;
     }
-    
+
     .status {
       margin-top: 16px;
       padding: 12px;
@@ -94,37 +95,37 @@
       font-size: 12px;
       display: none;
     }
-    
+
     .status.success {
       background: #e8f5e8;
       color: #2d6a2d;
       border: 1px solid #c3e6c3;
     }
-    
+
     .status.error {
       background: #ffeaea;
       color: #c53030;
       border: 1px solid #feb2b2;
     }
-    
+
     .status.loading {
       background: #e6f3ff;
       color: #1a73e8;
       border: 1px solid #b3d9ff;
     }
-    
+
     .preview-section {
       margin-top: 16px;
       display: none;
     }
-    
+
     .preview-title {
       font-size: 14px;
       font-weight: 500;
       margin-bottom: 8px;
       color: #1a1a1a;
     }
-    
+
     .preview-content {
       background: #f8f9fa;
       border: 1px solid #e1e5e9;
@@ -137,60 +138,141 @@
       white-space: pre-wrap;
       word-break: break-word;
     }
-    
+
     .actions {
       display: flex;
       gap: 8px;
       margin-top: 16px;
     }
-    
+
     .actions .button {
       flex: 1;
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>Design Token Export</h1>
     <p class="description">
       Export your Figma variables and design tokens into a JSON format that developers can easily use in their projects.
     </p>
-    
+
     <div class="export-section">
       <div class="export-title">Export Options</div>
       <div class="export-info">
         This will export all local variable collections including colors, typography, spacing, and other design tokens.
       </div>
-      
+
       <div class="format-options" style="margin-bottom: 16px;">
         <div style="font-size: 12px; font-weight: 500; margin-bottom: 8px; color: #1a1a1a;">Export Format:</div>
-        <select id="exportFormat" style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px; background: #ffffff; color: #333;">
+        <select id="exportFormat"
+          style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px; background: #ffffff; color: #333;">
           <option value="json">JSON (for JavaScript/build tools)</option>
           <option value="css">CSS Custom Properties</option>
           <option value="developer">Developer JSON (W3C Format)</option>
         </select>
       </div>
-      
+
       <button id="exportBtn" class="button">
         Export Design Tokens
       </button>
-      
+
       <div id="status" class="status"></div>
     </div>
-    
+
     <div id="previewSection" class="preview-section">
       <div id="previewTitle" class="preview-title">Export Preview</div>
       <div id="previewContent" class="preview-content"></div>
-      
+
       <div class="actions">
         <button id="downloadBtn" class="button">Download</button>
         <button id="copyBtn" class="button secondary">Copy to Clipboard</button>
       </div>
     </div>
-    
+
+    <!-- GitHub Integration Section -->
+    <div id="githubSection" class="export-section" style="display: none;">
+      <div class="export-title"
+        style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" id="githubToggle">
+        <span>🔗 Push to GitHub</span>
+        <span id="githubToggleIcon">▼</span>
+      </div>
+
+      <div id="githubSettings" style="margin-top: 16px;">
+        <div class="export-info">
+          Configure your GitHub repository to automatically push design tokens.
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
+            Repository URL or owner/repo
+          </label>
+          <input id="githubRepo" type="text" placeholder="username/repo or https://github.com/username/repo"
+            style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
+          <div style="font-size: 11px; color: #666; margin-top: 4px;">
+            Example: myorg/design-tokens
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+          <div style="flex: 1;">
+            <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
+              Branch
+            </label>
+            <input id="githubBranch" type="text" value="main" placeholder="main"
+              style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
+          </div>
+          <div style="flex: 2;">
+            <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
+              File Path
+            </label>
+            <input id="githubFilePath" type="text" value="tokens/design-tokens.json"
+              placeholder="tokens/design-tokens.json"
+              style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
+            GitHub Personal Access Token
+          </label>
+          <input id="githubToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+            style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
+          <div style="font-size: 11px; color: #666; margin-top: 4px;">
+            <a href="https://github.com/settings/tokens/new?scopes=repo&description=Figma%20Token%20Export"
+              target="_blank" style="color: #18a0fb; text-decoration: none;">
+              Create a token
+            </a> with 'repo' scope
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a;">
+            Commit Message
+          </label>
+          <input id="githubCommitMessage" type="text" value="Update design tokens from Figma"
+            placeholder="Update design tokens"
+            style="width: 100%; padding: 8px 12px; border: 1px solid #e1e5e9; border-radius: 6px; font-size: 14px;" />
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <button id="saveGithubSettings" class="button secondary" style="flex: 1;">
+            💾 Save Settings
+          </button>
+          <button id="pushToGithub" class="button" style="flex: 2;" disabled>
+            🚀 Push to GitHub
+          </button>
+        </div>
+
+        <div id="githubStatus" class="status" style="margin-top: 12px;"></div>
+      </div>
+    </div>
+
     <div class="actions">
       <button id="closeBtn" class="button secondary">Close</button>
     </div>
   </div>
 </body>
-</html> 
+
+</html>
