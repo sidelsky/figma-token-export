@@ -172,7 +172,7 @@ async function processVariable(
         );
         variableData.aliases[mode.name] = {
           id: value.id,
-          name: aliasedVariable?.name || 'Unknown',
+          name: (aliasedVariable && aliasedVariable.name) || 'Unknown',
         };
       } else {
         // Handle direct values
