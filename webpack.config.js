@@ -75,15 +75,8 @@ module.exports = (env, argv) => {
           template: './src/ui.html',
           filename: 'ui.html',
           chunks: ['ui'],
-          inject: 'body',
-          minify: isProduction ? {
-            collapseWhitespace: true,
-            removeComments: true,
-            removeRedundantAttributes: true,
-            removeScriptTypeAttributes: true,
-            removeStyleLinkTypeAttributes: true,
-            useShortDoctype: true,
-          } : false,
+          inject: false, // Manual script tag in template
+          minify: false, // Disable minification to avoid parsing issues in Figma
         }),
       ],
       optimization: {
