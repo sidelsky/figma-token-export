@@ -1516,9 +1516,14 @@
           <pre id="previewContent" class="code-preview"></pre>
         </div>
 
-        <button id="downloadBtn" class="btn btn-primary">
-          Download
-        </button>
+        <div class="flex-col">
+          <button id="copyBtn" class="btn btn-secondary w-full mb-2">
+            Copy to Clipboard
+          </button>
+          <button id="downloadBtn" class="btn btn-primary w-full">
+            Download
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1599,7 +1604,7 @@
       'variables': '30days'
     };
     // DOM elements
-    let exportBtn, downloadBtn, status, previewSection, previewContent, previewTitle;
+    let exportBtn, downloadBtn, copyBtn, status, previewSection, previewContent, previewTitle;
     let tokenSelection, tokenCollections, selectAllToggle;
 
     // Initialize plugin after DOM is ready
@@ -1609,6 +1614,7 @@
       // DOM elements
       exportBtn = document.getElementById('exportBtn');
       downloadBtn = document.getElementById('downloadBtn');
+      copyBtn = document.getElementById('copyBtn');
       status = document.getElementById('status');
       previewSection = document.getElementById('previewSection');
       previewContent = document.getElementById('previewContent');
@@ -1622,6 +1628,7 @@
       // Event listeners
       exportBtn.addEventListener('click', handleExport);
       downloadBtn.addEventListener('click', handleDownload);
+      copyBtn.addEventListener('click', handleCopy);
 
       // Token selection event listeners
       if (selectAllToggle) {
@@ -2358,6 +2365,61 @@
       URL.revokeObjectURL(url);
     }
 
+    // Handle copy to clipboard
+    function handleCopy() {
+      if (!exportedData) return;
+
+      const format = getSelectedFormat();
+
+      try {
+        let content;
+        let message;
+
+        if (format === 'json') {
+          content = JSON.stringify(exportedData, null, 2);
+          message = 'JSON copied to clipboard!';
+        } else if (format === 'developer') {
+          content = JSON.stringify(convertToDeveloperFormat(exportedData), null, 2);
+          message = 'Developer JSON copied to clipboard!';
+        } else if (format === 'css') {
+          content = convertToCSS(exportedData);
+          message = 'CSS copied to clipboard!';
+        } else if (format === 'scss') {
+          content = convertToSCSS(exportedData);
+          message = 'SCSS copied to clipboard!';
+        } else if (format === 'tailwind') {
+          content = convertToTailwind(exportedData);
+          message = 'Tailwind config copied to clipboard!';
+        } else if (format === 'react-native') {
+          content = convertToReactNative(exportedData);
+          message = 'React Native code copied to clipboard!';
+        } else if (format === 'flutter') {
+          content = convertToFlutter(exportedData);
+          message = 'Flutter code copied to clipboard!';
+        } else if (format === 'ios') {
+          content = convertToiOS(exportedData);
+          message = 'iOS Swift code copied to clipboard!';
+        } else if (format === 'android') {
+          content = convertToAndroid(exportedData);
+          message = 'Android XML copied to clipboard!';
+        } else {
+          content = JSON.stringify(exportedData, null, 2);
+          message = 'Content copied to clipboard!';
+        }
+
+        // Use the Clipboard API
+        navigator.clipboard.writeText(content).then(function() {
+          showStatus('success', message);
+        }).catch(function(error) {
+          console.error('Copy error:', error);
+          showStatus('error', 'Failed to copy to clipboard');
+        });
+      } catch (error) {
+        console.error('Copy error:', error);
+        showStatus('error', 'Failed to copy to clipboard');
+      }
+    }
+
     // Update download button text based on selected format
     function updateDownloadButtonText() {
       if (!downloadBtn) return;
@@ -2366,24 +2428,34 @@
 
       if (format === 'json') {
         downloadBtn.textContent = 'Download JSON';
+        if (copyBtn) copyBtn.textContent = 'Copy JSON';
       } else if (format === 'developer') {
         downloadBtn.textContent = 'Download Developer JSON';
+        if (copyBtn) copyBtn.textContent = 'Copy Developer JSON';
       } else if (format === 'css') {
         downloadBtn.textContent = 'Download CSS';
+        if (copyBtn) copyBtn.textContent = 'Copy CSS';
       } else if (format === 'scss') {
         downloadBtn.textContent = 'Download SCSS';
+        if (copyBtn) copyBtn.textContent = 'Copy SCSS';
       } else if (format === 'tailwind') {
         downloadBtn.textContent = 'Download Tailwind';
+        if (copyBtn) copyBtn.textContent = 'Copy Tailwind';
       } else if (format === 'react-native') {
         downloadBtn.textContent = 'Download React Native';
+        if (copyBtn) copyBtn.textContent = 'Copy React Native';
       } else if (format === 'flutter') {
         downloadBtn.textContent = 'Download Flutter';
+        if (copyBtn) copyBtn.textContent = 'Copy Flutter';
       } else if (format === 'ios') {
         downloadBtn.textContent = 'Download Swift';
+        if (copyBtn) copyBtn.textContent = 'Copy Swift';
       } else if (format === 'android') {
         downloadBtn.textContent = 'Download XML';
+        if (copyBtn) copyBtn.textContent = 'Copy XML';
       } else {
         downloadBtn.textContent = 'Download';
+        if (copyBtn) copyBtn.textContent = 'Copy to Clipboard';
       }
     }
 
