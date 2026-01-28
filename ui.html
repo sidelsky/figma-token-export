@@ -1539,6 +1539,11 @@
           </svg>
           Generate Design Tokens
         </button>
+        
+        <!-- Format Change Hint -->
+        <p id="formatChangeHint" class="text-sm" style="margin-top: 12px; color: #666; text-align: center; display: none;">
+          💡 Use the Export Format dropdown above to change the output type
+        </p>
 
       </div>
 
@@ -1639,7 +1644,7 @@
     };
     // DOM elements
     let exportBtn, downloadBtn, copyBtn, status, previewStatus, previewSection, previewContent, previewTitle;
-    let tokenSelection, tokenCollections, selectAllToggle;
+    let tokenSelection, tokenCollections, selectAllToggle, formatChangeHint;
 
     // Initialize plugin after DOM is ready
     function initializePlugin() {
@@ -1657,6 +1662,7 @@
       tokenSelection = document.getElementById('tokenSelection');
       tokenCollections = document.getElementById('tokenCollections');
       selectAllToggle = document.getElementById('selectAllToggle');
+      formatChangeHint = document.getElementById('formatChangeHint');
 
       console.log('All DOM elements found, setting up event listeners...');
 
@@ -2386,6 +2392,10 @@
         exportedData = selectedData;
         showPreview(selectedData);
         showStatus('success', 'Selected tokens ready for export!');
+        
+        // Hide export button and show format change hint
+        exportBtn.style.display = 'none';
+        formatChangeHint.style.display = 'block';
       }
     }
 
