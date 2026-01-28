@@ -21,8 +21,13 @@ __webpack_require__.r(__webpack_exports__);
 // Main plugin logic for extracting and exporting Figma variables
 /// <reference types="@figma/plugin-typings" />
 console.log('Design Token Export plugin loaded');
-// Show UI when plugin is launched
-figma.showUI(__html__, { width: 480, height: 500 });
+// Show UI when plugin is launched - resizable window
+figma.showUI(__html__, {
+    width: 480,
+    height: 500,
+    themeColors: true,
+    title: 'Design Token Export'
+});
 // Handle messages from the UI
 figma.ui.onmessage = async (msg) => {
     console.log('Plugin received message:', msg);

@@ -9,7 +9,7 @@ A production-ready Figma plugin that exports design variables and tokens into de
 - ⭐ **W3C Compliant**: Clean, production-ready format following industry standards
 - 🔄 **Mode Support**: Handle multiple modes (light/dark themes)
 - 🎯 **Type Safety**: Built with TypeScript for reliability
-- 📱 **Modern UI**: Clean, responsive interface
+- 📱 **Modern UI**: Clean, responsive interface with floating notifications at the bottom
 - 🚀 **Production Ready**: Optimized build system with webpack
 
 ## Development

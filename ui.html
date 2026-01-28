@@ -45,9 +45,9 @@
     /* Layout */
     .container {
       max-width: 768px;
-      min-width: 440px;
+      min-width: 320px; /* Support narrower sidebar */
       margin: 0 auto;
-      padding: 20px;
+      padding: 16px; /* Slightly less padding for sidebar */
     }
 
     /* Typography */
@@ -1085,15 +1085,16 @@
       bottom: 0;
       left: 0;
       right: 0;
-      margin: 0 16px 16px 16px;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 13px;
+      margin: 0 12px 12px 12px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 12px;
       font-weight: 500;
       z-index: 9999;
       box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
       animation: slideUpNotification 0.3s ease-out;
       transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+      line-height: 1.4;
     }
 
     #status.hiding,
