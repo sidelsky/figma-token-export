@@ -680,7 +680,7 @@ function handleClose(): void {
 }
 
 /**
- * Show status message
+ * Show status message with floating notification at the bottom
  */
 function showStatus(
   type: 'success' | 'error' | 'loading',
@@ -688,15 +688,48 @@ function showStatus(
 ): void {
   if (!status) return;
 
+  // Clear any existing hide timeout
+  const existingTimeout = (status as any)._hideTimeout;
+  if (existingTimeout) {
+    clearTimeout(existingTimeout);
+  }
+
+  // Remove hiding class and show notification
+  status.classList.remove('hiding');
   status.className = `status ${type}`;
   status.textContent = message;
   status.style.display = 'block';
 
-  if (type === 'success') {
-    setTimeout(() => {
-      status.style.display = 'none';
-    }, 3000);
+  // Auto-hide all notification types after a delay
+  // Success and loading messages disappear after 3s
+  // Error messages stay longer (5s) so users can read them
+  const hideDelay = type === 'error' ? 5000 : 3000;
+  
+  // Don't auto-hide loading messages - they should be manually dismissed
+  if (type !== 'loading') {
+    const hideTimeout = setTimeout(() => {
+      hideNotification();
+    }, hideDelay);
+    
+    // Store timeout reference so we can clear it if needed
+    (status as any)._hideTimeout = hideTimeout;
   }
+}
+
+/**
+ * Hide notification with smooth animation
+ */
+function hideNotification(): void {
+  if (!status) return;
+  
+  // Add hiding class for fade-out animation
+  status.classList.add('hiding');
+  
+  // Actually hide after animation completes
+  setTimeout(() => {
+    status.style.display = 'none';
+    status.classList.remove('hiding');
+  }, 300); // Match the CSS transition duration
 }
 
 /**

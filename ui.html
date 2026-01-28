@@ -1078,7 +1078,41 @@
       word-wrap: break-word;
     }
 
-    /* Status Messages */
+    /* Status Messages - Floating Footer Notifications */
+    #status,
+    #previewStatus {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: 0 16px 16px 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 9999;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+      animation: slideUpNotification 0.3s ease-out;
+      transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    }
+
+    #status.hiding,
+    #previewStatus.hiding {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    @keyframes slideUpNotification {
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
     .status-success {
       background-color: rgb(240 253 244);
       color: rgb(22 101 52);
@@ -1505,8 +1539,6 @@
           Generate Design Tokens
         </button>
 
-        <!-- Status Message -->
-        <div id="status" class="mt-4 hidden p-3 rounded-md text-sm border"></div>
       </div>
 
       <!-- Preview Section -->
@@ -1525,8 +1557,6 @@
           </button>
         </div>
 
-        <!-- Preview Status Message -->
-        <div id="previewStatus" class="mt-4 hidden p-3 rounded-md text-sm border"></div>
       </div>
     </div>
 
@@ -1849,11 +1879,17 @@
       }
     }
 
-    // Show status message with improved styling
+    // Show status message with floating footer notification
     function showStatus(type, message) {
       if (!status) return;
 
-      status.className = 'mt-4 p-3 rounded-md text-sm border';
+      // Clear any existing timeout
+      if (status._hideTimeout) {
+        clearTimeout(status._hideTimeout);
+      }
+
+      // Reset classes
+      status.className = 'p-3 rounded-md text-sm border';
 
       if (type === 'success') {
         status.className += ' status-success';
@@ -1864,21 +1900,41 @@
       }
 
       status.textContent = message;
-      status.classList.remove('hidden');
+      status.classList.remove('hidden', 'hiding');
       status.classList.add('fade-in');
 
-      if (type === 'success') {
-        setTimeout(function () {
-          status.classList.add('hidden');
-        }, 3000);
+      // Auto-hide after delay (except loading messages)
+      if (type !== 'loading') {
+        var hideDelay = type === 'error' ? 5000 : 3000;
+        status._hideTimeout = setTimeout(function () {
+          hideNotification(status);
+        }, hideDelay);
       }
     }
 
-    // Show status message in preview section
+    // Hide notification with smooth animation
+    function hideNotification(element) {
+      if (!element) return;
+      
+      element.classList.add('hiding');
+      
+      setTimeout(function() {
+        element.classList.add('hidden');
+        element.classList.remove('hiding');
+      }, 300);
+    }
+
+    // Show status message in preview section with floating footer notification
     function showPreviewStatus(type, message) {
       if (!previewStatus) return;
 
-      previewStatus.className = 'mt-4 p-3 rounded-md text-sm border';
+      // Clear any existing timeout
+      if (previewStatus._hideTimeout) {
+        clearTimeout(previewStatus._hideTimeout);
+      }
+
+      // Reset classes
+      previewStatus.className = 'p-3 rounded-md text-sm border';
 
       if (type === 'success') {
         previewStatus.className += ' status-success';
@@ -1889,13 +1945,15 @@
       }
 
       previewStatus.textContent = message;
-      previewStatus.classList.remove('hidden');
+      previewStatus.classList.remove('hidden', 'hiding');
       previewStatus.classList.add('fade-in');
 
-      if (type === 'success' || type === 'error') {
-        setTimeout(function () {
-          previewStatus.classList.add('hidden');
-        }, 3000);
+      // Auto-hide after delay (except loading messages)
+      if (type !== 'loading') {
+        var hideDelay = type === 'error' ? 5000 : 3000;
+        previewStatus._hideTimeout = setTimeout(function () {
+          hideNotification(previewStatus);
+        }, hideDelay);
       }
     }
     // Toggle section visibility with standardized toggle button
@@ -4944,6 +5002,10 @@
       initializePlugin();
     }
   </script>
+
+  <!-- Floating notifications at bottom -->
+  <div id="status" class="hidden p-3 rounded-md text-sm border"></div>
+  <div id="previewStatus" class="hidden p-3 rounded-md text-sm border"></div>
 </body>
 
 </html>
