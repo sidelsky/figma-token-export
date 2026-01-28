@@ -1524,6 +1524,9 @@
             Download
           </button>
         </div>
+
+        <!-- Preview Status Message -->
+        <div id="previewStatus" class="mt-4 hidden p-3 rounded-md text-sm border"></div>
       </div>
     </div>
 
@@ -1604,7 +1607,7 @@
       'variables': '30days'
     };
     // DOM elements
-    let exportBtn, downloadBtn, copyBtn, status, previewSection, previewContent, previewTitle;
+    let exportBtn, downloadBtn, copyBtn, status, previewStatus, previewSection, previewContent, previewTitle;
     let tokenSelection, tokenCollections, selectAllToggle;
 
     // Initialize plugin after DOM is ready
@@ -1616,6 +1619,7 @@
       downloadBtn = document.getElementById('downloadBtn');
       copyBtn = document.getElementById('copyBtn');
       status = document.getElementById('status');
+      previewStatus = document.getElementById('previewStatus');
       previewSection = document.getElementById('previewSection');
       previewContent = document.getElementById('previewContent');
       previewTitle = document.getElementById('previewTitle');
@@ -1870,6 +1874,30 @@
       }
     }
 
+    // Show status message in preview section
+    function showPreviewStatus(type, message) {
+      if (!previewStatus) return;
+
+      previewStatus.className = 'mt-4 p-3 rounded-md text-sm border';
+
+      if (type === 'success') {
+        previewStatus.className += ' status-success';
+      } else if (type === 'error') {
+        previewStatus.className += ' status-error';
+      } else if (type === 'loading') {
+        previewStatus.className += ' status-loading';
+      }
+
+      previewStatus.textContent = message;
+      previewStatus.classList.remove('hidden');
+      previewStatus.classList.add('fade-in');
+
+      if (type === 'success' || type === 'error') {
+        setTimeout(function () {
+          previewStatus.classList.add('hidden');
+        }, 3000);
+      }
+    }
     // Toggle section visibility with standardized toggle button
     function toggleSection(sectionId) {
       console.log('Toggling section:', sectionId);
@@ -2407,16 +2435,39 @@
           message = 'Content copied to clipboard!';
         }
 
-        // Use the Clipboard API
-        navigator.clipboard.writeText(content).then(function() {
-          showStatus('success', message);
-        }).catch(function(error) {
-          console.error('Copy error:', error);
-          showStatus('error', 'Failed to copy to clipboard');
-        });
+        // Use fallback copy method for Figma plugin environment
+        // Create a temporary textarea element
+        const textarea = document.createElement('textarea');
+        textarea.value = content;
+        textarea.style.position = 'fixed';
+        textarea.style.top = '0';
+        textarea.style.left = '0';
+        textarea.style.opacity = '0';
+        textarea.style.pointerEvents = 'none';
+        document.body.appendChild(textarea);
+        
+        // Select and copy the content
+        textarea.select();
+        textarea.setSelectionRange(0, content.length);
+        
+        try {
+          const successful = document.execCommand('copy');
+          document.body.removeChild(textarea);
+          
+          if (successful) {
+            showPreviewStatus('success', message);
+          } else {
+            console.error('Copy command failed');
+            showPreviewStatus('error', 'Failed to copy to clipboard');
+          }
+        } catch (err) {
+          document.body.removeChild(textarea);
+          console.error('Copy error:', err);
+          showPreviewStatus('error', 'Failed to copy to clipboard');
+        }
       } catch (error) {
         console.error('Copy error:', error);
-        showStatus('error', 'Failed to copy to clipboard');
+        showPreviewStatus('error', 'Failed to copy to clipboard');
       }
     }
 
