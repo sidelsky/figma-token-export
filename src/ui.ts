@@ -346,6 +346,7 @@ function categorizeCollection(collectionName: string): string {
   const name = collectionName.toLowerCase();
 
   // Map common collection names to standard categories
+  // Return lowercase/hyphenated strings - camelCase conversion happens later
   if (name.includes('color') || name.includes('colour')) return 'colors';
   if (name.includes('spacing') || name.includes('space')) return 'spacing';
   if (
@@ -354,7 +355,7 @@ function categorizeCollection(collectionName: string): string {
     name.includes('text')
   )
     return 'typography';
-  if (name.includes('radius') || name.includes('border')) return 'borderRadius';
+  if (name.includes('radius') || name.includes('border')) return 'border-radius';
   if (name.includes('shadow')) return 'shadows';
   if (name.includes('size') || name.includes('sizing')) return 'sizing';
   if (name.includes('opacity') || name.includes('alpha')) return 'opacity';
@@ -404,7 +405,7 @@ function parseTokenName(name: string): string[] {
     parts = name.split('_');
   } else {
     // Try to split camelCase
-    parts = name.split(/(?=[A-Z])/).map(p => p.toLowerCase());
+    parts = name.split(/(?=[A-Z])/);
 
     // If no camelCase detected, use the whole name
     if (parts.length === 1) {
@@ -412,8 +413,8 @@ function parseTokenName(name: string): string[] {
     }
   }
 
-  // Clean up parts
-  return parts.map(p => p.trim().toLowerCase()).filter(p => p.length > 0);
+  // Clean up parts - don't lowercase, let toCamelCase handle it
+  return parts.map(p => p.trim()).filter(p => p.length > 0);
 }
 
 /**
@@ -438,6 +439,99 @@ function setNestedValue(obj: any, path: string[], value: any): void {
   }
 
   setNestedValue(obj[first], rest, value);
+}
+
+/**
+ * Convert to React Native flattened format
+ * Removes all $ metadata, preserves structure, renames borderRadius → radius
+ */
+function convertToReactNative(data: ExportData): string {
+  // Helper: Convert string to camelCase only if it has separators
+  function toCamelCaseRN(str: string): string {
+    str = str.trim();
+    
+    // If string has no separators (hyphens, underscores, spaces), return as-is
+    if (!/[-_\s]/.test(str)) {
+      return str;
+    }
+    
+    // Otherwise, convert to camelCase
+    return str
+      .replace(/[^\w\s-]/g, '') // Remove special chars except word chars, spaces, hyphens
+      .replace(/[-_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
+      .replace(/^[A-Z]/, c => c.toLowerCase())
+      .replace(/^\d/, match => '_' + match); // Prefix numbers with underscore
+  }
+
+  // Helper: Filter RN-safe values
+  function isRNSafe(value: any, key: string): boolean {
+    // Remove boolean values for non-style keys like "detail", "subtitle"
+    if (typeof value === 'boolean' && (key === 'detail' || key === 'subtitle')) {
+      return false;
+    }
+    // Keep strings, numbers, objects (arrays are rare in tokens)
+    return (
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'object'
+    );
+  }
+
+  const tokens: Record<string, any> = {};
+
+  // Process each collection
+  Object.entries(data.collections).forEach(([collectionName, collection]) => {
+    // Use collection name as-is, just convert to camelCase
+    const camelCategory = toCamelCaseRN(collectionName);
+
+    if (!tokens[camelCategory]) {
+      tokens[camelCategory] = {};
+    }
+
+    // Process each variable in the collection
+    Object.entries(collection.variables).forEach(([varName, variable]) => {
+      // Get the primary mode value (Default or first available)
+      const primaryMode =
+        collection.modes.find(m => m.name === 'Default' || m.name === 'Light') ||
+        collection.modes[0];
+
+      if (!primaryMode) return;
+
+      const primaryModeName = primaryMode.name;
+      let value = variable.values[primaryModeName];
+
+      // Skip if no value
+      if (value === undefined) {
+        // Check for alias
+        if (variable.aliases[primaryModeName]) {
+          const aliasName = variable.aliases[primaryModeName].name;
+          value = aliasName;
+        } else {
+          return;
+        }
+      }
+
+      // Skip non-RN-safe values
+      if (!isRNSafe(value, varName)) {
+        return;
+      }
+
+      // Parse variable name into nested structure with camelCase
+      const tokenPath = parseTokenName(varName).map(toCamelCaseRN);
+      setNestedValue(tokens[camelCategory], tokenPath, value);
+    });
+  });
+
+  // Convert to JavaScript object literal
+  let js = '// React Native Design Tokens\n';
+  js += '// Flattened from Figma variables\n';
+  js += `// Exported at: ${data.metadata.exportedAt}\n\n`;
+  js += `export const tokens = ${JSON.stringify(tokens, null, 2)};\n\n`;
+  js += '// Usage:\n';
+  js += "// import { tokens } from './tokens';\n";
+  js += '// <View style={{ backgroundColor: tokens.colors.primary, padding: tokens.spacing.md }} />\n';
+
+  return js;
 }
 
 /**
@@ -474,6 +568,14 @@ function handleDownload(): void {
         `design-tokens-developer-${dateStr}.json`
       );
       showStatus('success', 'Developer JSON file downloaded successfully!');
+    } else if (format === 'react-native') {
+      const content = convertToReactNative(exportedData);
+      downloadFile(
+        content,
+        'application/javascript',
+        `tokens-${dateStr}.js`
+      );
+      showStatus('success', 'React Native JS file downloaded successfully!');
     }
   } catch (error) {
     console.error('Download error:', error);
@@ -523,6 +625,10 @@ function updateDownloadButtonText(): void {
       downloadBtn.textContent = 'Download Developer JSON';
       copyBtn.textContent = 'Copy Developer JSON';
       break;
+    case 'react-native':
+      downloadBtn.textContent = 'Download React Native';
+      copyBtn.textContent = 'Copy React Native';
+      break;
     default:
       downloadBtn.textContent = 'Download';
       copyBtn.textContent = 'Copy to Clipboard';
@@ -549,6 +655,9 @@ async function handleCopy(): Promise<void> {
     } else if (format === 'developer') {
       content = JSON.stringify(convertToDeveloperFormat(exportedData), null, 2);
       message = 'Developer JSON copied to clipboard!';
+    } else if (format === 'react-native') {
+      content = convertToReactNative(exportedData);
+      message = 'React Native JS copied to clipboard!';
     } else {
       throw new Error('Unknown format');
     }
@@ -619,6 +728,10 @@ function updatePreviewContent(): void {
     previewContent.textContent = JSON.stringify(developerContent, null, 2);
     if (previewTitle)
       previewTitle.textContent = 'Developer JSON Preview (W3C Format)';
+  } else if (format === 'react-native') {
+    const reactNativeContent = convertToReactNative(exportedData);
+    previewContent.textContent = reactNativeContent;
+    if (previewTitle) previewTitle.textContent = 'React Native Preview';
   } else {
     const preview = createJSONPreview(exportedData);
     previewContent.textContent = JSON.stringify(preview, null, 2);

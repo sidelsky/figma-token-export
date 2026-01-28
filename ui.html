@@ -1423,7 +1423,7 @@
     <div class="mb-6">
       <h1 class="text-2xl font-semibold tracking-tight text-foreground" style="margin-top: 0px;">Design Token Export
       </h1>
-      <p class="text-md text-muted-foreground leading-relaxed pt-0">
+      <p class="text-md leading-relaxed pt-0">
         Export your Figma variables and design tokens into a JSON format that developers can easily use in their
         projects.
       </p>
@@ -1488,7 +1488,7 @@
                 <div class="select-item" data-value="css">CSS Custom Properties</div>
                 <div class="select-item" data-value="scss">SCSS/Sass (variables & mixins)</div>
                 <div class="select-item" data-value="tailwind">Tailwind CSS (config.js)</div>
-                <div class="select-item" data-value="react-native">React Native (StyleSheet)</div>
+                <div class="select-item" data-value="react-native">React Native JS (Flattened)</div>
                 <div class="select-item" data-value="flutter">Flutter/Dart (Color classes)</div>
                 <div class="select-item" data-value="ios">iOS Swift (UIColor extensions)</div>
                 <div class="select-item" data-value="android">Android XML (colors.xml)</div>
@@ -2807,10 +2807,11 @@
       const name = collectionName.toLowerCase();
 
       // Map common collection names to standard categories
+      // Return lowercase/hyphenated strings - camelCase conversion happens later
       if (name.includes('color') || name.includes('colour')) return 'colors';
       if (name.includes('spacing') || name.includes('space')) return 'spacing';
       if (name.includes('typography') || name.includes('font') || name.includes('text')) return 'typography';
-      if (name.includes('radius') || name.includes('border')) return 'borderRadius';
+      if (name.includes('radius') || name.includes('border')) return 'border-radius';
       if (name.includes('shadow')) return 'shadows';
       if (name.includes('size') || name.includes('sizing')) return 'sizing';
       if (name.includes('opacity') || name.includes('alpha')) return 'opacity';
@@ -2977,82 +2978,115 @@
 
     // Convert JSON data to React Native StyleSheet
     function convertToReactNative(data) {
-      let rn = '// Design Tokens exported from Figma\n';
-      rn += '// Exported at: ' + data.metadata.exportedAt + '\n';
-      rn += '// File: ' + (data.metadata.figmaFileKey || 'Unknown') + '\n';
-      rn += '// Collections: ' + Object.keys(data.collections).join(', ') + '\n\n';
+      // Helper: Convert string to camelCase only if it has separators
+      function toCamelCase(str) {
+        str = str.trim();
+        
+        // If string has no separators (hyphens, underscores, spaces), return as-is
+        if (!/[-_\s]/.test(str)) {
+          return str;
+        }
+        
+        // Otherwise, convert to camelCase
+        return str
+          .replace(/[^\w\s-]/g, '') // Remove special chars except word chars, spaces, hyphens
+          .replace(/[-_\s]+(.)?/g, (_, c) => c ? c.toUpperCase() : '')
+          .replace(/^[A-Z]/, c => c.toLowerCase())
+          .replace(/^\d/, match => '_' + match); // Prefix numbers with underscore
+      }
 
-      rn += 'import { StyleSheet } from \'react-native\';\n\n';
+      // Helper: Filter RN-safe values
+      function isRNSafe(value, key) {
+        // Remove boolean values for non-style keys like "detail", "subtitle"
+        if (typeof value === 'boolean' && (key === 'detail' || key === 'subtitle')) {
+          return false;
+        }
+        // Keep strings, numbers, objects (arrays are rare in tokens)
+        return typeof value === 'string' || typeof value === 'number' || typeof value === 'object';
+      }
 
-      rn += '// Design Tokens\n';
-      rn += 'export const tokens = {\n';
+      // Helper: Convert keys to camelCase recursively
+      function convertKeysToCamelCase(obj) {
+        if (typeof obj !== 'object' || obj === null) {
+          return obj;
+        }
+        
+        const result = {};
+        for (const key in obj) {
+          const camelKey = toCamelCase(key);
+          const value = obj[key];
+          
+          // Skip non-RN-safe values
+          if (!isRNSafe(value, key)) {
+            continue;
+          }
+          
+          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+            result[camelKey] = convertKeysToCamelCase(value);
+          } else {
+            result[camelKey] = value;
+          }
+        }
+        return result;
+      }
 
-      // Organize by collection
+      const tokens = {};
+
+      // Process each collection
       for (const collectionName in data.collections) {
         const collection = data.collections[collectionName];
+        
+        // Use collection name as-is, just convert to camelCase
+        const camelCategory = toCamelCase(collectionName);
+        
+        if (!tokens[camelCategory]) {
+          tokens[camelCategory] = {};
+        }
 
-        rn += '  // ' + collection.name + '\n';
-        rn += '  ' + toCamelCase(collectionName) + ': {\n';
-
+        // Process each variable in the collection
         for (const varName in collection.variables) {
           const variable = collection.variables[varName];
 
-          for (const modeName in variable.values) {
-            const value = variable.values[modeName];
-            const tokenName = toCamelCase(varName);
-            const comment = variable.description ? ' // ' + variable.description : '';
+          // Get the primary mode value (Default or first available)
+          const primaryMode = collection.modes.find(m => m.name === 'Default' || m.name === 'Light') || collection.modes[0];
+          
+          if (!primaryMode) continue;
 
-            // Format value for React Native
-            let rnValue = value;
-            if (variable.type === 'FLOAT') {
-              rnValue = parseFloat(value);
-            } else if (typeof value === 'string') {
-              rnValue = '\'' + value + '\'';
+          const primaryModeName = primaryMode.name;
+          let value = variable.values[primaryModeName];
+
+          // Skip if no value
+          if (value === undefined) {
+            // Check for alias
+            if (variable.aliases[primaryModeName]) {
+              const aliasName = variable.aliases[primaryModeName].name;
+              value = aliasName;
+            } else {
+              continue;
             }
-
-            rn += '    ' + tokenName + ': ' + rnValue + ',' + comment + '\n';
-            break; // Use first mode only
           }
-        }
 
-        rn += '  },\n\n';
+          // Skip non-RN-safe values
+          if (!isRNSafe(value, varName)) {
+            continue;
+          }
+
+          // Parse variable name into nested structure with camelCase
+          const tokenPath = parseTokenName(varName).map(toCamelCase);
+          setNestedValue(tokens[camelCategory], tokenPath, value);
+        }
       }
 
-      rn += '};\n\n';
+      // Convert to JavaScript object literal
+      let js = '// React Native Design Tokens\n';
+      js += '// Flattened from Figma variables\n';
+      js += '// Exported at: ' + data.metadata.exportedAt + '\n\n';
+      js += 'export const tokens = ' + JSON.stringify(tokens, null, 2) + ';\n\n';
+      js += '// Usage:\n';
+      js += '// import { tokens } from \'./tokens\';\n';
+      js += '// <View style={{ backgroundColor: tokens.colors.primary, padding: tokens.spacing.md }} />\n';
 
-      // Create StyleSheet styles
-      rn += '// Utility Styles\n';
-      rn += 'export const styles = StyleSheet.create({\n';
-
-      // Add some common utility styles
-      rn += '  // Typography Styles\n';
-      rn += '  text: {\n';
-      rn += '    fontFamily: \'System\',\n';
-      rn += '  },\n\n';
-
-      rn += '  // Layout Styles\n';
-      rn += '  container: {\n';
-      rn += '    flex: 1,\n';
-      rn += '  },\n\n';
-
-      rn += '  // Add your custom styles here using tokens\n';
-      rn += '  // Example:\n';
-      rn += '  // primaryButton: {\n';
-      rn += '  //   backgroundColor: tokens.colors.primary,\n';
-      rn += '  //   paddingHorizontal: tokens.spacing.medium,\n';
-      rn += '  //   paddingVertical: tokens.spacing.small,\n';
-      rn += '  // },\n';
-
-      rn += '});\n\n';
-
-      // Usage examples
-      rn += '// Usage Examples:\n';
-      rn += '// import { tokens, styles } from \'./tokens\';\n\n';
-      rn += '// <View style={[styles.container, { backgroundColor: tokens.colors.background }]}>\n';
-      rn += '//   <Text style={[styles.text, { color: tokens.colors.primary }]}>Hello World</Text>\n';
-      rn += '// </View>\n';
-
-      return rn;
+      return js;
     }
 
     // Convert JSON data to Flutter/Dart Color classes

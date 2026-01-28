@@ -37,7 +37,7 @@ export interface AliasData {
   name: string;
 }
 
-export type ExportFormat = 'json' | 'css' | 'developer';
+export type ExportFormat = 'json' | 'css' | 'developer' | 'react-native';
 
 export interface UIMessage {
   type: 'export-tokens' | 'close-plugin';
