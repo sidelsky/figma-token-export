@@ -9,6 +9,9 @@ dist/
 build/
 *.tgz
 
+# Note: code.js, ui.html, and ui.js in root are built files for Figma
+# but are committed because they are required by the plugin manifest
+
 # Environment files
 .env
 .env.local

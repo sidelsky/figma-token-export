@@ -50,20 +50,26 @@ A production-ready Figma plugin that exports design variables and tokens into de
 
 ### Development Workflow
 
-1. **Start development:**
-   ```bash
-   npm run dev
-   ```
+**For UI Changes (90% of development):**
+1. Edit `ui.html` directly in the project root
+2. Reload the plugin in Figma (Cmd/Ctrl + Alt + P → Run last plugin)
+3. No build step needed!
 
-2. **In Figma:**
-   - Go to Plugins → Development → Import plugin from manifest
-   - Select the `manifest.json` file from this project
-   - The plugin will auto-reload when you make changes
+**For Plugin Logic Changes:**
+1. Edit `src/code.ts`
+2. Run `npm run build` to compile and copy to root
+3. Reload the plugin in Figma
 
-3. **Before committing:**
-   ```bash
-   npm run validate
-   ```
+**Initial Setup in Figma:**
+- Go to Plugins → Development → Import plugin from manifest
+- Select the `manifest.json` file from this project
+
+**Before committing:**
+```bash
+npm run validate
+```
+
+**Note**: See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed explanation of the build system.
 
 ## Production Deployment
 
@@ -118,18 +124,32 @@ A production-ready Figma plugin that exports design variables and tokens into de
 ```
 figma-token-export/
 ├── src/                 # Source code
-│   ├── code.ts         # Main plugin logic
-│   ├── ui.ts           # UI logic
-│   ├── ui.html         # UI template
+│   ├── code.ts         # Main plugin logic (builds to dist/code.js)
+│   ├── ui.ts           # UI logic reference (not actively built)
+│   ├── ui.html         # UI template reference (not actively built)
 │   └── types.ts        # TypeScript definitions
-├── dist/               # Built files
-├── tests/              # Test files
+├── dist/               # Built plugin code
+│   └── code.js         # Compiled plugin logic
+├── ui.html             # Main UI file (source of truth, 5000+ lines)
+├── ui.js               # UI JavaScript (maintained with ui.html)
+├── code.js             # Symlink/copy of dist/code.js for Figma
 ├── webpack.config.js   # Build configuration
 ├── tsconfig.json       # TypeScript config
 ├── .eslintrc.js        # ESLint config
-├── jest.config.js      # Jest config
 └── package.json        # Dependencies and scripts
 ```
+
+### Build System
+
+**Important**: This project uses a hybrid build approach:
+
+- **Plugin code** (`src/code.ts`): Built via webpack to `dist/code.js`, then copied to root
+- **UI files** (`ui.html`, `ui.js`): Maintained directly in the root directory (not built from `src/`)
+
+The root `ui.html` is the comprehensive source with 5000+ lines of features. To make UI changes:
+1. Edit `ui.html` directly in the project root
+2. Test changes by reloading the plugin in Figma
+3. For plugin logic changes, edit `src/code.ts` and run `npm run build`
 
 ### Technology Stack
 

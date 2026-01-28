@@ -4,9 +4,10 @@
   "description": "A Figma plugin that exports design variables and tokens into a developer-friendly JSON format",
   "main": "dist/code.js",
   "scripts": {
-    "build": "webpack --mode production",
-    "build:dev": "webpack --mode development",
+    "build": "webpack --mode production && npm run copy-build",
+    "build:dev": "webpack --mode development && npm run copy-build",
     "build:watch": "webpack --mode development --watch",
+    "copy-build": "cp dist/code.js code.js",
     "dev": "npm run build:watch",
     "lint": "eslint src --ext .ts,.js --fix",
     "type-check": "tsc --noEmit",

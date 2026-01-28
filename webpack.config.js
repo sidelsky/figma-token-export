@@ -44,53 +44,11 @@ module.exports = (env, argv) => {
       devtool: isProduction ? false : 'source-map',
     }
     
-    // UI build disabled to use comprehensive root ui.html
-    // {
-    //   name: 'ui',
-    //   target: 'web',
-    //   mode: argv.mode,
-    //   entry: './src/ui.ts',
-    //   output: {
-    //     path: path.resolve(__dirname, 'dist'),
-    //     filename: 'ui.js',
-    //     clean: false,
-    //   },
-    //   module: {
-    //     rules: [
-    //       {
-    //         test: /\.ts$/,
-    //         use: 'ts-loader',
-    //         exclude: /node_modules/,
-    //       },
-    //       {
-    //         test: /\.css$/,
-    //         use: ['style-loader', 'css-loader'],
-    //       },
-    //     ],
-    //   },
-    //   resolve: {
-    //     extensions: ['.ts', '.js'],
-    //   },
-    //   plugins: [
-    //     new HtmlWebpackPlugin({
-    //       template: './src/ui.html',
-    //       filename: 'ui.html',
-    //       chunks: ['ui'],
-    //       inject: 'body',
-    //       minify: isProduction ? {
-    //         collapseWhitespace: true,
-    //         removeComments: true,
-    //         removeRedundantAttributes: true,
-    //         removeScriptTypeAttributes: true,
-    //         removeStyleLinkTypeAttributes: true,
-    //         useShortDoctype: true,
-    //       } : false,
-    //     }),
-    //   ],
-    //   optimization: {
-    //     minimize: isProduction,
-    //   },
-    //   devtool: isProduction ? false : 'source-map',
-    // },
+    // UI build disabled - ui.html and ui.js in root are maintained directly
+    // The root ui.html contains comprehensive features and is the source of truth
+    // To make changes to the UI:
+    // 1. Edit ui.html directly in the root directory
+    // 2. Build only the plugin code with: npm run build
+    // 3. Test in Figma
   ];
 }; 

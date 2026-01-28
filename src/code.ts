@@ -13,7 +13,7 @@ import {
 console.log('Design Token Export plugin loaded');
 
 // Show UI when plugin is launched
-figma.showUI(__html__, { width: 400, height: 600 });
+figma.showUI(__html__, { width: 480, height: 500 });
 
 // Handle messages from the UI
 figma.ui.onmessage = async (msg: UIMessage): Promise<void> => {
@@ -172,7 +172,7 @@ async function processVariable(
         );
         variableData.aliases[mode.name] = {
           id: value.id,
-          name: aliasedVariable?.name || 'Unknown',
+          name: aliasedVariable ? aliasedVariable.name : 'Unknown',
         };
       } else {
         // Handle direct values

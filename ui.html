@@ -1881,34 +1881,41 @@
 
     // Show status message with floating footer notification
     function showStatus(type, message) {
-      if (!status) return;
-
-      // Clear any existing timeout
-      if (status._hideTimeout) {
-        clearTimeout(status._hideTimeout);
+      if (!status) {
+        console.warn('Status element not found');
+        return;
       }
 
-      // Reset classes
-      status.className = 'p-3 rounded-md text-sm border';
+      try {
+        // Clear any existing timeout
+        if (status._hideTimeout) {
+          clearTimeout(status._hideTimeout);
+        }
 
-      if (type === 'success') {
-        status.className += ' status-success';
-      } else if (type === 'error') {
-        status.className += ' status-error';
-      } else if (type === 'loading') {
-        status.className += ' status-loading';
-      }
+        // Reset classes
+        status.className = 'p-3 rounded-md text-sm border';
 
-      status.textContent = message;
-      status.classList.remove('hidden', 'hiding');
-      status.classList.add('fade-in');
+        if (type === 'success') {
+          status.className += ' status-success';
+        } else if (type === 'error') {
+          status.className += ' status-error';
+        } else if (type === 'loading') {
+          status.className += ' status-loading';
+        }
 
-      // Auto-hide after delay (except loading messages)
-      if (type !== 'loading') {
-        var hideDelay = type === 'error' ? 5000 : 3000;
-        status._hideTimeout = setTimeout(function () {
-          hideNotification(status);
-        }, hideDelay);
+        status.textContent = message;
+        status.classList.remove('hidden', 'hiding');
+        status.classList.add('fade-in');
+
+        // Auto-hide after delay (except loading messages)
+        if (type !== 'loading') {
+          var hideDelay = type === 'error' ? 5000 : 3000;
+          status._hideTimeout = setTimeout(function () {
+            hideNotification(status);
+          }, hideDelay);
+        }
+      } catch (error) {
+        console.error('Error in showStatus:', error);
       }
     }
 
@@ -1926,34 +1933,41 @@
 
     // Show status message in preview section with floating footer notification
     function showPreviewStatus(type, message) {
-      if (!previewStatus) return;
-
-      // Clear any existing timeout
-      if (previewStatus._hideTimeout) {
-        clearTimeout(previewStatus._hideTimeout);
+      if (!previewStatus) {
+        console.warn('PreviewStatus element not found');
+        return;
       }
 
-      // Reset classes
-      previewStatus.className = 'p-3 rounded-md text-sm border';
+      try {
+        // Clear any existing timeout
+        if (previewStatus._hideTimeout) {
+          clearTimeout(previewStatus._hideTimeout);
+        }
 
-      if (type === 'success') {
-        previewStatus.className += ' status-success';
-      } else if (type === 'error') {
-        previewStatus.className += ' status-error';
-      } else if (type === 'loading') {
-        previewStatus.className += ' status-loading';
-      }
+        // Reset classes
+        previewStatus.className = 'p-3 rounded-md text-sm border';
 
-      previewStatus.textContent = message;
-      previewStatus.classList.remove('hidden', 'hiding');
-      previewStatus.classList.add('fade-in');
+        if (type === 'success') {
+          previewStatus.className += ' status-success';
+        } else if (type === 'error') {
+          previewStatus.className += ' status-error';
+        } else if (type === 'loading') {
+          previewStatus.className += ' status-loading';
+        }
 
-      // Auto-hide after delay (except loading messages)
-      if (type !== 'loading') {
-        var hideDelay = type === 'error' ? 5000 : 3000;
-        previewStatus._hideTimeout = setTimeout(function () {
-          hideNotification(previewStatus);
-        }, hideDelay);
+        previewStatus.textContent = message;
+        previewStatus.classList.remove('hidden', 'hiding');
+        previewStatus.classList.add('fade-in');
+
+        // Auto-hide after delay (except loading messages)
+        if (type !== 'loading') {
+          var hideDelay = type === 'error' ? 5000 : 3000;
+          previewStatus._hideTimeout = setTimeout(function () {
+            hideNotification(previewStatus);
+          }, hideDelay);
+        }
+      } catch (error) {
+        console.error('Error in showPreviewStatus:', error);
       }
     }
     // Toggle section visibility with standardized toggle button

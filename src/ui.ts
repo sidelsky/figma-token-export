@@ -355,7 +355,8 @@ function categorizeCollection(collectionName: string): string {
     name.includes('text')
   )
     return 'typography';
-  if (name.includes('radius') || name.includes('border')) return 'border-radius';
+  if (name.includes('radius') || name.includes('border'))
+    return 'border-radius';
   if (name.includes('shadow')) return 'shadows';
   if (name.includes('size') || name.includes('sizing')) return 'sizing';
   if (name.includes('opacity') || name.includes('alpha')) return 'opacity';
@@ -449,12 +450,12 @@ function convertToReactNative(data: ExportData): string {
   // Helper: Convert string to camelCase only if it has separators
   function toCamelCaseRN(str: string): string {
     str = str.trim();
-    
+
     // If string has no separators (hyphens, underscores, spaces), return as-is
     if (!/[-_\s]/.test(str)) {
       return str;
     }
-    
+
     // Otherwise, convert to camelCase
     return str
       .replace(/[^\w\s-]/g, '') // Remove special chars except word chars, spaces, hyphens
@@ -466,7 +467,10 @@ function convertToReactNative(data: ExportData): string {
   // Helper: Filter RN-safe values
   function isRNSafe(value: any, key: string): boolean {
     // Remove boolean values for non-style keys like "detail", "subtitle"
-    if (typeof value === 'boolean' && (key === 'detail' || key === 'subtitle')) {
+    if (
+      typeof value === 'boolean' &&
+      (key === 'detail' || key === 'subtitle')
+    ) {
       return false;
     }
     // Keep strings, numbers, objects (arrays are rare in tokens)
@@ -492,8 +496,9 @@ function convertToReactNative(data: ExportData): string {
     Object.entries(collection.variables).forEach(([varName, variable]) => {
       // Get the primary mode value (Default or first available)
       const primaryMode =
-        collection.modes.find(m => m.name === 'Default' || m.name === 'Light') ||
-        collection.modes[0];
+        collection.modes.find(
+          m => m.name === 'Default' || m.name === 'Light'
+        ) || collection.modes[0];
 
       if (!primaryMode) return;
 
@@ -529,7 +534,8 @@ function convertToReactNative(data: ExportData): string {
   js += `export const tokens = ${JSON.stringify(tokens, null, 2)};\n\n`;
   js += '// Usage:\n';
   js += "// import { tokens } from './tokens';\n";
-  js += '// <View style={{ backgroundColor: tokens.colors.primary, padding: tokens.spacing.md }} />\n';
+  js +=
+    '// <View style={{ backgroundColor: tokens.colors.primary, padding: tokens.spacing.md }} />\n';
 
   return js;
 }
@@ -570,11 +576,7 @@ function handleDownload(): void {
       showStatus('success', 'Developer JSON file downloaded successfully!');
     } else if (format === 'react-native') {
       const content = convertToReactNative(exportedData);
-      downloadFile(
-        content,
-        'application/javascript',
-        `tokens-${dateStr}.js`
-      );
+      downloadFile(content, 'application/javascript', `tokens-${dateStr}.js`);
       showStatus('success', 'React Native JS file downloaded successfully!');
     }
   } catch (error) {
@@ -704,13 +706,13 @@ function showStatus(
   // Success and loading messages disappear after 3s
   // Error messages stay longer (5s) so users can read them
   const hideDelay = type === 'error' ? 5000 : 3000;
-  
+
   // Don't auto-hide loading messages - they should be manually dismissed
   if (type !== 'loading') {
     const hideTimeout = setTimeout(() => {
       hideNotification();
     }, hideDelay);
-    
+
     // Store timeout reference so we can clear it if needed
     (status as any)._hideTimeout = hideTimeout;
   }
@@ -721,10 +723,10 @@ function showStatus(
  */
 function hideNotification(): void {
   if (!status) return;
-  
+
   // Add hiding class for fade-out animation
   status.classList.add('hiding');
-  
+
   // Actually hide after animation completes
   setTimeout(() => {
     status.style.display = 'none';
