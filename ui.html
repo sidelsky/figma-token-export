@@ -2689,6 +2689,53 @@
       return preview;
     }
 
+    // ============================================
+    // SHARED HELPER: Resolve alias values
+    // ============================================
+    // Helper function to resolve aliases to actual values
+    // Used by all export format converters
+    function resolveValue(variable, modeName, data, visited = new Set()) {
+      // Prevent infinite loops
+      if (visited.has(variable.name)) {
+        console.warn('Circular alias detected for:', variable.name);
+        return undefined;
+      }
+      visited.add(variable.name);
+
+      // If there's a direct value, return it
+      if (variable.values && variable.values[modeName] !== undefined) {
+        return variable.values[modeName];
+      }
+
+      // If there's an alias, resolve it
+      if (variable.aliases && variable.aliases[modeName]) {
+        const aliasName = variable.aliases[modeName].name;
+        
+        // Search all collections for the aliased variable
+        for (const collName in data.collections) {
+          const coll = data.collections[collName];
+          if (coll.variables[aliasName]) {
+            const aliasedVar = coll.variables[aliasName];
+            // Recursively resolve in case the alias points to another alias
+            const resolvedValue = resolveValue(aliasedVar, modeName, data, visited);
+            if (resolvedValue !== undefined) {
+              return resolvedValue;
+            }
+          }
+        }
+      }
+
+      // If mode not found, try the first available mode as fallback
+      if (variable.values) {
+        const firstMode = Object.keys(variable.values)[0];
+        if (firstMode && variable.values[firstMode] !== undefined) {
+          return variable.values[firstMode];
+        }
+      }
+
+      return undefined;
+    }
+
     // Convert JSON data to CSS custom properties
     function convertToCSS(data) {
       let css = '/* Design Tokens exported from Figma */\n';
@@ -2727,16 +2774,24 @@
         for (const varName in collection.variables) {
           const variable = collection.variables[varName];
 
-          // Use first available value
-          for (const modeName in variable.values) {
-            const value = variable.values[modeName];
-            const cssVarName = '--' + collectionName.toLowerCase() + '-' + varName.toLowerCase();
-            const cleanName = cssVarName.replace(/[^a-z0-9-]/g, '-');
-            const comment = variable.description ? ' /* ' + variable.description + ' */' : '';
+          // Get the primary mode (Default or first available)
+          const primaryMode = collection.modes.find(m => m.name === 'Default' || m.name === 'Light') || collection.modes[0];
+          
+          if (!primaryMode) continue;
 
-            css += '  ' + cleanName + ': ' + value + ';' + comment + '\n';
-            break; // Use first mode only for simplicity
-          }
+          const primaryModeName = primaryMode.name;
+          
+          // Resolve the value (handles both direct values and aliases)
+          const value = resolveValue(variable, primaryModeName, data);
+          
+          // Skip if no value
+          if (value === undefined || value === null) continue;
+
+          const cssVarName = '--' + collectionName.toLowerCase() + '-' + varName.toLowerCase();
+          const cleanName = cssVarName.replace(/[^a-z0-9-]/g, '-');
+          const comment = variable.description ? ' /* ' + variable.description + ' */' : '';
+
+          css += '  ' + cleanName + ': ' + value + ';' + comment + '\n';
         }
       }
 
@@ -2773,31 +2828,40 @@
 
           // Only process color tokens for iOS
           if (variable.type === 'COLOR') {
-            for (const modeName in variable.values) {
-              const value = variable.values[modeName];
-              const swiftVarName = toCamelCase(collectionName + '-' + varName);
-              const comment = variable.description ? ' // ' + variable.description : '';
+            // Get the primary mode (Default or first available)
+            const primaryMode = collection.modes.find(m => m.name === 'Default' || m.name === 'Light') || collection.modes[0];
+            
+            if (!primaryMode) continue;
 
-              // Convert hex to UIColor
-              if (value.startsWith('#')) {
-                const hex = value.replace('#', '');
-                const r = parseInt(hex.substr(0, 2), 16) / 255.0;
-                const g = parseInt(hex.substr(2, 2), 16) / 255.0;
-                const b = parseInt(hex.substr(4, 2), 16) / 255.0;
-                const alpha = hex.length === 8 ? parseInt(hex.substr(6, 2), 16) / 255.0 : 1.0;
+            const primaryModeName = primaryMode.name;
+            
+            // Resolve the value (handles both direct values and aliases)
+            const value = resolveValue(variable, primaryModeName, data);
+            
+            // Skip if no value
+            if (!value) continue;
 
-                swift += '    static let ' + swiftVarName + ' = UIColor(red: ' + r.toFixed(3) + ', green: ' + g.toFixed(3) + ', blue: ' + b.toFixed(3) + ', alpha: ' + alpha.toFixed(3) + ')' + comment + '\n';
-              } else if (value.startsWith('rgb')) {
-                // Handle rgb() values
-                const rgbMatch = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-                if (rgbMatch) {
-                  const r = parseInt(rgbMatch[1]) / 255.0;
-                  const g = parseInt(rgbMatch[2]) / 255.0;
-                  const b = parseInt(rgbMatch[3]) / 255.0;
-                  swift += '    static let ' + swiftVarName + ' = UIColor(red: ' + r.toFixed(3) + ', green: ' + g.toFixed(3) + ', blue: ' + b.toFixed(3) + ', alpha: 1.0)' + comment + '\n';
-                }
+            const swiftVarName = toCamelCase(collectionName + '-' + varName);
+            const comment = variable.description ? ' // ' + variable.description : '';
+
+            // Convert hex to UIColor
+            if (value.startsWith('#')) {
+              const hex = value.replace('#', '');
+              const r = parseInt(hex.substr(0, 2), 16) / 255.0;
+              const g = parseInt(hex.substr(2, 2), 16) / 255.0;
+              const b = parseInt(hex.substr(4, 2), 16) / 255.0;
+              const alpha = hex.length === 8 ? parseInt(hex.substr(6, 2), 16) / 255.0 : 1.0;
+
+              swift += '    static let ' + swiftVarName + ' = UIColor(red: ' + r.toFixed(3) + ', green: ' + g.toFixed(3) + ', blue: ' + b.toFixed(3) + ', alpha: ' + alpha.toFixed(3) + ')' + comment + '\n';
+            } else if (value.startsWith('rgb')) {
+              // Handle rgb() values
+              const rgbMatch = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+              if (rgbMatch) {
+                const r = parseInt(rgbMatch[1]) / 255.0;
+                const g = parseInt(rgbMatch[2]) / 255.0;
+                const b = parseInt(rgbMatch[3]) / 255.0;
+                swift += '    static let ' + swiftVarName + ' = UIColor(red: ' + r.toFixed(3) + ', green: ' + g.toFixed(3) + ', blue: ' + b.toFixed(3) + ', alpha: 1.0)' + comment + '\n';
               }
-              break; // Use first mode only
             }
           }
         }
@@ -2835,27 +2899,36 @@
 
           // Only process color tokens for Android
           if (variable.type === 'COLOR') {
-            for (const modeName in variable.values) {
-              const value = variable.values[modeName];
-              const androidVarName = toSnakeCase(collectionName + '_' + varName);
-              const comment = variable.description ? ' <!-- ' + variable.description + ' -->' : '';
+            // Get the primary mode (Default or first available)
+            const primaryMode = collection.modes.find(m => m.name === 'Default' || m.name === 'Light') || collection.modes[0];
+            
+            if (!primaryMode) continue;
 
-              // Convert to Android color format
-              let androidColor = value;
-              if (value.startsWith('rgb')) {
-                // Convert rgb to hex
-                const rgbMatch = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-                if (rgbMatch) {
-                  const r = parseInt(rgbMatch[1]).toString(16).padStart(2, '0');
-                  const g = parseInt(rgbMatch[2]).toString(16).padStart(2, '0');
-                  const b = parseInt(rgbMatch[3]).toString(16).padStart(2, '0');
-                  androidColor = '#' + r + g + b;
-                }
+            const primaryModeName = primaryMode.name;
+            
+            // Resolve the value (handles both direct values and aliases)
+            const value = resolveValue(variable, primaryModeName, data);
+            
+            // Skip if no value
+            if (!value) continue;
+
+            const androidVarName = toSnakeCase(collectionName + '_' + varName);
+            const comment = variable.description ? ' <!-- ' + variable.description + ' -->' : '';
+
+            // Convert to Android color format
+            let androidColor = value;
+            if (value.startsWith('rgb')) {
+              // Convert rgb to hex
+              const rgbMatch = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+              if (rgbMatch) {
+                const r = parseInt(rgbMatch[1]).toString(16).padStart(2, '0');
+                const g = parseInt(rgbMatch[2]).toString(16).padStart(2, '0');
+                const b = parseInt(rgbMatch[3]).toString(16).padStart(2, '0');
+                androidColor = '#' + r + g + b;
               }
-
-              xml += '    <color name="' + androidVarName + '">' + androidColor.toUpperCase() + '</color>' + comment + '\n';
-              break; // Use first mode only
             }
+
+            xml += '    <color name="' + androidVarName + '">' + androidColor.toUpperCase() + '</color>' + comment + '\n';
           }
         }
         xml += '\n';
@@ -2901,15 +2974,24 @@
         for (const varName in collection.variables) {
           const variable = collection.variables[varName];
 
-          for (const modeName in variable.values) {
-            const value = variable.values[modeName];
-            const scssVarName = '$' + collectionName.toLowerCase() + '-' + varName.toLowerCase();
-            const cleanName = scssVarName.replace(/[^a-z0-9-$]/g, '-');
-            const comment = variable.description ? ' // ' + variable.description : '';
+          // Get the primary mode (Default or first available)
+          const primaryMode = collection.modes.find(m => m.name === 'Default' || m.name === 'Light') || collection.modes[0];
+          
+          if (!primaryMode) continue;
 
-            scss += cleanName + ': ' + value + ';' + comment + '\n';
-            break; // Use first mode only
-          }
+          const primaryModeName = primaryMode.name;
+          
+          // Resolve the value (handles both direct values and aliases)
+          const value = resolveValue(variable, primaryModeName, data);
+          
+          // Skip if no value
+          if (value === undefined || value === null) continue;
+
+          const scssVarName = '$' + collectionName.toLowerCase() + '-' + varName.toLowerCase();
+          const cleanName = scssVarName.replace(/[^a-z0-9-$]/g, '-');
+          const comment = variable.description ? ' // ' + variable.description : '';
+
+          scss += cleanName + ': ' + value + ';' + comment + '\n';
         }
         scss += '\n';
       }
@@ -3119,25 +3201,38 @@
         for (const varName in collection.variables) {
           const variable = collection.variables[varName];
 
-          for (const modeName in variable.values) {
-            const value = variable.values[modeName];
-            const tokenName = collectionName.toLowerCase() + '-' + varName.toLowerCase();
-            const cleanName = tokenName.replace(/[^a-z0-9-]/g, '-');
+          // Get the primary mode (Default or first available)
+          const primaryMode = collection.modes.find(m => m.name === 'Default' || m.name === 'Light') || collection.modes[0];
+          
+          if (!primaryMode) continue;
 
-            if (variable.type === 'COLOR') {
-              colorTokens[cleanName] = value;
-            } else if (variable.type === 'FLOAT') {
-              if (varName.toLowerCase().includes('spacing') || varName.toLowerCase().includes('gap') || varName.toLowerCase().includes('margin') || varName.toLowerCase().includes('padding')) {
-                spacingTokens[cleanName] = value + 'px';
+          const primaryModeName = primaryMode.name;
+          
+          // Resolve the value (handles both direct values and aliases)
+          const value = resolveValue(variable, primaryModeName, data);
+
+          // Skip if no value
+          if (value === undefined || value === null) continue;
+
+          const tokenName = collectionName.toLowerCase() + '-' + varName.toLowerCase();
+          const cleanName = tokenName.replace(/[^a-z0-9-]/g, '-');
+
+          if (variable.type === 'COLOR') {
+            colorTokens[cleanName] = value;
+          } else if (variable.type === 'FLOAT') {
+            // Ensure value is a number before appending 'px'
+            const numValue = typeof value === 'number' ? value : parseFloat(value);
+            if (!isNaN(numValue)) {
+              if (varName.toLowerCase().includes('spacing') || varName.toLowerCase().includes('gap') || varName.toLowerCase().includes('margin') || varName.toLowerCase().includes('padding') || varName.toLowerCase().includes('radius')) {
+                spacingTokens[cleanName] = numValue + 'px';
               } else if (varName.toLowerCase().includes('font') || varName.toLowerCase().includes('text') || varName.toLowerCase().includes('size')) {
-                fontSizeTokens[cleanName] = value + 'px';
+                fontSizeTokens[cleanName] = numValue + 'px';
               } else {
-                spacingTokens[cleanName] = value + 'px'; // Default to spacing
+                spacingTokens[cleanName] = numValue + 'px'; // Default to spacing
               }
-            } else {
-              otherTokens[cleanName] = value;
             }
-            break; // Use first mode only
+          } else {
+            otherTokens[cleanName] = value;
           }
         }
       }
@@ -3260,18 +3355,12 @@
           if (!primaryMode) continue;
 
           const primaryModeName = primaryMode.name;
-          let value = variable.values[primaryModeName];
+          
+          // Resolve the value (handles both direct values and aliases)
+          const value = resolveValue(variable, primaryModeName, data);
 
           // Skip if no value
-          if (value === undefined) {
-            // Check for alias
-            if (variable.aliases[primaryModeName]) {
-              const aliasName = variable.aliases[primaryModeName].name;
-              value = aliasName;
-            } else {
-              continue;
-            }
-          }
+          if (value === undefined || value === null) continue;
 
           // Skip non-RN-safe values
           if (!isRNSafe(value, varName)) {
@@ -3317,33 +3406,42 @@
           const variable = collection.variables[varName];
 
           if (variable.type === 'COLOR') {
-            for (const modeName in variable.values) {
-              const value = variable.values[modeName];
-              const dartVarName = toCamelCase(collectionName + '-' + varName);
-              const comment = variable.description ? ' // ' + variable.description : '';
+            // Get the primary mode (Default or first available)
+            const primaryMode = collection.modes.find(m => m.name === 'Default' || m.name === 'Light') || collection.modes[0];
+            
+            if (!primaryMode) continue;
 
-              // Convert to Flutter Color
-              let flutterColor = 'Color(0xFF000000)'; // Default black
-              if (value.startsWith('#')) {
-                const hex = value.replace('#', '');
-                if (hex.length === 6) {
-                  flutterColor = 'Color(0xFF' + hex.toUpperCase() + ')';
-                } else if (hex.length === 8) {
-                  flutterColor = 'Color(0x' + hex.toUpperCase() + ')';
-                }
-              } else if (value.startsWith('rgb')) {
-                const rgbMatch = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-                if (rgbMatch) {
-                  const r = parseInt(rgbMatch[1]).toString(16).padStart(2, '0');
-                  const g = parseInt(rgbMatch[2]).toString(16).padStart(2, '0');
-                  const b = parseInt(rgbMatch[3]).toString(16).padStart(2, '0');
-                  flutterColor = 'Color(0xFF' + r.toUpperCase() + g.toUpperCase() + b.toUpperCase() + ')';
-                }
+            const primaryModeName = primaryMode.name;
+            
+            // Resolve the value (handles both direct values and aliases)
+            const value = resolveValue(variable, primaryModeName, data);
+            
+            // Skip if no value
+            if (!value) continue;
+
+            const dartVarName = toCamelCase(collectionName + '-' + varName);
+            const comment = variable.description ? ' // ' + variable.description : '';
+
+            // Convert to Flutter Color
+            let flutterColor = 'Color(0xFF000000)'; // Default black
+            if (value.startsWith('#')) {
+              const hex = value.replace('#', '');
+              if (hex.length === 6) {
+                flutterColor = 'Color(0xFF' + hex.toUpperCase() + ')';
+              } else if (hex.length === 8) {
+                flutterColor = 'Color(0x' + hex.toUpperCase() + ')';
               }
-
-              dart += '  static const Color ' + dartVarName + ' = ' + flutterColor + ';' + comment + '\n';
-              break; // Use first mode only
+            } else if (value.startsWith('rgb')) {
+              const rgbMatch = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+              if (rgbMatch) {
+                const r = parseInt(rgbMatch[1]).toString(16).padStart(2, '0');
+                const g = parseInt(rgbMatch[2]).toString(16).padStart(2, '0');
+                const b = parseInt(rgbMatch[3]).toString(16).padStart(2, '0');
+                flutterColor = 'Color(0xFF' + r.toUpperCase() + g.toUpperCase() + b.toUpperCase() + ')';
+              }
             }
+
+            dart += '  static const Color ' + dartVarName + ' = ' + flutterColor + ';' + comment + '\n';
           }
         }
       }
@@ -3359,14 +3457,23 @@
           const variable = collection.variables[varName];
 
           if (variable.type === 'FLOAT') {
-            for (const modeName in variable.values) {
-              const value = variable.values[modeName];
-              const dartVarName = toCamelCase(collectionName + '-' + varName);
-              const comment = variable.description ? ' // ' + variable.description : '';
+            // Get the primary mode (Default or first available)
+            const primaryMode = collection.modes.find(m => m.name === 'Default' || m.name === 'Light') || collection.modes[0];
+            
+            if (!primaryMode) continue;
 
-              dart += '  static const double ' + dartVarName + ' = ' + value + ';' + comment + '\n';
-              break; // Use first mode only
-            }
+            const primaryModeName = primaryMode.name;
+            
+            // Resolve the value (handles both direct values and aliases)
+            const value = resolveValue(variable, primaryModeName, data);
+            
+            // Skip if no value
+            if (value === undefined || value === null) continue;
+
+            const dartVarName = toCamelCase(collectionName + '-' + varName);
+            const comment = variable.description ? ' // ' + variable.description : '';
+
+            dart += '  static const double ' + dartVarName + ' = ' + value + ';' + comment + '\n';
           }
         }
       }
