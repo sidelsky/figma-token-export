@@ -541,6 +541,216 @@ function convertToReactNative(data: ExportData): string {
 }
 
 /**
+ * Convert to Tailwind CSS config with nested structure
+ * Generates proper Tailwind-native nested objects instead of flat strings
+ */
+function convertToTailwind(data: ExportData): string {
+  // Helper: Parse token name into path array (e.g., "primary-500" -> ["primary", "500"])
+  function parseTokenPath(name: string): string[] {
+    // Split by common separators: /, -, _
+    let parts: string[] = [];
+    if (name.includes('/')) {
+      parts = name.split('/');
+    } else if (name.includes('-')) {
+      parts = name.split('-');
+    } else if (name.includes('_')) {
+      parts = name.split('_');
+    } else {
+      parts = [name];
+    }
+    return parts.map(p => p.trim()).filter(p => p.length > 0);
+  }
+
+  // Helper: Set nested value in object
+  function setNestedValueTailwind(obj: any, path: string[], value: any): void {
+    if (path.length === 0) return;
+    
+    const key = path[0];
+    if (!key) return;
+    
+    if (path.length === 1) {
+      obj[key] = value;
+      return;
+    }
+    
+    if (!obj[key]) {
+      obj[key] = {};
+    }
+    
+    setNestedValueTailwind(obj[key], path.slice(1), value);
+  }
+
+  // Helper: Convert nested object to formatted string with proper indentation
+  function stringifyNested(obj: any, indent: number = 6): string {
+    const spaces = ' '.repeat(indent);
+    const lines: string[] = [];
+    
+    for (const key in obj) {
+      const value = obj[key];
+      const safeKey = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key) ? key : `'${key}'`;
+      
+      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+        lines.push(`${spaces}${safeKey}: {`);
+        lines.push(stringifyNested(value, indent + 2));
+        lines.push(`${spaces}},`);
+      } else {
+        const formattedValue = typeof value === 'string' ? `'${value}'` : value;
+        lines.push(`${spaces}${safeKey}: ${formattedValue},`);
+      }
+    }
+    
+    return lines.join('\n');
+  }
+
+  // Build nested token structures
+  const colorTokens: Record<string, any> = {};
+  const spacingTokens: Record<string, any> = {};
+  const fontSizeTokens: Record<string, any> = {};
+  const borderRadiusTokens: Record<string, any> = {};
+  const fontWeightTokens: Record<string, any> = {};
+  const lineHeightTokens: Record<string, any> = {};
+  const letterSpacingTokens: Record<string, any> = {};
+  const fontFamilyTokens: Record<string, any> = {};
+
+  Object.entries(data.collections).forEach(([collectionName, collection]) => {
+    const collectionLower = collectionName.toLowerCase();
+
+    Object.entries(collection.variables).forEach(([varName, variable]) => {
+      // Get the primary mode (Default or first available)
+      const primaryMode = collection.modes.find(
+        m => m.name === 'Default' || m.name === 'Light'
+      ) || collection.modes[0];
+      
+      if (!primaryMode) return;
+
+      const primaryModeName = primaryMode.name;
+      
+      // Get value - check direct values first, then aliases
+      let value: any;
+      if (variable.values[primaryModeName] !== undefined) {
+        value = variable.values[primaryModeName];
+      } else if (variable.aliases[primaryModeName]) {
+        // For aliases, use the alias name as a string reference
+        value = variable.aliases[primaryModeName].name;
+      }
+
+      // Skip if no value
+      if (value === undefined || value === null) return;
+
+      // Parse the variable name into a path for nesting
+      const tokenPath = parseTokenPath(varName);
+
+      // Determine which Tailwind category this belongs to
+      if (variable.type === 'COLOR') {
+        setNestedValueTailwind(colorTokens, tokenPath, value);
+      } else if (variable.type === 'FLOAT') {
+        const numValue = typeof value === 'number' ? value : parseFloat(String(value));
+        if (!isNaN(numValue)) {
+          const varLower = varName.toLowerCase();
+          
+          if (varLower.includes('radius') || collectionLower.includes('radius')) {
+            setNestedValueTailwind(borderRadiusTokens, tokenPath, `${numValue}px`);
+          } else if (varLower.includes('weight') || collectionLower.includes('weight')) {
+            setNestedValueTailwind(fontWeightTokens, tokenPath, numValue);
+          } else if (varLower.includes('line-height') || varLower.includes('lineheight') || collectionLower.includes('line-height')) {
+            setNestedValueTailwind(lineHeightTokens, tokenPath, numValue);
+          } else if (varLower.includes('letter-spacing') || varLower.includes('letterspacing') || collectionLower.includes('letter-spacing')) {
+            setNestedValueTailwind(letterSpacingTokens, tokenPath, `${numValue}px`);
+          } else if (varLower.includes('font') || varLower.includes('text') || varLower.includes('size') || collectionLower.includes('typography')) {
+            setNestedValueTailwind(fontSizeTokens, tokenPath, `${numValue}px`);
+          } else if (varLower.includes('spacing') || varLower.includes('gap') || varLower.includes('margin') || varLower.includes('padding') || collectionLower.includes('spacing')) {
+            setNestedValueTailwind(spacingTokens, tokenPath, `${numValue}px`);
+          } else {
+            // Default numeric values to spacing
+            setNestedValueTailwind(spacingTokens, tokenPath, `${numValue}px`);
+          }
+        }
+      } else if (variable.type === 'STRING') {
+        const varLower = varName.toLowerCase();
+        if (varLower.includes('font') && (varLower.includes('family') || collectionLower.includes('font'))) {
+          setNestedValueTailwind(fontFamilyTokens, tokenPath, value);
+        }
+      }
+    });
+  });
+
+  // Build the config file
+  let config = '// Design Tokens exported from Figma\n';
+  config += `// Exported at: ${data.metadata.exportedAt}\n`;
+  config += `// File: ${data.metadata.figmaFileKey || 'Unknown'}\n`;
+  config += `// Collections: ${Object.keys(data.collections).join(', ')}\n\n`;
+
+  config += 'module.exports = {\n';
+  config += '  theme: {\n';
+  config += '    extend: {\n';
+
+  // Add each category with nested structure
+  if (Object.keys(colorTokens).length > 0) {
+    config += '      colors: {\n';
+    config += stringifyNested(colorTokens, 8);
+    config += '\n      },\n';
+  }
+
+  if (Object.keys(spacingTokens).length > 0) {
+    config += '      spacing: {\n';
+    config += stringifyNested(spacingTokens, 8);
+    config += '\n      },\n';
+  }
+
+  if (Object.keys(fontSizeTokens).length > 0) {
+    config += '      fontSize: {\n';
+    config += stringifyNested(fontSizeTokens, 8);
+    config += '\n      },\n';
+  }
+
+  if (Object.keys(fontWeightTokens).length > 0) {
+    config += '      fontWeight: {\n';
+    config += stringifyNested(fontWeightTokens, 8);
+    config += '\n      },\n';
+  }
+
+  if (Object.keys(lineHeightTokens).length > 0) {
+    config += '      lineHeight: {\n';
+    config += stringifyNested(lineHeightTokens, 8);
+    config += '\n      },\n';
+  }
+
+  if (Object.keys(letterSpacingTokens).length > 0) {
+    config += '      letterSpacing: {\n';
+    config += stringifyNested(letterSpacingTokens, 8);
+    config += '\n      },\n';
+  }
+
+  if (Object.keys(fontFamilyTokens).length > 0) {
+    config += '      fontFamily: {\n';
+    config += stringifyNested(fontFamilyTokens, 8);
+    config += '\n      },\n';
+  }
+
+  if (Object.keys(borderRadiusTokens).length > 0) {
+    config += '      borderRadius: {\n';
+    config += stringifyNested(borderRadiusTokens, 8);
+    config += '\n      },\n';
+  }
+
+  config += '    },\n';
+  config += '  },\n';
+  config += '  plugins: [],\n';
+  config += '}\n\n';
+
+  // Add usage examples with nested token names
+  config += '// Usage Examples:\n';
+  config += '// Nested tokens like "primary-500" become: bg-primary-500\n';
+  config += '// Nested tokens like "text/heading/large" become: text-heading-large\n';
+  config += '//\n';
+  config += '// <div className="bg-primary-500 text-white p-md">\n';
+  config += '//   <h1 className="text-heading-xl font-bold">Hello World</h1>\n';
+  config += '// </div>\n';
+
+  return config;
+}
+
+/**
  * Handle download button click
  */
 function handleDownload(): void {
@@ -578,6 +788,10 @@ function handleDownload(): void {
       const content = convertToReactNative(exportedData);
       downloadFile(content, 'application/javascript', `tokens-${dateStr}.js`);
       showStatus('success', 'React Native JS file downloaded successfully!');
+    } else if (format === 'tailwind') {
+      const content = convertToTailwind(exportedData);
+      downloadFile(content, 'application/javascript', `tailwind.config-${dateStr}.js`);
+      showStatus('success', 'Tailwind config downloaded successfully!');
     }
   } catch (error) {
     console.error('Download error:', error);
@@ -631,6 +845,10 @@ function updateDownloadButtonText(): void {
       downloadBtn.textContent = 'Download React Native';
       copyBtn.textContent = 'Copy React Native';
       break;
+    case 'tailwind':
+      downloadBtn.textContent = 'Download Tailwind';
+      copyBtn.textContent = 'Copy Tailwind';
+      break;
     default:
       downloadBtn.textContent = 'Download';
       copyBtn.textContent = 'Copy to Clipboard';
@@ -660,6 +878,9 @@ async function handleCopy(): Promise<void> {
     } else if (format === 'react-native') {
       content = convertToReactNative(exportedData);
       message = 'React Native JS copied to clipboard!';
+    } else if (format === 'tailwind') {
+      content = convertToTailwind(exportedData);
+      message = 'Tailwind config copied to clipboard!';
     } else {
       throw new Error('Unknown format');
     }
@@ -767,6 +988,10 @@ function updatePreviewContent(): void {
     const reactNativeContent = convertToReactNative(exportedData);
     previewContent.textContent = reactNativeContent;
     if (previewTitle) previewTitle.textContent = 'React Native Preview';
+  } else if (format === 'tailwind') {
+    const tailwindContent = convertToTailwind(exportedData);
+    previewContent.textContent = tailwindContent;
+    if (previewTitle) previewTitle.textContent = 'Tailwind Config Preview';
   } else {
     const preview = createJSONPreview(exportedData);
     previewContent.textContent = JSON.stringify(preview, null, 2);

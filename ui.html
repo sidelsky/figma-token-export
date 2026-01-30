@@ -1786,8 +1786,8 @@
         exportAccessibilityReportBtn.addEventListener('click', handleAccessibilityExport);
       }
 
-      // Initialize with sample data for Analytics and Accessibility
-      initializeSampleData();
+      // Sample data initialization removed - Analytics will show only when user exports tokens
+      // initializeSampleData();
 
       console.log('✅ Plugin UI initialized successfully!');
     }
@@ -3180,23 +3180,75 @@
 
     // Convert JSON data to Tailwind CSS config
     function convertToTailwind(data) {
-      let config = '// Design Tokens exported from Figma\n';
-      config += '// Exported at: ' + data.metadata.exportedAt + '\n';
-      config += '// File: ' + (data.metadata.figmaFileKey || 'Unknown') + '\n';
-      config += '// Collections: ' + Object.keys(data.collections).join(', ') + '\n\n';
+      // Helper: Parse token name into path array (e.g., "primary-500" -> ["primary", "500"])
+      function parseTokenPath(name) {
+        // Split by common separators: /, -, _
+        let parts = [];
+        if (name.includes('/')) {
+          parts = name.split('/');
+        } else if (name.includes('-')) {
+          parts = name.split('-');
+        } else if (name.includes('_')) {
+          parts = name.split('_');
+        } else {
+          parts = [name];
+        }
+        return parts.map(p => p.trim()).filter(p => p.length > 0);
+      }
 
-      config += 'module.exports = {\n';
-      config += '  theme: {\n';
-      config += '    extend: {\n';
+      // Helper: Set nested value in object
+      function setNestedValue(obj, path, value) {
+        if (path.length === 0) return;
+        
+        const key = path[0];
+        if (path.length === 1) {
+          obj[key] = value;
+          return;
+        }
+        
+        if (!obj[key]) {
+          obj[key] = {};
+        }
+        
+        setNestedValue(obj[key], path.slice(1), value);
+      }
 
-      // Organize tokens by type
+      // Helper: Convert nested object to formatted string with proper indentation
+      function stringifyNested(obj, indent = 6) {
+        const spaces = ' '.repeat(indent);
+        const lines = [];
+        
+        for (const key in obj) {
+          const value = obj[key];
+          const safeKey = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key) ? key : '\'' + key + '\'';
+          
+          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+            lines.push(spaces + safeKey + ': {');
+            lines.push(stringifyNested(value, indent + 2));
+            lines.push(spaces + '},');
+          } else {
+            const formattedValue = typeof value === 'string' ? '\'' + value + '\'' : value;
+            lines.push(spaces + safeKey + ': ' + formattedValue + ',');
+          }
+        }
+        
+        return lines.join('\n');
+      }
+
+      // Build nested token structures
       const colorTokens = {};
       const spacingTokens = {};
       const fontSizeTokens = {};
+      const borderRadiusTokens = {};
+      const fontWeightTokens = {};
+      const lineHeightTokens = {};
+      const letterSpacingTokens = {};
+      const fontFamilyTokens = {};
       const otherTokens = {};
 
       for (const collectionName in data.collections) {
         const collection = data.collections[collectionName];
+        const collectionLower = collectionName.toLowerCase();
 
         for (const varName in collection.variables) {
           const variable = collection.variables[varName];
@@ -3214,54 +3266,104 @@
           // Skip if no value
           if (value === undefined || value === null) continue;
 
-          const tokenName = collectionName.toLowerCase() + '-' + varName.toLowerCase();
-          const cleanName = tokenName.replace(/[^a-z0-9-]/g, '-');
+          // Parse the variable name into a path for nesting
+          const tokenPath = parseTokenPath(varName);
 
+          // Determine which Tailwind category this belongs to
           if (variable.type === 'COLOR') {
-            colorTokens[cleanName] = value;
+            setNestedValue(colorTokens, tokenPath, value);
           } else if (variable.type === 'FLOAT') {
-            // Ensure value is a number before appending 'px'
             const numValue = typeof value === 'number' ? value : parseFloat(value);
             if (!isNaN(numValue)) {
-              if (varName.toLowerCase().includes('spacing') || varName.toLowerCase().includes('gap') || varName.toLowerCase().includes('margin') || varName.toLowerCase().includes('padding') || varName.toLowerCase().includes('radius')) {
-                spacingTokens[cleanName] = numValue + 'px';
-              } else if (varName.toLowerCase().includes('font') || varName.toLowerCase().includes('text') || varName.toLowerCase().includes('size')) {
-                fontSizeTokens[cleanName] = numValue + 'px';
+              const varLower = varName.toLowerCase();
+              
+              if (varLower.includes('radius') || collectionLower.includes('radius')) {
+                setNestedValue(borderRadiusTokens, tokenPath, numValue + 'px');
+              } else if (varLower.includes('weight') || collectionLower.includes('weight')) {
+                setNestedValue(fontWeightTokens, tokenPath, numValue);
+              } else if (varLower.includes('line-height') || varLower.includes('lineheight') || collectionLower.includes('line-height')) {
+                setNestedValue(lineHeightTokens, tokenPath, numValue);
+              } else if (varLower.includes('letter-spacing') || varLower.includes('letterspacing') || collectionLower.includes('letter-spacing')) {
+                setNestedValue(letterSpacingTokens, tokenPath, numValue + 'px');
+              } else if (varLower.includes('font') || varLower.includes('text') || varLower.includes('size') || collectionLower.includes('typography')) {
+                setNestedValue(fontSizeTokens, tokenPath, numValue + 'px');
+              } else if (varLower.includes('spacing') || varLower.includes('gap') || varLower.includes('margin') || varLower.includes('padding') || collectionLower.includes('spacing')) {
+                setNestedValue(spacingTokens, tokenPath, numValue + 'px');
               } else {
-                spacingTokens[cleanName] = numValue + 'px'; // Default to spacing
+                // Default numeric values to spacing
+                setNestedValue(spacingTokens, tokenPath, numValue + 'px');
               }
             }
+          } else if (variable.type === 'STRING') {
+            const varLower = varName.toLowerCase();
+            if (varLower.includes('font') && (varLower.includes('family') || collectionLower.includes('font'))) {
+              setNestedValue(fontFamilyTokens, tokenPath, value);
+            } else {
+              setNestedValue(otherTokens, tokenPath, value);
+            }
           } else {
-            otherTokens[cleanName] = value;
+            setNestedValue(otherTokens, tokenPath, value);
           }
         }
       }
 
-      // Add colors
+      // Build the config file
+      let config = '// Design Tokens exported from Figma\n';
+      config += '// Exported at: ' + data.metadata.exportedAt + '\n';
+      config += '// File: ' + (data.metadata.figmaFileKey || 'Unknown') + '\n';
+      config += '// Collections: ' + Object.keys(data.collections).join(', ') + '\n\n';
+
+      config += 'module.exports = {\n';
+      config += '  theme: {\n';
+      config += '    extend: {\n';
+
+      // Add each category with nested structure
       if (Object.keys(colorTokens).length > 0) {
         config += '      colors: {\n';
-        for (const name in colorTokens) {
-          config += '        \'' + name + '\': \'' + colorTokens[name] + '\',\n';
-        }
-        config += '      },\n';
+        config += stringifyNested(colorTokens, 8);
+        config += '\n      },\n';
       }
 
-      // Add spacing
       if (Object.keys(spacingTokens).length > 0) {
         config += '      spacing: {\n';
-        for (const name in spacingTokens) {
-          config += '        \'' + name + '\': \'' + spacingTokens[name] + '\',\n';
-        }
-        config += '      },\n';
+        config += stringifyNested(spacingTokens, 8);
+        config += '\n      },\n';
       }
 
-      // Add font sizes
       if (Object.keys(fontSizeTokens).length > 0) {
         config += '      fontSize: {\n';
-        for (const name in fontSizeTokens) {
-          config += '        \'' + name + '\': \'' + fontSizeTokens[name] + '\',\n';
-        }
-        config += '      },\n';
+        config += stringifyNested(fontSizeTokens, 8);
+        config += '\n      },\n';
+      }
+
+      if (Object.keys(fontWeightTokens).length > 0) {
+        config += '      fontWeight: {\n';
+        config += stringifyNested(fontWeightTokens, 8);
+        config += '\n      },\n';
+      }
+
+      if (Object.keys(lineHeightTokens).length > 0) {
+        config += '      lineHeight: {\n';
+        config += stringifyNested(lineHeightTokens, 8);
+        config += '\n      },\n';
+      }
+
+      if (Object.keys(letterSpacingTokens).length > 0) {
+        config += '      letterSpacing: {\n';
+        config += stringifyNested(letterSpacingTokens, 8);
+        config += '\n      },\n';
+      }
+
+      if (Object.keys(fontFamilyTokens).length > 0) {
+        config += '      fontFamily: {\n';
+        config += stringifyNested(fontFamilyTokens, 8);
+        config += '\n      },\n';
+      }
+
+      if (Object.keys(borderRadiusTokens).length > 0) {
+        config += '      borderRadius: {\n';
+        config += stringifyNested(borderRadiusTokens, 8);
+        config += '\n      },\n';
       }
 
       config += '    },\n';
@@ -3269,10 +3371,13 @@
       config += '  plugins: [],\n';
       config += '}\n\n';
 
-      // Add usage examples
+      // Add usage examples with nested token names
       config += '// Usage Examples:\n';
-      config += '// <div className="bg-colors-primary text-colors-white p-spacing-medium">\n';
-      config += '//   <h1 className="text-typography-heading-large">Hello World</h1>\n';
+      config += '// Nested tokens like "primary-500" become: bg-primary-500\n';
+      config += '// Nested tokens like "text/heading/large" become: text-heading-large\n';
+      config += '//\n';
+      config += '// <div className="bg-primary-500 text-white p-md">\n';
+      config += '//   <h1 className="text-heading-xl font-bold">Hello World</h1>\n';
       config += '// </div>\n';
 
       return config;
