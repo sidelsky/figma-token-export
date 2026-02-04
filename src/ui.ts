@@ -443,6 +443,56 @@ function setNestedValue(obj: any, path: string[], value: any): void {
 }
 
 /**
+ * Resolve a variable's value, handling aliases and mode fallbacks
+ */
+function resolveValue(
+  variable: any,
+  modeName: string,
+  data: ExportData,
+  visited: Set<string> = new Set()
+): any {
+  // Prevent infinite loops
+  if (visited.has(variable.name)) {
+    console.warn('Circular alias detected for:', variable.name);
+    return undefined;
+  }
+  visited.add(variable.name);
+
+  // If there's a direct value, return it
+  if (variable.values && variable.values[modeName] !== undefined && variable.values[modeName] !== null) {
+    return variable.values[modeName];
+  }
+
+  // If there's an alias, resolve it
+  if (variable.aliases && variable.aliases[modeName]) {
+    const aliasName = variable.aliases[modeName].name;
+    
+    // Search all collections for the aliased variable
+    for (const collName in data.collections) {
+      const coll = data.collections[collName];
+      if (coll && coll.variables && coll.variables[aliasName]) {
+        const aliasedVar = coll.variables[aliasName];
+        // Recursively resolve in case the alias points to another alias
+        const resolvedValue = resolveValue(aliasedVar, modeName, data, visited);
+        if (resolvedValue !== undefined && resolvedValue !== null) {
+          return resolvedValue;
+        }
+      }
+    }
+  }
+
+  // If mode not found, try the first available mode as fallback
+  if (variable.values) {
+    const firstMode = Object.keys(variable.values)[0];
+    if (firstMode && variable.values[firstMode] !== undefined && variable.values[firstMode] !== null) {
+      return variable.values[firstMode];
+    }
+  }
+
+  return undefined;
+}
+
+/**
  * Convert to React Native flattened format
  * Removes all $ metadata, preserves structure, renames borderRadius → radius
  */
@@ -466,6 +516,11 @@ function convertToReactNative(data: ExportData): string {
 
   // Helper: Filter RN-safe values
   function isRNSafe(value: any, key: string): boolean {
+    // Skip null/undefined
+    if (value === null || value === undefined) {
+      return false;
+    }
+    
     // Remove boolean values for non-style keys like "detail", "subtitle"
     if (
       typeof value === 'boolean' &&
@@ -473,7 +528,7 @@ function convertToReactNative(data: ExportData): string {
     ) {
       return false;
     }
-    // Keep strings, numbers, objects (arrays are rare in tokens)
+    // Keep strings, numbers, objects (but not null since we checked above)
     return (
       typeof value === 'string' ||
       typeof value === 'number' ||
@@ -503,17 +558,13 @@ function convertToReactNative(data: ExportData): string {
       if (!primaryMode) return;
 
       const primaryModeName = primaryMode.name;
-      let value = variable.values[primaryModeName];
+      
+      // Resolve the value (handles both direct values and aliases)
+      const value = resolveValue(variable, primaryModeName, data);
 
       // Skip if no value
-      if (value === undefined) {
-        // Check for alias
-        if (variable.aliases[primaryModeName]) {
-          const aliasName = variable.aliases[primaryModeName].name;
-          value = aliasName;
-        } else {
-          return;
-        }
+      if (value === undefined || value === null) {
+        return;
       }
 
       // Skip non-RN-safe values
@@ -648,25 +699,59 @@ function convertToTailwind(data: ExportData): string {
         if (!isNaN(numValue)) {
           const varLower = varName.toLowerCase();
           
+          // Skip breakpoints entirely - they don't belong in Tailwind config theme
+          if (varLower.includes('breakpoint') || collectionLower.includes('breakpoint')) {
+            return;
+          }
+          
+          // Border radius
           if (varLower.includes('radius') || collectionLower.includes('radius')) {
             setNestedValueTailwind(borderRadiusTokens, tokenPath, `${numValue}px`);
-          } else if (varLower.includes('weight') || collectionLower.includes('weight')) {
+          } 
+          // Font weight (but exclude border weights)
+          else if ((varLower.includes('weight') || collectionLower.includes('weight')) && 
+                   !varLower.includes('border') && !varLower.includes('stroke')) {
             setNestedValueTailwind(fontWeightTokens, tokenPath, numValue);
-          } else if (varLower.includes('line-height') || varLower.includes('lineheight') || collectionLower.includes('line-height')) {
+          } 
+          // Line height
+          else if (varLower.includes('line-height') || varLower.includes('lineheight') || 
+                   collectionLower.includes('line-height')) {
             setNestedValueTailwind(lineHeightTokens, tokenPath, numValue);
-          } else if (varLower.includes('letter-spacing') || varLower.includes('letterspacing') || collectionLower.includes('letter-spacing')) {
+          } 
+          // Letter spacing
+          else if (varLower.includes('letter-spacing') || varLower.includes('letterspacing') || 
+                   collectionLower.includes('letter-spacing')) {
             setNestedValueTailwind(letterSpacingTokens, tokenPath, `${numValue}px`);
-          } else if (varLower.includes('font') || varLower.includes('text') || varLower.includes('size') || collectionLower.includes('typography')) {
+          } 
+          // Font size (but exclude if from spacing collection or contains spacing keywords)
+          else if ((varLower.includes('font') && varLower.includes('size')) || 
+                   varLower.includes('text-size') ||
+                   (collectionLower.includes('typography') && varLower.includes('size'))) {
             setNestedValueTailwind(fontSizeTokens, tokenPath, `${numValue}px`);
-          } else if (varLower.includes('spacing') || varLower.includes('gap') || varLower.includes('margin') || varLower.includes('padding') || collectionLower.includes('spacing')) {
-            setNestedValueTailwind(spacingTokens, tokenPath, `${numValue}px`);
-          } else {
-            // Default numeric values to spacing
+          } 
+          // Spacing (only if collection is spacing-related AND not border/stroke/weight related)
+          else if (collectionLower.includes('spacing') && 
+                   !varLower.includes('border') && 
+                   !varLower.includes('stroke') && 
+                   !varLower.includes('weight') &&
+                   !varLower.includes('font') &&
+                   !varLower.includes('breakpoint')) {
             setNestedValueTailwind(spacingTokens, tokenPath, `${numValue}px`);
           }
+          // Specific spacing keywords in variable name
+          else if ((varLower.includes('gap') || varLower.includes('margin') || 
+                    varLower.includes('padding')) &&
+                   !varLower.includes('border') && !varLower.includes('stroke')) {
+            setNestedValueTailwind(spacingTokens, tokenPath, `${numValue}px`);
+          }
+          // Skip everything else - don't force into any category
         }
       } else if (variable.type === 'STRING') {
         const varLower = varName.toLowerCase();
+        // Skip breakpoints
+        if (varLower.includes('breakpoint') || collectionLower.includes('breakpoint')) {
+          return;
+        }
         if (varLower.includes('font') && (varLower.includes('family') || collectionLower.includes('font'))) {
           setNestedValueTailwind(fontFamilyTokens, tokenPath, value);
         }

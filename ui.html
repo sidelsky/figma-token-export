@@ -3277,25 +3277,59 @@
             if (!isNaN(numValue)) {
               const varLower = varName.toLowerCase();
               
+              // Skip breakpoints entirely - they don't belong in Tailwind config theme
+              if (varLower.includes('breakpoint') || collectionLower.includes('breakpoint')) {
+                continue;
+              }
+              
+              // Border radius
               if (varLower.includes('radius') || collectionLower.includes('radius')) {
                 setNestedValue(borderRadiusTokens, tokenPath, numValue + 'px');
-              } else if (varLower.includes('weight') || collectionLower.includes('weight')) {
+              } 
+              // Font weight (but exclude border weights)
+              else if ((varLower.includes('weight') || collectionLower.includes('weight')) && 
+                       !varLower.includes('border') && !varLower.includes('stroke')) {
                 setNestedValue(fontWeightTokens, tokenPath, numValue);
-              } else if (varLower.includes('line-height') || varLower.includes('lineheight') || collectionLower.includes('line-height')) {
+              } 
+              // Line height
+              else if (varLower.includes('line-height') || varLower.includes('lineheight') || 
+                       collectionLower.includes('line-height')) {
                 setNestedValue(lineHeightTokens, tokenPath, numValue);
-              } else if (varLower.includes('letter-spacing') || varLower.includes('letterspacing') || collectionLower.includes('letter-spacing')) {
+              } 
+              // Letter spacing
+              else if (varLower.includes('letter-spacing') || varLower.includes('letterspacing') || 
+                       collectionLower.includes('letter-spacing')) {
                 setNestedValue(letterSpacingTokens, tokenPath, numValue + 'px');
-              } else if (varLower.includes('font') || varLower.includes('text') || varLower.includes('size') || collectionLower.includes('typography')) {
+              } 
+              // Font size (but exclude if from spacing collection or contains spacing keywords)
+              else if ((varLower.includes('font') && varLower.includes('size')) || 
+                       varLower.includes('text-size') ||
+                       (collectionLower.includes('typography') && varLower.includes('size'))) {
                 setNestedValue(fontSizeTokens, tokenPath, numValue + 'px');
-              } else if (varLower.includes('spacing') || varLower.includes('gap') || varLower.includes('margin') || varLower.includes('padding') || collectionLower.includes('spacing')) {
-                setNestedValue(spacingTokens, tokenPath, numValue + 'px');
-              } else {
-                // Default numeric values to spacing
+              } 
+              // Spacing (only if collection is spacing-related AND not border/stroke/weight related)
+              else if (collectionLower.includes('spacing') && 
+                       !varLower.includes('border') && 
+                       !varLower.includes('stroke') && 
+                       !varLower.includes('weight') &&
+                       !varLower.includes('font') &&
+                       !varLower.includes('breakpoint')) {
                 setNestedValue(spacingTokens, tokenPath, numValue + 'px');
               }
+              // Specific spacing keywords in variable name
+              else if ((varLower.includes('gap') || varLower.includes('margin') || 
+                        varLower.includes('padding')) &&
+                       !varLower.includes('border') && !varLower.includes('stroke')) {
+                setNestedValue(spacingTokens, tokenPath, numValue + 'px');
+              }
+              // Skip everything else - don't force into any category
             }
           } else if (variable.type === 'STRING') {
             const varLower = varName.toLowerCase();
+            // Skip breakpoints
+            if (varLower.includes('breakpoint') || collectionLower.includes('breakpoint')) {
+              continue;
+            }
             if (varLower.includes('font') && (varLower.includes('family') || collectionLower.includes('font'))) {
               setNestedValue(fontFamilyTokens, tokenPath, value);
             } else {
@@ -3404,11 +3438,16 @@
 
       // Helper: Filter RN-safe values
       function isRNSafe(value, key) {
+        // Skip null/undefined
+        if (value === null || value === undefined) {
+          return false;
+        }
+        
         // Remove boolean values for non-style keys like "detail", "subtitle"
         if (typeof value === 'boolean' && (key === 'detail' || key === 'subtitle')) {
           return false;
         }
-        // Keep strings, numbers, objects (arrays are rare in tokens)
+        // Keep strings, numbers, objects (but not null since we checked above)
         return typeof value === 'string' || typeof value === 'number' || typeof value === 'object';
       }
 
